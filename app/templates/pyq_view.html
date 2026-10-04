@@ -1,0 +1,1163 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ pyq.title }} | StudyHub
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    /* =====================================================
+       STUDYHUB PREMIUM PYQ PAGE
+       ===================================================== */
+
+    .sh-pyq-page {
+        min-height: calc(100vh - 80px);
+        padding: 42px 20px 70px;
+        background:
+            radial-gradient(
+                circle at 10% 0%,
+                rgba(79, 70, 229, 0.10),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 90% 10%,
+                rgba(124, 58, 237, 0.08),
+                transparent 28%
+            ),
+            #f7f8fc;
+    }
+
+    .sh-pyq-container {
+        max-width: 1180px;
+        margin: 0 auto;
+    }
+
+    /* Breadcrumb */
+
+    .sh-pyq-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #667085;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 22px;
+        transition: 0.2s ease;
+    }
+
+    .sh-pyq-back:hover {
+        color: #4f46e5;
+        transform: translateX(-2px);
+    }
+
+    /* Hero */
+
+    .sh-pyq-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 28px;
+        padding: 38px;
+        color: white;
+        background:
+            radial-gradient(
+                circle at 85% 15%,
+                rgba(255,255,255,0.20),
+                transparent 24%
+            ),
+            radial-gradient(
+                circle at 10% 100%,
+                rgba(255,255,255,0.10),
+                transparent 25%
+            ),
+            linear-gradient(
+                135deg,
+                #111827 0%,
+                #312e81 52%,
+                #4f46e5 100%
+            );
+        box-shadow:
+            0 24px 60px rgba(31, 41, 55, 0.18);
+    }
+
+    .sh-pyq-hero::after {
+        content: "";
+        position: absolute;
+        width: 220px;
+        height: 220px;
+        right: -80px;
+        bottom: -100px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.08);
+    }
+
+    .sh-pyq-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 850px;
+    }
+
+    .sh-pyq-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 18px;
+    }
+
+    .sh-pyq-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.13);
+        border: 1px solid rgba(255,255,255,0.16);
+        backdrop-filter: blur(10px);
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .sh-pyq-badge.verified {
+        background: rgba(34,197,94,0.16);
+        border-color: rgba(134,239,172,0.25);
+    }
+
+    .sh-pyq-title {
+        margin: 0;
+        color: #ffffff !important;
+        font-size: clamp(28px, 4vw, 46px);
+        line-height: 1.08;
+        letter-spacing: -1.3px;
+        font-weight: 800;
+    }
+
+    .sh-pyq-description {
+        margin: 16px 0 0;
+        max-width: 700px;
+        color: rgba(255, 255, 255, 0.82) !important;
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    .sh-pyq-hero .sh-pyq-badge {
+        color: #ffffff !important;
+    }
+
+    .sh-pyq-hero .sh-pyq-badge.verified {
+        color: #ecfdf5 !important;
+    }
+
+    /* Main grid */
+
+    .sh-pyq-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.75fr);
+        gap: 22px;
+        margin-top: 22px;
+        align-items: start;
+    }
+
+    /* Cards */
+
+    .sh-pyq-card {
+        background: rgba(255,255,255,0.92);
+        border: 1px solid rgba(15,23,42,0.07);
+        border-radius: 22px;
+        box-shadow:
+            0 12px 35px rgba(15,23,42,0.06);
+        overflow: hidden;
+    }
+
+    .sh-pyq-card-header {
+        padding: 22px 24px;
+        border-bottom: 1px solid #eef0f5;
+    }
+
+    .sh-pyq-card-header h2 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 800;
+        color: #111827;
+    }
+
+    .sh-pyq-card-header p {
+        margin: 5px 0 0;
+        color: #98a2b3;
+        font-size: 13px;
+    }
+
+    .sh-pyq-card-body {
+        padding: 24px;
+    }
+
+    /* Details */
+
+    .sh-pyq-details {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .sh-pyq-detail {
+        padding: 17px;
+        border-radius: 16px;
+        background: #f8f9fc;
+        border: 1px solid #edf0f5;
+    }
+
+    .sh-pyq-detail-label {
+        display: block;
+        color: #98a2b3;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin-bottom: 6px;
+    }
+
+    .sh-pyq-detail-value {
+        color: #1d2939;
+        font-size: 14px;
+        font-weight: 750;
+    }
+
+    /* File */
+
+    .sh-pyq-file {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 18px;
+        border: 1px solid #e8eaf0;
+        border-radius: 17px;
+        background: #fff;
+    }
+
+    .sh-pyq-file-icon {
+        width: 48px;
+        height: 48px;
+        flex: 0 0 48px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(
+            135deg,
+            #eef2ff,
+            #e0e7ff
+        );
+        font-size: 23px;
+    }
+
+    .sh-pyq-file-name {
+        min-width: 0;
+    }
+
+    .sh-pyq-file-name strong {
+        display: block;
+        color: #1d2939;
+        font-size: 14px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .sh-pyq-file-name span {
+        display: block;
+        margin-top: 3px;
+        color: #98a2b3;
+        font-size: 12px;
+    }
+
+    /* Buttons */
+
+    .sh-pyq-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+    }
+
+    .sh-pyq-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 46px;
+        padding: 0 18px;
+        border-radius: 13px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 750;
+        transition: all 0.2s ease;
+    }
+
+    .sh-pyq-btn-primary {
+        color: white;
+        background: linear-gradient(
+            135deg,
+            #4f46e5,
+            #6366f1
+        );
+        box-shadow:
+            0 8px 18px rgba(79,70,229,0.22);
+    }
+
+    .sh-pyq-btn-primary:hover {
+        color: white;
+        transform: translateY(-2px);
+        box-shadow:
+            0 12px 24px rgba(79,70,229,0.28);
+    }
+
+    .sh-pyq-btn-secondary {
+        color: #344054;
+        background: white;
+        border: 1px solid #e4e7ec;
+    }
+
+    .sh-pyq-btn-secondary:hover {
+        color: #4f46e5;
+        border-color: #c7d2fe;
+        background: #f8f9ff;
+    }
+
+    /* Stats */
+
+    .sh-pyq-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sh-pyq-stat {
+        text-align: center;
+        padding: 22px 12px;
+        border-right: 1px solid #edf0f5;
+    }
+
+    .sh-pyq-stat:last-child {
+        border-right: 0;
+    }
+
+    .sh-pyq-stat-icon {
+        font-size: 20px;
+        margin-bottom: 5px;
+    }
+
+    .sh-pyq-stat-number {
+        display: block;
+        color: #101828;
+        font-size: 24px;
+        font-weight: 850;
+    }
+
+    .sh-pyq-stat-label {
+        color: #98a2b3;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Intelligence */
+
+    .sh-pyq-intelligence {
+        padding: 20px;
+        border-radius: 18px;
+        background:
+            linear-gradient(
+                135deg,
+                #f5f3ff,
+                #eef2ff
+            );
+        border: 1px solid #e0e7ff;
+    }
+
+    .sh-pyq-intelligence-icon {
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: #4f46e5;
+        color: white;
+        font-size: 18px;
+        margin-bottom: 13px;
+        box-shadow: 0 8px 18px rgba(79,70,229,0.22);
+    }
+
+    .sh-pyq-intelligence h3 {
+        margin: 0 0 7px;
+        color: #1e1b4b;
+        font-size: 15px;
+        font-weight: 800;
+    }
+
+    .sh-pyq-intelligence p {
+        margin: 0;
+        color: #667085;
+        font-size: 13px;
+        line-height: 1.65;
+    }
+
+    /* Preview */
+
+    .sh-pyq-preview {
+        margin-top: 22px;
+    }
+
+    .sh-pyq-preview iframe {
+        display: block;
+        width: 100%;
+        height: 720px;
+        border: 0;
+        background: #525252;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 900px) {
+
+        .sh-pyq-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .sh-pyq-hero {
+            padding: 28px;
+        }
+
+    }
+
+    @media (max-width: 600px) {
+
+        .sh-pyq-page {
+            padding: 25px 12px 50px;
+        }
+
+        .sh-pyq-hero {
+            border-radius: 22px;
+            padding: 24px;
+        }
+
+        .sh-pyq-title {
+            font-size: 30px;
+        }
+
+        .sh-pyq-details {
+            grid-template-columns: 1fr;
+        }
+
+        .sh-pyq-card-body {
+            padding: 18px;
+        }
+
+        .sh-pyq-preview iframe {
+            height: 560px;
+        }
+
+        .sh-pyq-btn {
+            width: 100%;
+        }
+
+    }
+
+/* ============================================================
+   PYQ REPORT
+============================================================ */
+
+.sh-pyq-report {
+
+    margin-top: 24px;
+
+    border-color: rgba(239, 68, 68, .14);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(254, 242, 242, .95),
+            rgba(255, 255, 255, .98)
+        );
+}
+
+
+.sh-pyq-report .sh-report-header {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 14px;
+
+    margin-bottom: 18px;
+}
+
+
+.sh-pyq-report .sh-report-icon {
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: rgba(239, 68, 68, .10);
+
+    color: #dc2626;
+
+    font-size: 19px;
+
+    flex-shrink: 0;
+}
+
+
+.sh-pyq-report .sh-report-header h3 {
+
+    margin: 0 0 5px;
+
+    font-size: 16px;
+
+    color: #1f2937;
+}
+
+
+.sh-pyq-report .sh-report-header p {
+
+    margin: 0;
+
+    color: #6b7280;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+}
+
+
+.sh-pyq-report .sh-report-form {
+
+    display: grid;
+
+    gap: 12px;
+}
+
+
+.sh-pyq-report .sh-report-select,
+.sh-pyq-report .sh-report-textarea {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 12px;
+
+    background: white;
+
+    padding: 12px 14px;
+
+    font: inherit;
+
+    color: #374151;
+
+    outline: none;
+
+    transition: .2s ease;
+}
+
+
+.sh-pyq-report .sh-report-select:focus,
+.sh-pyq-report .sh-report-textarea:focus {
+
+    border-color: #ef4444;
+
+    box-shadow:
+        0 0 0 3px rgba(239, 68, 68, .08);
+}
+
+
+.sh-pyq-report .sh-report-textarea {
+
+    resize: vertical;
+
+    min-height: 80px;
+}
+
+
+.sh-pyq-report .sh-report-btn {
+
+    width: fit-content;
+
+    border: none;
+
+    border-radius: 11px;
+
+    padding: 11px 18px;
+
+    background: #dc2626;
+
+    color: white;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: .2s ease;
+}
+
+
+.sh-pyq-report .sh-report-btn:hover {
+
+    background: #b91c1c;
+
+    transform: translateY(-1px);
+}
+
+
+@media (max-width: 600px) {
+
+    .sh-pyq-report .sh-report-btn {
+
+        width: 100%;
+    }
+
+}
+
+</style>
+
+
+<div class="sh-pyq-page">
+
+    <div class="sh-pyq-container">
+
+        <!-- Back -->
+        <a
+            href="{{ url_for('pyq.pyq_repository') }}"
+            class="sh-pyq-back"
+        >
+            ← Back to PYQ Repository
+        </a>
+
+
+        <!-- HERO -->
+        <section class="sh-pyq-hero">
+
+            <div class="sh-pyq-hero-content">
+
+                <div class="sh-pyq-badges">
+
+                    {% if pyq.verification_status == "approved" %}
+
+                    <span class="sh-pyq-badge verified">
+                        ✓ Verified Resource
+                    </span>
+
+                    {% endif %}
+
+                    {% if pyq.exam_year %}
+
+                    <span class="sh-pyq-badge">
+                        📅 {{ pyq.exam_year }}
+                    </span>
+
+                    {% endif %}
+
+                    {% if pyq.exam_session %}
+
+                    <span class="sh-pyq-badge">
+                        {{ pyq.exam_session }}
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <h1 class="sh-pyq-title">
+                    {{ pyq.title }}
+                </h1>
+
+
+                <p class="sh-pyq-description">
+                    Previous-year question paper available
+                    through the StudyHub academic resource
+                    repository.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- MAIN -->
+        <div class="sh-pyq-grid">
+
+
+            <!-- LEFT -->
+            <div>
+
+
+                <!-- DETAILS -->
+                <section class="sh-pyq-card">
+
+                    <div class="sh-pyq-card-header">
+
+                        <h2>
+                            📋 Paper Information
+                        </h2>
+
+                        <p>
+                            Academic details associated with this question paper
+                        </p>
+
+                    </div>
+
+
+                    <div class="sh-pyq-card-body">
+
+                        <div class="sh-pyq-details">
+
+
+                            <div class="sh-pyq-detail">
+
+                                <span class="sh-pyq-detail-label">
+                                    Education Level
+                                </span>
+
+                                <span class="sh-pyq-detail-value">
+                                    {{ pyq.education_level or "Not specified" }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="sh-pyq-detail">
+
+                                <span class="sh-pyq-detail-label">
+                                    Course
+                                </span>
+
+                                <span class="sh-pyq-detail-value">
+                                    {{ pyq.course or "Not specified" }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="sh-pyq-detail">
+
+                                <span class="sh-pyq-detail-label">
+                                    Semester
+                                </span>
+
+                                <span class="sh-pyq-detail-value">
+                                    {{ pyq.semester or "Not specified" }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="sh-pyq-detail">
+
+                                <span class="sh-pyq-detail-label">
+                                    Subject
+                                </span>
+
+                                <span class="sh-pyq-detail-value">
+                                    {{ pyq.subject or "Not specified" }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="sh-pyq-detail">
+
+                                <span class="sh-pyq-detail-label">
+                                    Exam Type
+                                </span>
+
+                                <span class="sh-pyq-detail-value">
+                                    {{ pyq.exam_type or "Not specified" }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="sh-pyq-detail">
+
+                                <span class="sh-pyq-detail-label">
+                                    Exam Session
+                                </span>
+
+                                <span class="sh-pyq-detail-value">
+                                    {{ pyq.exam_session or "Not specified" }}
+                                </span>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- FILE -->
+                <section
+                    class="sh-pyq-card"
+                    style="margin-top:22px;"
+                >
+
+                    <div class="sh-pyq-card-header">
+
+                        <h2>
+                            📄 Question Paper
+                        </h2>
+
+                        <p>
+                            Open the PDF directly or download it for offline study
+                        </p>
+
+                    </div>
+
+
+                    <div class="sh-pyq-card-body">
+
+                        <div class="sh-pyq-file">
+
+                            <div class="sh-pyq-file-icon">
+                                📄
+                            </div>
+
+
+                            <div class="sh-pyq-file-name">
+
+                                <strong>
+                                    {{ pyq.file_name }}
+                                </strong>
+
+                                <span>
+                                    PDF • Previous Year Question Paper
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="sh-pyq-actions">
+
+                            <a
+                                href="{{ url_for(
+                                    'pyq.preview_pyq',
+                                    pyq_id=pyq.id
+                                ) }}"
+                                target="_blank"
+                                class="sh-pyq-btn sh-pyq-btn-primary"
+                            >
+                                👁 Open PDF
+                            </a>
+
+
+                            <a
+                                href="{{ url_for(
+                                    'pyq.download_pyq',
+                                    pyq_id=pyq.id
+                                ) }}"
+                                class="sh-pyq-btn sh-pyq-btn-secondary"
+                            >
+                                ↓ Download
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <!-- =================================================
+                     REPORT PYQ
+                ================================================== -->
+
+                <section class="sh-pyq-card sh-pyq-report">
+
+                    <div class="sh-report-header">
+
+                        <div class="sh-report-icon">
+                            ⚑
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Report this question paper
+                            </h3>
+
+                            <p>
+                                Report incorrect, misleading, duplicate,
+                                or inappropriate content.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'pyq.report_pyq',
+                            pyq_id=pyq.id
+                        ) }}"
+                        class="sh-report-form"
+                    >
+
+                        <select
+                            name="reason"
+                            class="sh-report-select"
+                            required
+                        >
+
+                            <option value="">
+                                Select a reason
+                            </option>
+
+                            <option value="Incorrect or misleading content">
+                                Incorrect or misleading content
+                            </option>
+
+                            <option value="Wrong subject or semester">
+                                Wrong subject or semester
+                            </option>
+
+                            <option value="Duplicate question paper">
+                                Duplicate question paper
+                            </option>
+
+                            <option value="Inappropriate content">
+                                Inappropriate content
+                            </option>
+
+                            <option value="Copyright issue">
+                                Copyright issue
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+
+                        <textarea
+                            name="description"
+                            class="sh-report-textarea"
+                            rows="3"
+                            placeholder="Optional: explain the issue..."
+                        ></textarea>
+
+
+                        <button
+                            type="submit"
+                            class="sh-report-btn"
+                        >
+                            ⚑ Submit Report
+                        </button>
+
+                    </form>
+
+                </section>
+
+                <!-- PDF PREVIEW -->
+                <section class="sh-pyq-card sh-pyq-preview">
+
+                    <div class="sh-pyq-card-header">
+
+                        <h2>
+                            📖 PDF Preview
+                        </h2>
+
+                        <p>
+                            Review the question paper without leaving StudyHub
+                        </p>
+
+                    </div>
+
+
+                    <iframe
+                        src="{{ url_for(
+                            'pyq.preview_pyq',
+                            pyq_id=pyq.id
+                        ) }}"
+                        title="PYQ PDF Preview"
+                    ></iframe>
+
+                </section>
+
+
+            </div>
+
+
+            <!-- RIGHT -->
+            <aside>
+
+
+                <!-- STATS -->
+                <section class="sh-pyq-card">
+
+                    <div class="sh-pyq-card-header">
+
+                        <h2>
+                            📊 Resource Activity
+                        </h2>
+
+                        <p>
+                            StudyHub usage statistics
+                        </p>
+
+                    </div>
+
+
+                    <div class="sh-pyq-stats">
+
+                        <div class="sh-pyq-stat">
+
+                            <div class="sh-pyq-stat-icon">
+                                👁
+                            </div>
+
+                            <span class="sh-pyq-stat-number">
+                                {{ pyq.views or 0 }}
+                            </span>
+
+                            <span class="sh-pyq-stat-label">
+                                Views
+                            </span>
+
+                        </div>
+
+
+                        <div class="sh-pyq-stat">
+
+                            <div class="sh-pyq-stat-icon">
+                                ↓
+                            </div>
+
+                            <span class="sh-pyq-stat-number">
+                                {{ pyq.downloads or 0 }}
+                            </span>
+
+                            <span class="sh-pyq-stat-label">
+                                Downloads
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- INTELLIGENCE -->
+                <section
+                    class="sh-pyq-card"
+                    style="margin-top:22px;"
+                >
+
+                    <div class="sh-pyq-card-body">
+
+                        <div class="sh-pyq-intelligence">
+
+                            <div class="sh-pyq-intelligence-icon">
+                                ✦
+                            </div>
+
+                            <h3>
+                                StudyHub Intelligence
+                            </h3>
+
+                            <p>
+                                This paper can contribute to StudyHub's
+                                historical question analysis, helping students
+                                explore repeated questions and recurring
+                                academic topics.
+                            </p>
+
+                        </div>
+
+
+                        <div class="sh-pyq-actions">
+
+                            <a
+                                href="{{ url_for(
+                                    'pyq.pyq_intelligence',
+                                    subject=pyq.subject,
+                                    course=pyq.course,
+                                    semester=pyq.semester
+                                ) }}"
+                                class="sh-pyq-btn sh-pyq-btn-secondary"
+                                style="width:100%;"
+                            >
+                                ✦ Explore Question Patterns
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- QUICK INFO -->
+                <section
+                    class="sh-pyq-card"
+                    style="margin-top:22px;"
+                >
+
+                    <div class="sh-pyq-card-body">
+
+                        <div
+                            style="
+                                color:#667085;
+                                font-size:13px;
+                                line-height:1.7;
+                            "
+                        >
+
+                            <strong
+                                style="
+                                    display:block;
+                                    color:#1d2939;
+                                    margin-bottom:8px;
+                                "
+                            >
+                                💡 Study Tip
+                            </strong>
+
+                            Use this paper together with other years
+                            to identify recurring questions and topics
+                            in the StudyHub Intelligence section.
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

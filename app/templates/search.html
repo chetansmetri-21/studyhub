@@ -1,0 +1,1070 @@
+{% extends "base.html" %}
+
+{% block title %}
+StudyHub Search
+{% endblock %}
+
+{% block content %}
+
+<div class="search-page">
+
+    <!-- HERO -->
+    <section class="search-hero">
+
+        <div>
+            <span class="search-eyebrow">
+                🔎 STUDYHUB SEARCH
+            </span>
+
+            <h1>
+                Find what you need.
+            </h1>
+
+            <p>
+                Search across StudyHub notes and previous year
+                question papers from one place.
+            </p>
+        </div>
+
+    </section>
+
+
+    <!-- SEARCH BOX -->
+    <section class="search-panel">
+
+        <form method="GET"
+              action="{{ url_for('search.global_search') }}"
+              class="search-form">
+
+            <div class="search-input-wrapper">
+
+                <span class="search-icon">
+                    🔎
+                </span>
+
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ query_text }}"
+                    placeholder="Search notes, subjects, courses, PYQs..."
+                    autocomplete="off"
+                    autofocus
+                >
+
+                {% if query_text %}
+                <a
+                    href="{{ url_for('search.global_search') }}"
+                    class="search-clear"
+                >
+                    ✕
+                </a>
+                {% endif %}
+
+            </div>
+
+
+            <button type="submit"
+                    class="search-submit">
+                Search
+            </button>
+
+        </form>
+
+
+        <!-- FILTERS -->
+        <div class="search-filters">
+
+            <a
+                href="{{ url_for('search.global_search', q=query_text, type='all') }}"
+                class="search-filter {% if resource_type == 'all' %}active{% endif %}"
+            >
+                All
+            </a>
+
+            <a
+                href="{{ url_for('search.global_search', q=query_text, type='notes') }}"
+                class="search-filter {% if resource_type == 'notes' %}active{% endif %}"
+            >
+                📚 Notes
+            </a>
+
+            <a
+                href="{{ url_for('search.global_search', q=query_text, type='pyqs') }}"
+                class="search-filter {% if resource_type == 'pyqs' %}active{% endif %}"
+            >
+                📄 PYQs
+            </a>
+
+        </div>
+
+    </section>
+
+
+    {% if query_text %}
+
+    <!-- RESULTS HEADER -->
+    <section class="search-results-header">
+
+        <div>
+
+            <span class="search-section-label">
+                SEARCH RESULTS
+            </span>
+
+            <h2>
+                Results for
+                <strong>"{{ query_text }}"</strong>
+            </h2>
+
+        </div>
+
+        <div class="search-result-count">
+            {{ total_results }} result{% if total_results != 1 %}s{% endif %}
+        </div>
+
+    </section>
+
+
+    {% if total_results == 0 %}
+
+        <!-- EMPTY STATE -->
+        <section class="search-empty">
+
+            <div class="search-empty-icon">
+                🔍
+            </div>
+
+            <h2>
+                No results found
+            </h2>
+
+            <p>
+                Try a different keyword, subject, course or
+                question paper term.
+            </p>
+
+            <div class="search-suggestions">
+
+                <span>Try:</span>
+
+                <a href="{{ url_for('search.global_search', q='DBMS') }}">
+                    DBMS
+                </a>
+
+                <a href="{{ url_for('search.global_search', q='Python') }}">
+                    Python
+                </a>
+
+                <a href="{{ url_for('search.global_search', q='Algorithms') }}">
+                    Algorithms
+                </a>
+
+            </div>
+
+        </section>
+
+
+    {% else %}
+
+
+        <!-- NOTES RESULTS -->
+        {% if notes_results %}
+
+        <section class="search-section">
+
+            <div class="search-section-heading">
+
+                <div>
+                    <span class="search-section-label">
+                        STUDY MATERIAL
+                    </span>
+
+                    <h2>
+                        📚 Notes
+                    </h2>
+                </div>
+
+                <span>
+                    {{ notes_results|length }} found
+                </span>
+
+            </div>
+
+
+            <div class="search-result-grid">
+
+                {% for note in notes_results %}
+
+                <article class="search-card">
+
+                    <div class="search-card-icon">
+                        📚
+                    </div>
+
+                    <div class="search-card-content">
+
+                        <div class="search-card-top">
+
+                            <span class="search-badge notes-badge">
+                                NOTE
+                            </span>
+
+                            {% if note.education_level %}
+                            <span class="search-meta">
+                                {{ note.education_level }}
+                            </span>
+                            {% endif %}
+
+                        </div>
+
+
+                        <h3>
+                            {{ note.title }}
+                        </h3>
+
+
+                        {% if note.description %}
+                        <p>
+                            {{ note.description[:160] }}
+                            {% if note.description|length > 160 %}
+                                ...
+                            {% endif %}
+                        </p>
+                        {% endif %}
+
+
+                        <div class="search-card-details">
+
+                            {% if note.subject %}
+                            <span>
+                                📘 {{ note.subject }}
+                            </span>
+                            {% endif %}
+
+                            {% if note.course %}
+                            <span>
+                                🎓 {{ note.course }}
+                            </span>
+                            {% endif %}
+
+                            {% if note.semester %}
+                            <span>
+                                📅 {{ note.semester }}
+                            </span>
+                            {% endif %}
+
+                        </div>
+
+
+                        <a
+                            href="{{ url_for('notes.view_note', note_id=note.id) }}"
+                            class="search-card-button"
+                        >
+                            View Note →
+                        </a>
+
+                    </div>
+
+                </article>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+        {% endif %}
+
+
+        <!-- PYQ RESULTS -->
+        {% if pyq_results %}
+
+        <section class="search-section">
+
+            <div class="search-section-heading">
+
+                <div>
+                    <span class="search-section-label">
+                        QUESTION PAPERS
+                    </span>
+
+                    <h2>
+                        📄 Previous Year Questions
+                    </h2>
+                </div>
+
+                <span>
+                    {{ pyq_results|length }} found
+                </span>
+
+            </div>
+
+
+            <div class="search-result-grid">
+
+                {% for paper in pyq_results %}
+
+                <article class="search-card">
+
+                    <div class="search-card-icon pyq-card-icon">
+                        📄
+                    </div>
+
+                    <div class="search-card-content">
+
+                        <div class="search-card-top">
+
+                            <span class="search-badge pyq-badge">
+                                PYQ
+                            </span>
+
+                            {% if paper.exam_year %}
+                            <span class="search-year">
+                                {{ paper.exam_year }}
+                            </span>
+                            {% endif %}
+
+                        </div>
+
+
+                        <h3>
+                            {{ paper.title }}
+                        </h3>
+
+
+                        <p>
+                            Previous year question paper
+                            {% if paper.exam_session %}
+                                — {{ paper.exam_session }}
+                            {% endif %}
+                        </p>
+
+
+                        <div class="search-card-details">
+
+                            {% if paper.subject %}
+                            <span>
+                                📘 {{ paper.subject }}
+                            </span>
+                            {% endif %}
+
+                            {% if paper.course %}
+                            <span>
+                                🎓 {{ paper.course }}
+                            </span>
+                            {% endif %}
+
+                            {% if paper.semester %}
+                            <span>
+                                📅 {{ paper.semester }}
+                            </span>
+                            {% endif %}
+
+                        </div>
+
+
+                        <a
+                            href="{{ url_for('pyq.view_pyq', pyq_id=paper.id) }}"
+                            class="search-card-button"
+                        >
+                            View PYQ →
+                        </a>
+
+                    </div>
+
+                </article>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+        {% endif %}
+
+
+    {% endif %}
+
+    {% endif %}
+
+</div>
+
+
+<style>
+
+/* =========================================================
+   SEARCH PAGE
+   ========================================================= */
+
+.search-page {
+    width: min(1500px, 94%);
+    margin: 0 auto;
+    padding: 42px 0 80px;
+    color: #0f172a;
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.search-hero {
+    position: relative;
+    overflow: hidden;
+
+    padding: 52px;
+
+    border-radius: 28px;
+
+    background:
+        radial-gradient(
+            circle at 85% 20%,
+            rgba(99,102,241,.18),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #eef2ff,
+            #f8fbff 55%,
+            #ecfeff
+        );
+
+    border: 1px solid #dbe4f0;
+
+    box-shadow:
+        0 25px 70px rgba(30,41,59,.08);
+}
+
+
+.search-eyebrow {
+    display: inline-flex;
+
+    padding: 8px 13px;
+
+    border-radius: 999px;
+
+    background: rgba(255,255,255,.75);
+
+    border: 1px solid #dbe4f0;
+
+    color: #4f46e5;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: .12em;
+}
+
+
+.search-hero h1 {
+    margin: 20px 0 10px;
+
+    font-size: clamp(38px, 5vw, 64px);
+
+    letter-spacing: -.055em;
+
+    line-height: 1;
+}
+
+
+.search-hero p {
+    max-width: 720px;
+
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 16px;
+
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   SEARCH PANEL
+   ========================================================= */
+
+.search-panel {
+    margin-top: 24px;
+
+    padding: 24px;
+
+    background: #ffffff;
+
+    border: 1px solid #dbe4f0;
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 15px 45px rgba(30,41,59,.07);
+}
+
+
+.search-form {
+    display: flex;
+
+    gap: 12px;
+}
+
+
+.search-input-wrapper {
+    position: relative;
+
+    flex: 1;
+}
+
+
+.search-icon {
+    position: absolute;
+
+    left: 17px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    font-size: 18px;
+}
+
+
+.search-input-wrapper input {
+    width: 100%;
+
+    height: 54px;
+
+    box-sizing: border-box;
+
+    padding: 0 48px;
+
+    border-radius: 14px;
+
+    border: 1px solid #d6e0ec;
+
+    background: #f8fbff;
+
+    color: #0f172a;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition: .2s ease;
+}
+
+
+.search-input-wrapper input:focus {
+    background: #ffffff;
+
+    border-color: #6366f1;
+
+    box-shadow:
+        0 0 0 4px rgba(99,102,241,.10);
+}
+
+
+.search-clear {
+    position: absolute;
+
+    right: 16px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #94a3b8;
+
+    text-decoration: none;
+}
+
+
+.search-submit {
+    height: 54px;
+
+    padding: 0 28px;
+
+    border: 0;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #4f46e5,
+            #2563eb
+        );
+
+    color: #ffffff;
+
+    font-weight: 750;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 10px 25px rgba(79,70,229,.25);
+}
+
+
+.search-filters {
+    display: flex;
+
+    gap: 9px;
+
+    margin-top: 16px;
+}
+
+
+.search-filter {
+    padding: 8px 14px;
+
+    border-radius: 999px;
+
+    border: 1px solid #dbe4f0;
+
+    background: #f8fafc;
+
+    color: #64748b;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+
+.search-filter:hover,
+.search-filter.active {
+    color: #ffffff;
+
+    background: #4f46e5;
+
+    border-color: #4f46e5;
+}
+
+
+/* =========================================================
+   RESULTS HEADER
+   ========================================================= */
+
+.search-results-header {
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin: 42px 0 22px;
+}
+
+
+.search-section-label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #64748b;
+
+    font-size: 10px;
+
+    font-weight: 850;
+
+    letter-spacing: .15em;
+}
+
+
+.search-results-header h2 {
+    margin: 0;
+
+    font-size: 28px;
+
+    letter-spacing: -.035em;
+}
+
+
+.search-results-header h2 strong {
+    color: #4f46e5;
+}
+
+
+.search-result-count {
+    padding: 9px 14px;
+
+    border-radius: 999px;
+
+    background: #eef2ff;
+
+    color: #4f46e5;
+
+    font-size: 13px;
+
+    font-weight: 750;
+}
+
+
+/* =========================================================
+   SECTION
+   ========================================================= */
+
+.search-section {
+    margin-top: 36px;
+}
+
+
+.search-section-heading {
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    margin-bottom: 18px;
+}
+
+
+.search-section-heading h2 {
+    margin: 0;
+
+    font-size: 24px;
+
+    letter-spacing: -.03em;
+}
+
+
+.search-section-heading > span {
+    color: #94a3b8;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   RESULT GRID
+   ========================================================= */
+
+.search-result-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+
+.search-card {
+    display: flex;
+
+    gap: 18px;
+
+    padding: 22px;
+
+    background: #ffffff;
+
+    border: 1px solid #dbe4f0;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 12px 35px rgba(30,41,59,.06);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        border-color .2s ease;
+}
+
+
+.search-card:hover {
+    transform: translateY(-3px);
+
+    border-color: #a5b4fc;
+
+    box-shadow:
+        0 20px 45px rgba(79,70,229,.12);
+}
+
+
+.search-card-icon {
+    flex-shrink: 0;
+
+    width: 48px;
+    height: 48px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 14px;
+
+    background: #eef2ff;
+
+    font-size: 21px;
+}
+
+
+.pyq-card-icon {
+    background: #ecfeff;
+}
+
+
+.search-card-content {
+    min-width: 0;
+
+    flex: 1;
+}
+
+
+.search-card-top {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 9px;
+}
+
+
+.search-badge {
+    padding: 5px 9px;
+
+    border-radius: 7px;
+
+    font-size: 9px;
+
+    font-weight: 850;
+
+    letter-spacing: .08em;
+}
+
+
+.notes-badge {
+    color: #4f46e5;
+
+    background: #eef2ff;
+}
+
+
+.pyq-badge {
+    color: #0891b2;
+
+    background: #ecfeff;
+}
+
+
+.search-meta,
+.search-year {
+    color: #94a3b8;
+
+    font-size: 11px;
+
+    font-weight: 650;
+}
+
+
+.search-card h3 {
+    margin: 0 0 8px;
+
+    color: #0f172a;
+
+    font-size: 18px;
+
+    line-height: 1.35;
+
+    letter-spacing: -.02em;
+}
+
+
+.search-card p {
+    margin: 0 0 14px;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+}
+
+
+.search-card-details {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin-bottom: 16px;
+}
+
+
+.search-card-details span {
+    padding: 6px 9px;
+
+    border-radius: 8px;
+
+    background: #f8fafc;
+
+    color: #64748b;
+
+    font-size: 10px;
+
+    border: 1px solid #eef2f7;
+}
+
+
+.search-card-button {
+    display: inline-flex;
+
+    align-items: center;
+
+    color: #4f46e5;
+
+    font-size: 13px;
+
+    font-weight: 750;
+
+    text-decoration: none;
+}
+
+
+.search-card-button:hover {
+    color: #2563eb;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.search-empty {
+    padding: 70px 25px;
+
+    text-align: center;
+
+    background: #ffffff;
+
+    border: 1px solid #dbe4f0;
+
+    border-radius: 22px;
+}
+
+
+.search-empty-icon {
+    width: 70px;
+    height: 70px;
+
+    display: grid;
+
+    place-items: center;
+
+    margin: 0 auto 18px;
+
+    border-radius: 20px;
+
+    background: #eef2ff;
+
+    font-size: 28px;
+}
+
+
+.search-empty h2 {
+    margin: 0 0 8px;
+
+    font-size: 24px;
+}
+
+
+.search-empty p {
+    margin: 0;
+
+    color: #64748b;
+}
+
+
+.search-suggestions {
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin-top: 24px;
+}
+
+
+.search-suggestions span {
+    color: #94a3b8;
+
+    font-size: 13px;
+}
+
+
+.search-suggestions a {
+    padding: 7px 11px;
+
+    border-radius: 8px;
+
+    background: #f1f5f9;
+
+    color: #4f46e5;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 850px) {
+
+    .search-page {
+        width: 94%;
+    }
+
+    .search-hero {
+        padding: 35px 28px;
+    }
+
+    .search-result-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .search-form {
+        flex-direction: column;
+    }
+
+    .search-submit {
+        width: 100%;
+    }
+
+    .search-results-header,
+    .search-section-heading {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .search-card {
+        flex-direction: column;
+    }
+
+}
+
+</style>
+
+{% endblock %}

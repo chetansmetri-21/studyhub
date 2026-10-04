@@ -1,0 +1,1528 @@
+{% extends "base.html" %}
+
+{% block title %}User Management - StudyHub{% endblock %}
+
+{% block content %}
+
+<div class="sh-users-page">
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="sh-users-hero">
+
+        <div>
+
+            <div class="sh-users-kicker">
+                STUDYHUB · ADMIN CENTER
+            </div>
+
+            <h1>
+                User Management
+            </h1>
+
+            <p>
+                View registered students, manage administrator
+                access and monitor your StudyHub community.
+            </p>
+
+        </div>
+
+
+        <div class="sh-users-hero-icon">
+            👥
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FLASH MESSAGES
+    ====================================================== -->
+
+    {% with messages =
+        get_flashed_messages(
+            with_categories=true
+        )
+    %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div class="sh-users-flash">
+
+                    {{ message }}
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- =====================================================
+         STATISTICS
+    ====================================================== -->
+
+    <section class="sh-users-stats">
+
+        <div class="sh-user-stat">
+
+            <div class="sh-user-stat-icon">
+                👥
+            </div>
+
+            <div>
+
+                <small>
+                    Total Users
+                </small>
+
+                <strong>
+                    {{ total_users }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="sh-user-stat">
+
+            <div class="sh-user-stat-icon admin-icon">
+                🛡️
+            </div>
+
+            <div>
+
+                <small>
+                    Administrators
+                </small>
+
+                <strong>
+                    {{ admin_users_count }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="sh-user-stat">
+
+            <div class="sh-user-stat-icon student-icon">
+                🎓
+            </div>
+
+            <div>
+
+                <small>
+                    Students
+                </small>
+
+                <strong>
+                    {{ student_users_count }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         SEARCH + FILTERS
+    ====================================================== -->
+
+    <section class="sh-users-toolbar">
+
+        <div class="sh-users-search">
+
+            <span>
+                🔎
+            </span>
+
+            <input
+                type="text"
+                id="userSearch"
+                placeholder="Search by name, email, course..."
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <div class="sh-users-filter">
+
+            <button
+                type="button"
+                class="user-filter active"
+                data-filter="all"
+            >
+                All Users
+            </button>
+
+            <button
+                type="button"
+                class="user-filter"
+                data-filter="student"
+            >
+                🎓 Students
+            </button>
+
+            <button
+                type="button"
+                class="user-filter"
+                data-filter="admin"
+            >
+                🛡️ Admins
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         RESULT COUNT
+    ====================================================== -->
+
+    <div class="sh-users-results">
+
+        <span>
+
+            Showing
+
+            <strong id="visibleUsers">
+                {{ total_users }}
+            </strong>
+
+            users
+
+        </span>
+
+        <button
+            type="button"
+            id="clearUserFilters"
+        >
+            Clear Filters
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         USER LIST
+    ====================================================== -->
+
+    <section
+        class="sh-user-list"
+        id="userList"
+    >
+
+        {% for user in users %}
+
+        <article
+            class="sh-user-card"
+            data-role="{% if user.is_admin %}admin{% else %}student{% endif %}"
+            data-search="
+                {{ user.name|lower }}
+                {{ user.email|lower }}
+                {{ user.education_level|default('', true)|lower }}
+                {{ user.course|default('', true)|lower }}
+                {{ user.semester|default('', true)|lower }}
+                {{ user.id }}
+            "
+        >
+
+            <!-- USER AVATAR -->
+
+            <div class="sh-user-avatar">
+
+                {{ user.name[:1]|upper }}
+
+            </div>
+
+
+            <!-- USER MAIN -->
+
+            <div class="sh-user-main">
+
+                <div class="sh-user-name-row">
+
+                    <h2>
+                        {{ user.name }}
+                    </h2>
+
+
+                    {% if user.is_admin %}
+
+                    <span class="sh-admin-badge">
+                        🛡️ ADMIN
+                    </span>
+
+                    {% else %}
+
+                    <span class="sh-student-badge">
+                        🎓 STUDENT
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <p class="sh-user-email">
+
+                    📧 {{ user.email }}
+
+                </p>
+
+
+                <div class="sh-user-meta">
+
+                    <span>
+                        👤 User #{{ user.id }}
+                    </span>
+
+
+                    {% if user.education_level %}
+
+                    <span>
+                        🎓 {{ user.education_level }}
+                    </span>
+
+                    {% endif %}
+
+
+                    {% if user.course %}
+
+                    <span>
+                        💻 {{ user.course }}
+                    </span>
+
+                    {% endif %}
+
+
+                    {% if user.semester %}
+
+                    <span>
+                        📚 Semester {{ user.semester }}
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- USER ACTIONS -->
+
+            <div class="sh-user-actions">
+
+                {% if user.is_admin %}
+
+                    {% if user.id == current_user.id %}
+
+                        <span class="sh-current-admin">
+                            Current Admin
+                        </span>
+
+                    {% else %}
+
+                        <form
+                            method="POST"
+                            action="{{ url_for(
+                                'enhancements.admin_remove_user_admin',
+                                user_id=user.id
+                            ) }}"
+                            onsubmit="
+                                return confirm(
+                                    'Remove admin access from {{ user.name }}?'
+                                );
+                            "
+                        >
+
+                            <button
+                                type="submit"
+                                class="sh-remove-admin"
+                            >
+                                Remove Admin
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+                {% else %}
+
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'enhancements.admin_make_user_admin',
+                            user_id=user.id
+                        ) }}"
+                        onsubmit="
+                            return confirm(
+                                'Make {{ user.name }} an admin?'
+                            );
+                        "
+                    >
+
+                        <button
+                            type="submit"
+                            class="sh-make-admin"
+                        >
+                            Make Admin
+                        </button>
+
+                    </form>
+
+                {% endif %}
+
+            </div>
+
+        </article>
+
+        {% else %}
+
+        <div class="sh-users-empty">
+
+            <div>
+                👥
+            </div>
+
+            <h2>
+                No Users Found
+            </h2>
+
+            <p>
+                Registered StudyHub users will appear here.
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+    </section>
+
+
+    <!-- FILTER EMPTY -->
+
+    <div
+        id="userFilterEmpty"
+        class="sh-users-empty"
+        style="display:none;"
+    >
+
+        <div>
+            🔎
+        </div>
+
+        <h2>
+            No Matching Users
+        </h2>
+
+        <p>
+            Try another name, email or filter.
+        </p>
+
+    </div>
+
+</div>
+
+
+<style>
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.sh-users-page{
+
+    width:min(1380px,92%);
+
+    margin:45px auto 90px;
+
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.sh-users-hero{
+
+    position:relative;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:30px;
+
+    padding:38px;
+
+    border-radius:28px;
+
+    overflow:hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #f8faff 55%,
+            #eef2ff
+        );
+
+    border:1px solid #dbe4f0;
+
+    box-shadow:
+        0 20px 55px rgba(15,23,42,.08);
+
+}
+
+
+.sh-users-kicker{
+
+    display:inline-flex;
+
+    padding:7px 12px;
+
+    border-radius:999px;
+
+    background:#eef2ff;
+
+    color:#4f46e5;
+
+    font-size:10px;
+
+    font-weight:850;
+
+    letter-spacing:.14em;
+
+}
+
+
+.sh-users-hero h1{
+
+    margin:13px 0 8px;
+
+    color:#0f172a;
+
+    font-size:42px;
+
+    font-weight:900;
+
+    letter-spacing:-1.4px;
+
+}
+
+
+.sh-users-hero p{
+
+    max-width:650px;
+
+    margin:0;
+
+    color:#64748b;
+
+    font-size:15px;
+
+    line-height:1.6;
+
+}
+
+
+.sh-users-hero-icon{
+
+    width:90px;
+
+    height:90px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    flex:none;
+
+    border-radius:25px;
+
+    background:#ffffff;
+
+    border:1px solid #dbe4f0;
+
+    font-size:42px;
+
+    box-shadow:
+        0 12px 30px rgba(15,23,42,.07);
+
+}
+
+
+/* =========================================================
+   FLASH
+========================================================= */
+
+.sh-users-flash{
+
+    margin-top:15px;
+
+    padding:13px 16px;
+
+    border-radius:13px;
+
+    background:#eef2ff;
+
+    border:1px solid #c7d2fe;
+
+    color:#3730a3;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.sh-users-stats{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,minmax(0,1fr));
+
+    gap:16px;
+
+    margin:22px 0;
+
+}
+
+
+.sh-user-stat{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:21px;
+
+    background:#ffffff;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:18px;
+
+    box-shadow:
+        0 10px 28px rgba(15,23,42,.045);
+
+}
+
+
+.sh-user-stat-icon{
+
+    width:47px;
+    height:47px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:14px;
+
+    background:#eef2ff;
+
+    font-size:21px;
+
+}
+
+
+.admin-icon{
+
+    background:#fff7ed;
+}
+
+
+.student-icon{
+
+    background:#ecfdf5;
+}
+
+
+.sh-user-stat small{
+
+    display:block;
+
+    color:#64748b;
+
+    font-size:12px;
+
+    font-weight:650;
+
+}
+
+
+.sh-user-stat strong{
+
+    display:block;
+
+    margin-top:3px;
+
+    color:#0f172a;
+
+    font-size:27px;
+
+    font-weight:900;
+
+}
+
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.sh-users-toolbar{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:13px;
+
+    flex-wrap:wrap;
+
+    padding:15px;
+
+    background:#ffffff;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:18px;
+
+    box-shadow:
+        0 8px 25px rgba(15,23,42,.04);
+
+}
+
+
+.sh-users-search{
+
+    position:relative;
+
+    flex:1;
+
+    min-width:260px;
+
+}
+
+
+.sh-users-search span{
+
+    position:absolute;
+
+    left:14px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+}
+
+
+.sh-users-search input{
+
+    width:100%;
+
+    height:45px;
+
+    box-sizing:border-box;
+
+    padding:0 15px 0 42px;
+
+    border:1px solid #dbe4f0;
+
+    border-radius:12px;
+
+    background:#f8fafc;
+
+    outline:none;
+
+    color:#0f172a;
+
+    font-size:13px;
+
+}
+
+
+.sh-users-search input:focus{
+
+    background:#ffffff;
+
+    border-color:#818cf8;
+
+    box-shadow:
+        0 0 0 3px rgba(99,102,241,.10);
+
+}
+
+
+/* =========================================================
+   FILTERS
+========================================================= */
+
+.sh-users-filter{
+
+    display:flex;
+
+    gap:5px;
+
+    padding:4px;
+
+    background:#f1f5f9;
+
+    border-radius:12px;
+
+}
+
+
+.user-filter{
+
+    height:37px;
+
+    padding:0 14px;
+
+    border:0;
+
+    border-radius:9px;
+
+    background:transparent;
+
+    color:#64748b;
+
+    cursor:pointer;
+
+    font-size:12px;
+
+    font-weight:750;
+
+}
+
+
+.user-filter.active{
+
+    background:#ffffff;
+
+    color:#4f46e5;
+
+    box-shadow:
+        0 2px 7px rgba(15,23,42,.08);
+
+}
+
+
+/* =========================================================
+   RESULT HEADER
+========================================================= */
+
+.sh-users-results{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    margin:18px 2px;
+
+    color:#64748b;
+
+    font-size:13px;
+
+}
+
+
+.sh-users-results strong{
+
+    color:#0f172a;
+
+    font-size:16px;
+
+}
+
+
+.sh-users-results button{
+
+    border:0;
+
+    background:none;
+
+    color:#4f46e5;
+
+    cursor:pointer;
+
+    font-size:12px;
+
+    font-weight:750;
+
+}
+
+
+/* =========================================================
+   USER LIST
+========================================================= */
+
+.sh-user-list{
+
+    display:grid;
+
+    gap:13px;
+
+}
+
+
+.sh-user-card{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:17px;
+
+    padding:19px;
+
+    background:#ffffff;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:19px;
+
+    box-shadow:
+        0 9px 27px rgba(15,23,42,.045);
+
+}
+
+
+.sh-user-avatar{
+
+    width:52px;
+    height:52px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    flex:none;
+
+    border-radius:16px;
+
+    background:#eef2ff;
+
+    color:#4338ca;
+
+    font-size:20px;
+
+    font-weight:900;
+
+}
+
+
+.sh-user-main{
+
+    flex:1;
+
+    min-width:0;
+
+}
+
+
+.sh-user-name-row{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    flex-wrap:wrap;
+
+}
+
+
+.sh-user-name-row h2{
+
+    margin:0;
+
+    color:#0f172a;
+
+    font-size:16px;
+
+    font-weight:850;
+
+}
+
+
+.sh-admin-badge,
+.sh-student-badge{
+
+    padding:4px 7px;
+
+    border-radius:999px;
+
+    font-size:9px;
+
+    font-weight:850;
+
+}
+
+
+.sh-admin-badge{
+
+    color:#c2410c;
+
+    background:#fff7ed;
+
+}
+
+
+.sh-student-badge{
+
+    color:#047857;
+
+    background:#ecfdf5;
+
+}
+
+
+.sh-user-email{
+
+    margin:5px 0 9px;
+
+    color:#64748b;
+
+    font-size:12px;
+
+}
+
+
+.sh-user-meta{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:7px;
+
+}
+
+
+.sh-user-meta span{
+
+    padding:5px 8px;
+
+    border-radius:8px;
+
+    background:#f8fafc;
+
+    color:#64748b;
+
+    font-size:10px;
+
+    font-weight:650;
+
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.sh-user-actions{
+
+    flex:none;
+
+}
+
+
+.sh-make-admin,
+.sh-remove-admin{
+
+    min-height:39px;
+
+    padding:0 13px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:11px;
+
+    font-weight:800;
+
+}
+
+
+.sh-make-admin{
+
+    border:1px solid #c7d2fe;
+
+    background:#eef2ff;
+
+    color:#4338ca;
+
+}
+
+
+.sh-remove-admin{
+
+    border:1px solid #fed7aa;
+
+    background:#fff7ed;
+
+    color:#c2410c;
+
+}
+
+
+.sh-current-admin{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    min-height:39px;
+
+    padding:0 12px;
+
+    border-radius:10px;
+
+    background:#ecfdf5;
+
+    color:#047857;
+
+    font-size:11px;
+
+    font-weight:800;
+
+}
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.sh-users-empty{
+
+    padding:70px 25px;
+
+    text-align:center;
+
+    background:#ffffff;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:21px;
+
+}
+
+
+.sh-users-empty > div{
+
+    margin-bottom:12px;
+
+    font-size:40px;
+
+}
+
+
+.sh-users-empty h2{
+
+    margin:0 0 7px;
+
+    color:#0f172a;
+
+    font-size:20px;
+
+}
+
+
+.sh-users-empty p{
+
+    margin:0;
+
+    color:#64748b;
+
+    font-size:13px;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:800px){
+
+    .sh-users-hero{
+
+        padding:28px;
+
+    }
+
+
+    .sh-users-hero h1{
+
+        font-size:33px;
+
+    }
+
+
+    .sh-users-stats{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .sh-user-card{
+
+        align-items:flex-start;
+
+        flex-wrap:wrap;
+
+    }
+
+
+    .sh-user-actions{
+
+        width:100%;
+
+        margin-left:69px;
+
+    }
+
+}
+
+
+@media(max-width:600px){
+
+    .sh-users-page{
+
+        width:94%;
+
+        margin-top:25px;
+
+    }
+
+
+    .sh-users-hero{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        padding:24px;
+
+        border-radius:22px;
+
+    }
+
+
+    .sh-users-hero-icon{
+
+        width:65px;
+        height:65px;
+
+        font-size:30px;
+
+    }
+
+
+    .sh-users-toolbar{
+
+        flex-direction:column;
+
+        align-items:stretch;
+
+    }
+
+
+    .sh-users-search{
+
+        width:100%;
+
+        min-width:0;
+
+    }
+
+
+    .sh-users-filter{
+
+        width:100%;
+
+    }
+
+
+    .user-filter{
+
+        flex:1;
+
+    }
+
+
+    .sh-user-card{
+
+        padding:16px;
+
+    }
+
+
+    .sh-user-actions{
+
+        margin-left:0;
+
+    }
+
+
+    .sh-make-admin,
+    .sh-remove-admin,
+    .sh-current-admin{
+
+        width:100%;
+
+    }
+
+}
+
+
+/* =========================================================
+   STABLE UI
+========================================================= */
+
+.sh-user-card,
+.sh-user-stat,
+.sh-users-hero,
+.sh-make-admin,
+.sh-remove-admin,
+.user-filter{
+
+    transition:none !important;
+
+    transform:none !important;
+
+}
+
+</style>
+
+
+<script>
+
+/* =========================================================
+   USER SEARCH + FILTER
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        const cards =
+            Array.from(
+                document.querySelectorAll(
+                    ".sh-user-card"
+                )
+            );
+
+        const search =
+            document.getElementById(
+                "userSearch"
+            );
+
+        const visible =
+            document.getElementById(
+                "visibleUsers"
+            );
+
+        const empty =
+            document.getElementById(
+                "userFilterEmpty"
+            );
+
+        const clear =
+            document.getElementById(
+                "clearUserFilters"
+            );
+
+        const buttons =
+            Array.from(
+                document.querySelectorAll(
+                    ".user-filter"
+                )
+            );
+
+
+        let selectedRole = "all";
+
+
+        function applyFilters(){
+
+            const query =
+                search.value
+                    .trim()
+                    .toLowerCase();
+
+
+            let count = 0;
+
+
+            cards.forEach(card => {
+
+                const role =
+                    card.dataset.role;
+
+                const text =
+                    card.dataset.search
+                        .toLowerCase();
+
+
+                const roleMatch =
+                    selectedRole === "all" ||
+                    role === selectedRole;
+
+
+                const searchMatch =
+                    !query ||
+                    text.includes(query);
+
+
+                const show =
+                    roleMatch &&
+                    searchMatch;
+
+
+                card.style.display =
+                    show ? "" : "none";
+
+
+                if(show){
+                    count++;
+                }
+
+            });
+
+
+            visible.textContent =
+                count;
+
+
+            if(
+                cards.length > 0 &&
+                count === 0
+            ){
+
+                empty.style.display =
+                    "block";
+
+            }else{
+
+                empty.style.display =
+                    "none";
+
+            }
+
+        }
+
+
+        buttons.forEach(button => {
+
+            button.addEventListener(
+                "click",
+                function(){
+
+                    buttons.forEach(btn => {
+
+                        btn.classList.remove(
+                            "active"
+                        );
+
+                    });
+
+
+                    this.classList.add(
+                        "active"
+                    );
+
+
+                    selectedRole =
+                        this.dataset.filter;
+
+
+                    applyFilters();
+
+                }
+            );
+
+        });
+
+
+        search.addEventListener(
+            "input",
+            applyFilters
+        );
+
+
+        clear.addEventListener(
+            "click",
+            function(){
+
+                search.value = "";
+
+                selectedRole = "all";
+
+
+                buttons.forEach(btn => {
+
+                    btn.classList.remove(
+                        "active"
+                    );
+
+                });
+
+
+                document
+                    .querySelector(
+                        '.user-filter[data-filter="all"]'
+                    )
+                    .classList.add("active");
+
+
+                applyFilters();
+
+            }
+        );
+
+
+        applyFilters();
+
+    }
+);
+
+</script>
+
+{% endblock %}

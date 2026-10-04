@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Something Went Wrong - StudyHub{% endblock %}
+
+{% block content %}
+
+<section class="sh-error-page">
+
+    <div class="sh-error-card">
+
+        <div class="sh-error-code">
+            500
+        </div>
+
+        <h1>
+            Something went wrong
+        </h1>
+
+        <p>
+            StudyHub encountered an unexpected error.
+            Please try again in a moment.
+        </p>
+
+        <a
+            href="{{ url_for('home') }}"
+            class="sh-btn sh-btn-primary"
+        >
+            Back to StudyHub
+            <span>→</span>
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}

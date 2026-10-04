@@ -1,0 +1,580 @@
+{% extends "base.html" %}
+
+{% block title %}
+Resource Requests - StudyHub
+{% endblock %}
+
+{% block content %}
+
+<div class="rr-page">
+
+    <section class="rr-hero">
+
+        <div class="rr-eyebrow">
+            STUDYHUB RESOURCE NETWORK
+        </div>
+
+        <h1>
+            Request a Resource
+        </h1>
+
+        <p>
+            Can't find the notes or PYQ you need?
+            Tell StudyHub what you're looking for.
+        </p>
+
+    </section>
+
+
+    <div class="rr-grid">
+
+        <!-- REQUEST FORM -->
+
+        <section class="rr-card">
+
+            <div class="rr-card-header">
+
+                <div class="rr-icon">
+                    📚
+                </div>
+
+                <div>
+                    <span>NEW REQUEST</span>
+
+                    <h2>
+                        What do you need?
+                    </h2>
+
+                    <p>
+                        Give us enough information to
+                        help locate the right resource.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <form
+                method="POST"
+                action="{{ url_for(
+                    'enhancements.create_resource_request'
+                ) }}"
+                class="rr-form"
+            >
+
+                <label>
+                    Resource Title
+
+                    <input
+                        type="text"
+                        name="title"
+                        placeholder="Example: ADA Unit 3 Notes"
+                        required
+                    >
+                </label>
+
+
+                <label>
+                    Subject
+
+                    <input
+                        type="text"
+                        name="subject"
+                        placeholder="Example: Analysis and Design of Algorithms"
+                    >
+                </label>
+
+
+                <div class="rr-two">
+
+                    <label>
+                        Education Level
+
+                        <select name="education_level">
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option>
+                                Engineering
+                            </option>
+
+                            <option>
+                                Degree
+                            </option>
+
+                            <option>
+                                PUC
+                            </option>
+
+                            <option>
+                                School
+                            </option>
+
+                            <option>
+                                Other
+                            </option>
+
+                        </select>
+                    </label>
+
+
+                    <label>
+                        Course
+
+                        <input
+                            type="text"
+                            name="course"
+                            placeholder="Example: CSE"
+                        >
+                    </label>
+
+                </div>
+
+
+                <label>
+                    Semester
+
+                    <input
+                        type="text"
+                        name="semester"
+                        placeholder="Example: 5th Semester"
+                    >
+                </label>
+
+
+                <label>
+                    Description
+
+                    <textarea
+                        name="description"
+                        rows="5"
+                        placeholder="Describe exactly what resource you're looking for..."
+                    ></textarea>
+                </label>
+
+
+                <button
+                    type="submit"
+                    class="rr-submit"
+                >
+                    Submit Resource Request
+                    <span>→</span>
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- MY REQUESTS -->
+
+        <section class="rr-card rr-history">
+
+            <div class="rr-card-header">
+
+                <div class="rr-icon">
+                    🧾
+                </div>
+
+                <div>
+                    <span>REQUEST HISTORY</span>
+
+                    <h2>
+                        My Requests
+                    </h2>
+
+                    <p>
+                        Track the resources you've requested.
+                    </p>
+                </div>
+
+            </div>
+
+
+            {% if requests %}
+
+                <div class="rr-list">
+
+                    {% for item in requests %}
+
+                    <article class="rr-request">
+
+                        <div class="rr-request-top">
+
+                            <div>
+
+                                <h3>
+                                    {{ item.title }}
+                                </h3>
+
+                                {% if item.subject %}
+
+                                <span class="rr-meta">
+                                    {{ item.subject }}
+                                </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <span
+                                class="rr-status
+                                {{ item.status }}"
+                            >
+                                {% if item.status == "open" %}
+                                    Open
+                                {% elif item.status == "in_progress" %}
+                                    In Progress
+                                {% elif item.status == "fulfilled" %}
+                                    Fulfilled
+                                {% else %}
+                                    Rejected
+                                {% endif %}
+                            </span>
+
+                        </div>
+
+
+                        {% if item.description %}
+
+                        <p class="rr-description">
+                            {{ item.description }}
+                        </p>
+
+                        {% endif %}
+
+
+                        <div class="rr-request-footer">
+
+                            <span>
+                                {% if item.course %}
+                                    {{ item.course }}
+                                {% endif %}
+
+                                {% if item.semester %}
+                                    • {{ item.semester }}
+                                {% endif %}
+                            </span>
+
+                            <span>
+                                {{ item.created_at.strftime('%d %b %Y') }}
+                            </span>
+
+                        </div>
+
+                    </article>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="rr-empty">
+
+                    <div>
+                        📭
+                    </div>
+
+                    <h3>
+                        No requests yet
+                    </h3>
+
+                    <p>
+                        Your resource requests will appear here.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </div>
+
+</div>
+
+
+<style>
+
+.rr-page {
+    width: min(1250px, 92%);
+    margin: 45px auto 90px;
+}
+
+.rr-hero {
+    padding: 45px;
+    border-radius: 30px;
+    background:
+        linear-gradient(
+            135deg,
+            #eef2ff,
+            #f8fafc
+        );
+    border: 1px solid #dbe4f0;
+    margin-bottom: 28px;
+}
+
+.rr-eyebrow {
+    color: #4f46e5;
+    font-size: 11px;
+    font-weight: 850;
+    letter-spacing: .16em;
+}
+
+.rr-hero h1 {
+    margin: 8px 0;
+    font-size: 44px;
+    color: #0f172a;
+}
+
+.rr-hero p {
+    margin: 0;
+    color: #64748b;
+    font-size: 16px;
+}
+
+.rr-grid {
+    display: grid;
+    grid-template-columns: .9fr 1.1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.rr-card {
+    background: #fff;
+    border: 1px solid #dbe4f0;
+    border-radius: 26px;
+    padding: 30px;
+    box-shadow:
+        0 15px 45px rgba(15,23,42,.06);
+}
+
+.rr-card-header {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 26px;
+}
+
+.rr-icon {
+    width: 50px;
+    height: 50px;
+    flex: 0 0 50px;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    background: #eef2ff;
+    font-size: 22px;
+}
+
+.rr-card-header span {
+    color: #4f46e5;
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: .14em;
+}
+
+.rr-card-header h2 {
+    margin: 4px 0;
+    color: #0f172a;
+}
+
+.rr-card-header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.rr-form {
+    display: grid;
+    gap: 17px;
+}
+
+.rr-form label {
+    display: grid;
+    gap: 7px;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.rr-form input,
+.rr-form select,
+.rr-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 14px;
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    color: #0f172a;
+    font: inherit;
+    outline: none;
+}
+
+.rr-form textarea {
+    resize: vertical;
+}
+
+.rr-form input:focus,
+.rr-form select:focus,
+.rr-form textarea:focus {
+    border-color: #6366f1;
+    box-shadow:
+        0 0 0 4px rgba(99,102,241,.10);
+}
+
+.rr-two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.rr-submit {
+    border: 0;
+    padding: 15px 20px;
+    border-radius: 13px;
+    background: #4f46e5;
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.rr-submit:hover {
+    background: #4338ca;
+}
+
+.rr-submit span {
+    margin-left: 8px;
+}
+
+.rr-list {
+    display: grid;
+    gap: 14px;
+}
+
+.rr-request {
+    padding: 18px;
+    border: 1px solid #e2e8f0;
+    border-radius: 17px;
+    background: #f8fafc;
+}
+
+.rr-request-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.rr-request h3 {
+    margin: 0;
+    color: #0f172a;
+}
+
+.rr-meta {
+    display: inline-block;
+    margin-top: 5px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.rr-status {
+    height: fit-content;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.rr-status.open {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.rr-status.in_progress {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.rr-status.fulfilled {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.rr-status.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.rr-description {
+    color: #475569;
+    line-height: 1.6;
+    margin: 13px 0;
+}
+
+.rr-request-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.rr-empty {
+    text-align: center;
+    padding: 55px 20px;
+    color: #64748b;
+}
+
+.rr-empty > div {
+    font-size: 42px;
+}
+
+.rr-empty h3 {
+    color: #0f172a;
+    margin-bottom: 5px;
+}
+
+.rr-empty p {
+    margin: 0;
+}
+
+@media (max-width: 900px) {
+
+    .rr-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .rr-page {
+        width: 94%;
+    }
+
+    .rr-hero {
+        padding: 28px;
+    }
+
+    .rr-hero h1 {
+        font-size: 34px;
+    }
+
+    .rr-card {
+        padding: 21px;
+    }
+
+    .rr-two {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+{% endblock %}

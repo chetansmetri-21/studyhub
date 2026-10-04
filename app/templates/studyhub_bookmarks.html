@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}
+Bookmarks - StudyHub
+{% endblock %}
+
+
+{% block content %}
+
+<div class="sh-bookmarks-page">
+
+    <div class="sh-bookmarks-header">
+
+        <span>
+            SAVED RESOURCES
+        </span>
+
+        <h1>
+            🔖 My Bookmarks
+        </h1>
+
+        <p>
+            Your saved notes and previous-year question papers.
+        </p>
+
+    </div>
+
+
+    <section>
+
+        <div class="sh-bookmark-section-title">
+            <h2>📚 Notes</h2>
+        </div>
+
+
+        <div class="sh-bookmark-grid">
+
+            {% for note in notes %}
+
+            <article class="sh-bookmark-card">
+
+                <div class="sh-bookmark-icon">
+                    📚
+                </div>
+
+                <h3>
+                    {{ note.title }}
+                </h3>
+
+                <p>
+                    {{ note.subject }}
+
+                    {% if note.course %}
+                    · {{ note.course }}
+                    {% endif %}
+                </p>
+
+                <a
+                    href="{{ url_for('notes.view_note', note_id=note.id) }}"
+                >
+                    View Note →
+                </a>
+
+            </article>
+
+            {% else %}
+
+            <div class="sh-bookmark-empty">
+                No bookmarked notes yet.
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <section class="sh-bookmark-pyq-section">
+
+        <div class="sh-bookmark-section-title">
+            <h2>📄 PYQs</h2>
+        </div>
+
+
+        <div class="sh-bookmark-grid">
+
+            {% for paper in pyqs %}
+
+            <article class="sh-bookmark-card">
+
+                <div class="sh-bookmark-icon pyq">
+                    📄
+                </div>
+
+                <h3>
+                    {{ paper.title }}
+                </h3>
+
+                <p>
+                    {{ paper.subject }}
+
+                    {% if paper.exam_year %}
+                    · {{ paper.exam_year }}
+                    {% endif %}
+                </p>
+
+                <a
+                    href="{{ url_for('pyq.view_pyq', pyq_id=paper.id) }}"
+                >
+                    View PYQ →
+                </a>
+
+            </article>
+
+            {% else %}
+
+            <div class="sh-bookmark-empty">
+                No bookmarked PYQs yet.
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<style>
+
+.sh-bookmarks-page{
+    width:min(1250px,92%);
+    margin:45px auto 80px;
+}
+
+.sh-bookmarks-header{
+    margin-bottom:35px;
+}
+
+.sh-bookmarks-header > span{
+    color:#4f46e5;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.15em;
+}
+
+.sh-bookmarks-header h1{
+    font-size:42px;
+    margin:8px 0;
+}
+
+.sh-bookmarks-header p{
+    color:#64748b;
+}
+
+.sh-bookmark-grid{
+    display:grid;
+    grid-template-columns:
+        repeat(auto-fit,minmax(280px,1fr));
+    gap:16px;
+}
+
+.sh-bookmark-card{
+    padding:22px;
+    background:#fff;
+    border:1px solid #dbe4f0;
+    border-radius:18px;
+    box-shadow:0 10px 30px rgba(15,23,42,.05);
+}
+
+.sh-bookmark-card:hover{
+    border-color:#a5b4fc;
+}
+
+.sh-bookmark-icon{
+    width:44px;
+    height:44px;
+    display:grid;
+    place-items:center;
+    border-radius:13px;
+    background:#eef2ff;
+    margin-bottom:15px;
+}
+
+.sh-bookmark-icon.pyq{
+    background:#ecfeff;
+}
+
+.sh-bookmark-card h3{
+    margin:0 0 8px;
+}
+
+.sh-bookmark-card p{
+    color:#64748b;
+    font-size:13px;
+}
+
+.sh-bookmark-card a{
+    color:#4f46e5;
+    font-weight:750;
+    text-decoration:none;
+}
+
+.sh-bookmark-empty{
+    padding:30px;
+    color:#64748b;
+    background:#f8fafc;
+    border:1px dashed #cbd5e1;
+    border-radius:16px;
+}
+
+.sh-bookmark-pyq-section{
+    margin-top:45px;
+}
+
+</style>
+
+{% endblock %}

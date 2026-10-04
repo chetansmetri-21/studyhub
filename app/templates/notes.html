@@ -1,0 +1,4318 @@
+{% extends "base.html" %}
+
+{% block title %}Notes Repository - StudyHub
+
+<!-- =========================================================
+     PREMIUM POLISH — TRENDING NOTES
+========================================================= -->
+<style>
+.sh-trending-premium{isolation:isolate;}
+.sh-trending-premium::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 0%,rgba(255,255,255,.45) 42%,transparent 58%);transform:translateX(-120%);transition:transform .8s ease;z-index:0;}
+.sh-trending-premium:hover::after{transform:translateX(120%);}
+.sh-trending-live{position:relative;}
+.sh-live-dot{animation:shLivePulse 1.8s ease-in-out infinite;}
+@keyframes shLivePulse{0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,.10);opacity:.8}50%{box-shadow:0 0 0 6px rgba(34,197,94,.18);opacity:1}}
+.sh-trending-card{position:relative;}
+.sh-trending-card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,#2563eb,#6366f1,#8b5cf6);transform:scaleX(0);transform-origin:left;transition:transform .25s ease;}
+.sh-trending-card:hover::before{transform:scaleX(1);}
+.sh-trending-rank{background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:1px solid #e0e7ff;color:#4f46e5;}
+.sh-trending-card:nth-child(1) .sh-trending-rank{background:#eef2ff;color:#4338ca;border-color:#c7d2fe;}
+.sh-trending-card:nth-child(2) .sh-trending-rank{background:#f8fafc;color:#475569;}
+.sh-trending-card:nth-child(3) .sh-trending-rank{background:#fff7ed;color:#b45309;border-color:#fed7aa;}
+.sh-trending-view{position:relative;overflow:hidden;}
+.sh-trending-view::after{content:"";position:absolute;inset:0;background:rgba(99,102,241,.06);transform:translateX(-100%);transition:transform .25s ease;}
+.sh-trending-view:hover::after{transform:translateX(0);}
+@media (prefers-reduced-motion:reduce){.sh-trending-card,.sh-trending-view,.sh-live-dot,.sh-trending-premium::after{animation:none;transition:none;}}
+</style>
+
+
+
+<!-- =========================================================
+     INLINE REPORT ACTIONS
+========================================================= -->
+<style>
+.sh-note-actions {
+    align-items: stretch;
+    flex-wrap: wrap;
+}
+
+.sh-inline-report {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.sh-inline-report summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+.sh-inline-report summary::-webkit-details-marker {
+    display: none;
+}
+
+.sh-report-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 45px;
+    padding: 0 16px;
+    border: 1px solid #fecaca;
+    border-radius: 11px;
+    background: #fff5f5;
+    color: #dc2626;
+    font-size: 10px;
+    font-weight: 850;
+    box-sizing: border-box;
+    transition: .2s ease;
+}
+
+.sh-report-btn:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    transform: translateY(-1px);
+}
+
+.sh-inline-report-panel {
+    position: absolute;
+    z-index: 50;
+    left: 0;
+    top: calc(100% + 9px);
+    width: 330px;
+    padding: 16px;
+    border: 1px solid #fecaca;
+    border-radius: 15px;
+    background: #ffffff;
+    box-shadow: 0 18px 45px rgba(15,23,42,.16);
+}
+
+.sh-inline-report-title {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.sh-inline-report-title > span {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    border-radius: 9px;
+    background: #fff1f2;
+    color: #dc2626;
+}
+
+.sh-inline-report-title strong {
+    display: block;
+    color: #1f2937;
+    font-size: 12px;
+}
+
+.sh-inline-report-title small {
+    display: block;
+    margin-top: 3px;
+    color: #94a3b8;
+    font-size: 9px;
+}
+
+.sh-inline-report-form {
+    display: grid;
+    gap: 9px;
+}
+
+.sh-inline-report-form select,
+.sh-inline-report-form textarea,
+.sh-trending-report-panel select,
+.sh-trending-report-panel textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #e5e7eb;
+    border-radius: 9px;
+    padding: 9px 10px;
+    background: #fff;
+    color: #374151;
+    font: inherit;
+    font-size: 10px;
+    outline: none;
+}
+
+.sh-inline-report-form textarea,
+.sh-trending-report-panel textarea {
+    resize: vertical;
+    min-height: 58px;
+}
+
+.sh-inline-report-form select:focus,
+.sh-inline-report-form textarea:focus,
+.sh-trending-report-panel select:focus,
+.sh-trending-report-panel textarea:focus {
+    border-color: #fca5a5;
+    box-shadow: 0 0 0 3px rgba(239,68,68,.08);
+}
+
+.sh-inline-report-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sh-inline-report-actions button,
+.sh-trending-report-panel button {
+    border: 0;
+    border-radius: 9px;
+    padding: 9px 13px;
+    background: #dc2626;
+    color: white;
+    font-size: 9px;
+    font-weight: 850;
+    cursor: pointer;
+}
+
+.sh-inline-report-actions button:hover,
+.sh-trending-report-panel button:hover {
+    background: #b91c1c;
+}
+
+.sh-trending-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    margin: 0 13px 13px;
+}
+
+.sh-trending-actions .sh-trending-view {
+    margin: 0;
+}
+
+.sh-trending-download,
+.sh-trending-report summary {
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    text-decoration: none;
+    box-sizing: border-box;
+    font-size: 10px;
+    font-weight: 850;
+    cursor: pointer;
+}
+
+.sh-trending-download {
+    background: #eef2ff;
+    border: 1px solid #e0e7ff;
+    color: #4f46e5;
+}
+
+.sh-trending-download:hover {
+    background: #e0e7ff;
+}
+
+.sh-trending-report {
+    grid-column: 1 / -1;
+    position: relative;
+}
+
+.sh-trending-report summary {
+    list-style: none;
+    background: #fff5f5;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+}
+
+.sh-trending-report summary::-webkit-details-marker {
+    display: none;
+}
+
+.sh-trending-report summary:hover {
+    background: #fee2e2;
+}
+
+.sh-trending-report-panel {
+    margin-top: 8px;
+    padding: 12px;
+    border: 1px solid #fecaca;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.sh-trending-report-panel form {
+    display: grid;
+    gap: 8px;
+}
+
+@media (max-width: 600px) {
+    .sh-inline-report-panel {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: min(88vw, 330px);
+    }
+
+    .sh-note-actions > a,
+    .sh-inline-report {
+        flex: 1 1 100%;
+    }
+
+    .sh-report-btn {
+        width: 100%;
+    }
+}
+</style>
+
+{% endblock %}
+
+
+<style>
+/* =========================================================
+   STUDYHUB PREMIUM RESOURCE ACTIONS
+   ========================================================= */
+
+.sh-note-actions{
+    display:grid !important;
+    grid-template-columns:1fr 1fr auto !important;
+    gap:8px !important;
+    align-items:stretch !important;
+    margin-top:14px !important;
+}
+
+.sh-note-actions > a,
+.sh-inline-report > summary{
+    min-height:42px !important;
+    box-sizing:border-box !important;
+    border-radius:12px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:7px !important;
+    font-size:11px !important;
+    font-weight:850 !important;
+    letter-spacing:.15px !important;
+    transition:
+        transform .22s ease,
+        box-shadow .22s ease,
+        border-color .22s ease,
+        background .22s ease !important;
+}
+
+.sh-note-actions .sh-view-btn{
+    border:1px solid #e2e8f0 !important;
+    background:linear-gradient(180deg,#ffffff,#f8fafc) !important;
+    color:#475569 !important;
+}
+
+.sh-note-actions .sh-view-btn::before{
+    content:"↗";
+    font-size:11px;
+}
+
+.sh-note-actions .sh-download-btn{
+    border:1px solid transparent !important;
+    background:linear-gradient(135deg,#2563eb,#4f46e5) !important;
+    color:#fff !important;
+    box-shadow:0 8px 18px rgba(37,99,235,.18) !important;
+}
+
+.sh-note-actions .sh-download-btn::before{
+    content:"↓";
+    font-size:11px;
+}
+
+.sh-note-actions .sh-view-btn:hover{
+    transform:translateY(-2px);
+    border-color:#c7d2fe !important;
+    box-shadow:0 8px 18px rgba(15,23,42,.08) !important;
+}
+
+.sh-note-actions .sh-download-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 11px 24px rgba(37,99,235,.28) !important;
+}
+
+/* PREMIUM REPORT PILL */
+.sh-inline-report{
+    position:relative !important;
+    min-width:92px;
+}
+
+.sh-inline-report summary.sh-report-btn{
+    position:relative !important;
+    overflow:hidden !important;
+    border:1px solid #fecdd3 !important;
+    background:linear-gradient(180deg,#fffafa,#fff1f2) !important;
+    color:#be123c !important;
+    box-shadow:0 5px 14px rgba(190,24,93,.06) !important;
+}
+
+.sh-inline-report summary.sh-report-btn::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        110deg,
+        transparent 25%,
+        rgba(255,255,255,.8) 50%,
+        transparent 75%
+    );
+    transform:translateX(-130%);
+    transition:transform .55s ease;
+}
+
+.sh-inline-report summary.sh-report-btn:hover::after{
+    transform:translateX(130%);
+}
+
+.sh-inline-report summary.sh-report-btn:hover{
+    transform:translateY(-2px);
+    border-color:#fda4af !important;
+    background:linear-gradient(180deg,#fff1f2,#ffe4e6) !important;
+    box-shadow:0 10px 22px rgba(190,24,93,.13) !important;
+}
+
+/* REPORT PANEL */
+.sh-inline-report-panel{
+    width:350px !important;
+    padding:28px !important;
+    border:1px solid rgba(226,232,240,.95) !important;
+    border-radius:18px !important;
+    background:rgba(255,255,255,.98) !important;
+    box-shadow:
+        0 24px 60px rgba(15,23,42,.18),
+        0 4px 14px rgba(15,23,42,.06) !important;
+    backdrop-filter:blur(18px) !important;
+    animation:shReportPop .18s ease-out;
+}
+
+@keyframes shReportPop{
+    from{opacity:0;transform:translateY(-5px) scale(.98);}
+    to{opacity:1;transform:translateY(0) scale(1);}
+}
+
+.sh-inline-report-title{
+    padding-bottom:13px !important;
+    margin-bottom:13px !important;
+    border-bottom:1px solid #f1f5f9 !important;
+}
+
+.sh-inline-report-title > span{
+    width:36px !important;
+    height:36px !important;
+    border-radius:11px !important;
+    background:linear-gradient(135deg,#fff1f2,#ffe4e6) !important;
+    color:#e11d48 !important;
+    box-shadow:inset 0 0 0 1px #fecdd3 !important;
+}
+
+.sh-inline-report-title strong{
+    font-size:12px !important;
+    color:#172033 !important;
+}
+
+.sh-inline-report-title small{
+    font-size:11px !important;
+    color:#94a3b8 !important;
+}
+
+.sh-inline-report-form select,
+.sh-inline-report-form textarea{
+    border:1px solid #e2e8f0 !important;
+    border-radius:11px !important;
+    background:#f8fafc !important;
+    color:#334155 !important;
+    padding:10px 11px !important;
+    font-size:10px !important;
+    outline:none !important;
+    transition:.2s ease !important;
+}
+
+.sh-inline-report-form select:focus,
+.sh-inline-report-form textarea:focus{
+    background:#fff !important;
+    border-color:#fb7185 !important;
+    box-shadow:0 0 0 3px rgba(244,63,94,.08) !important;
+}
+
+.sh-inline-report-form textarea{
+    min-height:110px !important;
+}
+
+.sh-inline-report-actions button{
+    min-height:37px !important;
+    padding:0 15px !important;
+    border-radius:10px !important;
+    background:linear-gradient(135deg,#e11d48,#be123c) !important;
+    box-shadow:0 7px 16px rgba(225,29,72,.18) !important;
+    font-size:11px !important;
+}
+
+.sh-inline-report-actions button:hover{
+    transform:translateY(-1px);
+    box-shadow:0 10px 22px rgba(225,29,72,.25) !important;
+}
+
+/* TRENDING ACTIONS */
+.sh-trending-actions{
+    grid-template-columns:1fr 1fr !important;
+    gap:8px !important;
+    margin:0 13px 13px !important;
+}
+
+.sh-trending-actions .sh-trending-view,
+.sh-trending-download,
+.sh-trending-report summary{
+    min-height:40px !important;
+    border-radius:11px !important;
+    font-size:11px !important;
+}
+
+.sh-trending-download{
+    background:linear-gradient(180deg,#f5f7ff,#eef2ff) !important;
+    border:1px solid #dbe4ff !important;
+    color:#4f46e5 !important;
+}
+
+.sh-trending-download:hover{
+    transform:translateY(-1px);
+    box-shadow:0 7px 16px rgba(79,70,229,.10);
+}
+
+.sh-trending-report summary{
+    background:linear-gradient(180deg,#fffafa,#fff1f2) !important;
+    border:1px solid #fecdd3 !important;
+    color:#be123c !important;
+}
+
+.sh-trending-report summary:hover{
+    transform:translateY(-1px);
+    box-shadow:0 7px 16px rgba(190,24,93,.10);
+}
+
+.sh-trending-report-panel{
+    border:1px solid #e2e8f0 !important;
+    border-radius:22px !important;
+    padding:28px !important;
+    box-shadow:0 16px 35px rgba(15,23,42,.12) !important;
+}
+
+@media(max-width:700px){
+    .sh-note-actions{
+        grid-template-columns:1fr 1fr !important;
+    }
+
+    .sh-inline-report{
+        grid-column:1 / -1;
+    }
+
+    .sh-inline-report summary.sh-report-btn{
+        width:100%;
+    }
+
+    .sh-inline-report-panel{
+        position:fixed !important;
+        left:50% !important;
+        top:50% !important;
+        transform:translate(-50%,-50%) !important;
+        width:min(92vw,560px) !important;
+    }
+}
+
+@media(prefers-reduced-motion:reduce){
+    .sh-inline-report-panel{animation:none;}
+    .sh-note-actions > a,
+    .sh-inline-report summary,
+    .sh-trending-actions *{transition:none !important;}
+}
+</style>
+
+{% block content %}
+
+<section class="sh-notes-page">
+
+    <!-- =====================================================
+         FLASH MESSAGES
+    ====================================================== -->
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="sh-notes-messages">
+
+                {% for message in messages %}
+                    <div class="sh-note-message">
+                        <span>✓</span>
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+
+            </div>
+        {% endif %}
+    {% endwith %}
+
+
+    <!-- =====================================================
+         UPLOAD PAGE
+    ====================================================== -->
+
+    {% if upload %}
+
+        <div class="sh-upload-page">
+
+            <div class="sh-upload-card">
+
+                <div class="sh-upload-header">
+
+                    <div>
+                        <span class="sh-section-label">
+                            SHARE KNOWLEDGE
+                        </span>
+
+                        <h1>
+                            Upload Study Material
+                        </h1>
+
+                        <p>
+                            Share useful academic resources with
+                            students across different education levels.
+                        </p>
+                    </div>
+
+                    <div class="sh-upload-icon">
+                        ↑
+                    </div>
+
+                </div>
+
+
+                <form
+                    id="upload-form"
+                    method="POST"
+                    action="{{ url_for('notes.upload_note') }}"
+                    enctype="multipart/form-data"
+                    class="sh-upload-form"
+                >
+
+                    <!-- TITLE -->
+
+                    <div class="sh-upload-field">
+
+                        <label for="title">
+                            Note Title *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            placeholder="Example: DBMS Unit 1 Notes"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="sh-upload-field sh-upload-full">
+
+                        <label for="description">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="description"
+                            name="description"
+                            rows="4"
+                            placeholder="Briefly describe what these notes contain..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <!-- EDUCATION LEVEL -->
+
+                    <div class="sh-upload-field">
+
+                        <label for="upload_education_level">
+                            Education Level *
+                        </label>
+
+                        <select
+                            id="upload_education_level"
+                            name="education_level"
+                            required
+                            onchange="updateStudyHubCategories()"
+                        >
+
+                            <option value="">
+                                Select Education Level
+                            </option>
+
+                            <option value="10th / SSLC">
+                                10th / SSLC
+                            </option>
+
+                            <option value="12th / PUC">
+                                12th / PUC
+                            </option>
+
+                            <option value="Diploma">
+                                Diploma
+                            </option>
+
+                            <option value="Engineering">
+                                Engineering
+                            </option>
+
+                            <option value="Degree / UG">
+                                Degree / UG
+                            </option>
+
+                            <option value="Postgraduate / PG">
+                                Postgraduate / PG
+                            </option>
+
+                            <option value="Professional Course">
+                                Professional Course
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- COURSE -->
+
+                    <div class="sh-upload-field">
+
+                        <label for="course">
+                            Course / Stream *
+                        </label>
+
+                        <select
+                            id="course"
+                            name="course"
+                            required
+                            onchange="updateSemesters()"
+                        >
+                            <option value="">
+                                Select Branch / Course
+                            </option>
+                        </select>
+
+                        <small>
+                            Select your branch, stream or course.
+                        </small>
+
+                    </div>
+
+
+                    <!-- SEMESTER -->
+
+                    <div class="sh-upload-field">
+
+                        <label for="semester">
+                            Semester / Year / Class *
+                        </label>
+
+                        <select
+                            id="semester"
+                            name="semester"
+                            required
+                            onchange="updateSubjects()"
+                        >
+                            <option value="">
+                                Select Semester / Class
+                            </option>
+                        </select>
+
+                    </div>
+
+
+                    <!-- SUBJECT -->
+
+                    <div class="sh-upload-field">
+
+                        <label for="subject">
+                            Subject *
+                        </label>
+
+                        <select
+                            id="subject"
+                            name="subject"
+                            required
+                            onchange="handleSubjectChange()"
+                        >
+                            <option value="">
+                                Select Subject
+                            </option>
+                        </select>
+
+                        <div id="custom-subject-wrapper" style="display:none; margin-top:10px;">
+                            <input
+                                type="text"
+                                id="custom_subject"
+                                name="custom_subject"
+                                placeholder="Enter your subject name"
+                                maxlength="100"
+                                style="width:100%;"
+                            >
+                        </div>
+
+                    </div>
+
+
+                    <!-- FILE -->
+
+                    <div class="sh-upload-field sh-upload-full">
+
+                        <label for="file">
+                            Study Material *
+                        </label>
+
+                        <div class="sh-file-box">
+
+                            <div class="sh-file-icon">
+                                📄
+                            </div>
+
+                            <div class="sh-file-text">
+
+                                <strong id="selected-file-name">
+                                    Choose your file
+                                </strong>
+
+                                <span>
+                                    PDF, DOC, DOCX, PPT or PPTX
+                                </span>
+
+                            </div>
+
+                            <input
+                                type="file"
+                                id="file"
+                                name="file"
+                                accept=".pdf,.doc,.docx,.ppt,.pptx"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ACTIONS -->
+
+                    <div class="sh-upload-actions">
+
+                        <a
+                            href="{{ url_for('notes.notes_list') }}"
+                            class="sh-notes-secondary-btn"
+                        >
+                            Cancel
+                        </a>
+
+                        <button
+                            type="submit"
+                            class="sh-notes-primary-btn"
+                        >
+                            Upload Note
+                            <span>→</span>
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+    {% else %}
+
+
+    <!-- =====================================================
+         NOTES HERO
+    ====================================================== -->
+
+    <div class="sh-notes-hero">
+
+        <div>
+
+            <span class="sh-notes-eyebrow">
+                STUDYHUB • NOTES REPOSITORY
+            </span>
+
+            <h1>
+                Find what you need<br>
+                <span>to learn.</span>
+            </h1>
+
+            <p>
+                Discover useful study notes, lecture materials and
+                academic resources shared by students.
+            </p>
+
+        </div>
+
+        <a
+            href="{{ url_for('notes.upload_page') }}"
+            class="sh-notes-upload-btn"
+        >
+            <span>＋</span>
+            Upload Notes
+        </a>
+
+    </div>
+
+
+    <!-- =====================================================
+         SEARCH & FILTERS
+    ====================================================== -->
+
+    <div class="sh-notes-filter-card">
+
+        <div class="sh-filter-header">
+
+            <div>
+
+                <span class="sh-section-label">
+                    FIND RESOURCES
+                </span>
+
+                <h2>
+                    Search and filter notes
+                </h2>
+
+                <p>
+                    Find academic resources across education levels,
+                    courses and subjects.
+                </p>
+
+            </div>
+
+            {% if search or selected_subject or selected_semester or selected_education_level or selected_course %}
+
+                <a
+                    href="{{ url_for('notes.notes_list') }}"
+                    class="sh-clear-btn"
+                >
+                    Clear Filters
+                </a>
+
+            {% endif %}
+
+        </div>
+
+
+        <form
+            method="GET"
+            action="{{ url_for('notes.notes_list') }}"
+            class="sh-notes-filter-form"
+        >
+
+            <!-- SEARCH -->
+
+            <div class="sh-filter-search">
+
+                <span>
+                    🔎
+                </span>
+
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ search or '' }}"
+                    placeholder="Search title, subject, description, course..."
+                >
+
+            </div>
+
+
+            <!-- EDUCATION -->
+
+            <select name="education_level">
+
+                <option value="">
+                    All Education Levels
+                </option>
+
+                {% for level in available_education_levels %}
+
+                    <option
+                        value="{{ level }}"
+                        {% if selected_education_level == level %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ level }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <!-- COURSE -->
+
+            <select name="course">
+
+                <option value="">
+                    All Courses
+                </option>
+
+                {% for course_name in available_courses %}
+
+                    <option
+                        value="{{ course_name }}"
+                        {% if selected_course == course_name %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ course_name }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <!-- SEMESTER -->
+
+            <select name="semester">
+
+                <option value="">
+                    All Semesters
+                </option>
+
+                {% for semester_name in available_semesters %}
+
+                    <option
+                        value="{{ semester_name }}"
+                        {% if selected_semester == semester_name %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ semester_name }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <!-- SUBJECT -->
+
+            <select name="subject">
+
+                <option value="">
+                    All Subjects
+                </option>
+
+                {% for subject_name in available_subjects %}
+
+                    <option
+                        value="{{ subject_name }}"
+                        {% if selected_subject == subject_name %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ subject_name }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <button
+                type="submit"
+                class="sh-filter-btn"
+            >
+                Search
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- =====================================================
+         RESULT HEADER
+    ====================================================== -->
+
+    <div class="sh-notes-result-header">
+
+        <div>
+
+            <span class="sh-section-label">
+                NOTES REPOSITORY
+            </span>
+
+            <h2>
+                Study Resources
+            </h2>
+
+            <p>
+                Browse academic materials shared by students.
+            </p>
+
+        </div>
+
+        <div class="sh-result-count">
+
+            <strong>
+                {{ result_count }}
+            </strong>
+
+            <span>
+                {% if result_count == 1 %}
+                    resource
+                {% else %}
+                    resources
+                {% endif %}
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         ALL NOTES
+    ====================================================== -->
+
+    {% if notes %}
+
+        <div class="sh-notes-grid">
+
+            {% for note in notes %}
+
+                <article class="sh-note-card">
+
+                    <!-- TOP -->
+
+                    <div class="sh-note-card-top">
+
+                        <div class="sh-note-icon">
+                            📄
+                        </div>
+
+                        <span class="sh-file-badge">
+                            {{ note.file_name.rsplit('.', 1)[-1]|upper }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- TITLE -->
+
+                    <h3>
+                        {{ note.title }}
+                    </h3>
+
+
+                    <!-- SUBJECT -->
+
+                    <span class="sh-note-subject">
+                        {{ note.subject }}
+                    </span>
+
+
+                    <!-- DESCRIPTION -->
+
+                    <p class="sh-note-description">
+
+                        {% if note.description %}
+                            {{ note.description }}
+                        {% else %}
+                            Academic study material
+                        {% endif %}
+
+                    </p>
+
+
+                    <!-- META -->
+
+                    <div class="sh-note-meta">
+
+                        <span>
+                            🎓 {{ note.education_level or "General" }}
+                        </span>
+
+                        {% if note.course %}
+
+                            <span>
+                                📘 {{ note.course }}
+                            </span>
+
+                        {% endif %}
+
+                        <span>
+                            📚 {{ note.semester or "All Semesters" }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- STATS -->
+
+                    <div class="sh-note-stats">
+
+                        <span>
+                            👁 {{ note.views or 0 }}
+                        </span>
+
+                        <span>
+                            ↓ {{ note.downloads or 0 }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- RATING -->
+
+                    <div class="sh-note-rating">
+
+                        <div class="sh-rating-summary">
+
+                            {% if rating_averages.get(note.id) %}
+
+                                <strong>
+                                    ⭐ {{ rating_averages.get(note.id) }}/5
+                                </strong>
+
+                                <span>
+                                    ({{ rating_counts.get(note.id, 0) }}
+                                    {% if rating_counts.get(note.id, 0) == 1 %}
+                                        rating
+                                    {% else %}
+                                        ratings
+                                    {% endif %})
+                                </span>
+
+                            {% else %}
+
+                                <span>
+                                    ⭐ No ratings yet
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- USER RATING -->
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('notes.rate_note', note_id=note.id) }}"
+                            class="sh-rating-form"
+                        >
+
+                            <div class="sh-rating-label">
+
+                                {% if user_ratings.get(note.id) %}
+
+                                    Your rating
+
+                                {% else %}
+
+                                    Rate this note
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="sh-stars">
+
+                                {% for star in range(1, 6) %}
+
+                                    <input
+                                        type="radio"
+                                        id="note-{{ note.id }}-star-{{ star }}"
+                                        name="rating"
+                                        value="{{ star }}"
+                                        {% if user_ratings.get(note.id) == star %}
+                                            checked
+                                        {% endif %}
+                                        required
+                                    >
+
+                                    <label
+                                        for="note-{{ note.id }}-star-{{ star }}"
+                                        title="{{ star }} star{% if star != 1 %}s{% endif %}"
+                                    >
+                                        ★
+                                    </label>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <button
+                                type="submit"
+                                class="sh-rate-btn"
+                            >
+                                {% if user_ratings.get(note.id) %}
+                                    Update
+                                {% else %}
+                                    Rate
+                                {% endif %}
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+                    <!-- ACTIONS -->
+
+                    <div class="sh-note-actions">
+
+                        <a
+                            href="{{ url_for('notes.view_note', note_id=note.id) }}"
+                            class="sh-view-btn"
+                            target="_blank"
+                        >
+                            View
+                        </a>
+
+                        <a
+                            href="{{ url_for('notes.download_note', note_id=note.id) }}"
+                            class="sh-download-btn"
+                        >
+                            Download
+                        </a>
+
+                        <details class="sh-inline-report">
+                            <summary class="sh-report-btn">
+                                ⚑ Report
+                            </summary>
+
+                            <div class="sh-inline-report-panel">
+                                <div class="sh-inline-report-title">
+                                    <span>⚑</span>
+                                    <div>
+                                        <strong>Report this resource</strong>
+                                        <small>Tell us what is wrong with this note.</small>
+                                    </div>
+                                </div>
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('notes.report_note', note_id=note.id) }}"
+                                    class="sh-inline-report-form"
+                                >
+                                    <select name="reason" required>
+                                        <option value="">Select a reason</option>
+                                        <option value="Incorrect or misleading content">Incorrect or misleading content</option>
+                                        <option value="Wrong subject or semester">Wrong subject or semester</option>
+                                        <option value="Duplicate resource">Duplicate resource</option>
+                                        <option value="Inappropriate content">Inappropriate content</option>
+                                        <option value="Copyright issue">Copyright issue</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+
+                                    <textarea
+                                        name="description"
+                                        rows="2"
+                                        placeholder="Optional: explain the issue..."
+                                    ></textarea>
+
+                                    <div class="sh-inline-report-actions">
+                                        <button type="submit">Submit Report</button> <button type="button" class="sh-report-cancel" onclick="this.closest('details').removeAttribute('open');">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </details>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+
+    {% else %}
+
+
+        <!-- =================================================
+             EMPTY STATE
+        ================================================== -->
+
+        <div class="sh-notes-empty">
+
+            <div class="sh-empty-icon">
+                🔍
+            </div>
+
+            <h2>
+                No notes found
+            </h2>
+
+            <p>
+                There are no notes matching your current search
+                or filters.
+            </p>
+
+            <a
+                href="{{ url_for('notes.notes_list') }}"
+                class="sh-notes-secondary-btn"
+            >
+                Clear Filters
+            </a>
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         RECOMMENDED NOTES
+    ====================================================== -->
+
+    {% if recommended_notes %}
+
+        <section class="sh-extra-section">
+
+            <div class="sh-extra-header">
+
+                <div>
+
+                    <span class="sh-section-label">
+                        FOR YOU
+                    </span>
+
+                    <h2>
+                        Recommended Notes
+                    </h2>
+
+                    <p>
+                        Resources matched to your academic profile.
+                    </p>
+
+                </div>
+
+                <span class="sh-extra-badge">
+                    Personalized
+                </span>
+
+            </div>
+
+
+            <div class="sh-mini-grid">
+
+                {% for note in recommended_notes %}
+
+                    <article class="sh-mini-card">
+
+                        <div class="sh-mini-icon">
+                            📘
+                        </div>
+
+                        <div class="sh-mini-content">
+
+                            <h3>
+                                {{ note.title }}
+                            </h3>
+
+                            <p>
+                                {{ note.subject }}
+
+                                {% if note.semester %}
+                                    · {{ note.semester }}
+                                {% endif %}
+                            </p>
+
+                            <div class="sh-mini-stats">
+
+                                <span>
+                                    👁 {{ note.views or 0 }}
+                                </span>
+
+                                <span>
+                                    ↓ {{ note.downloads or 0 }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <a
+                            href="{{ url_for('notes.view_note', note_id=note.id) }}"
+                            target="_blank"
+                            class="sh-mini-arrow"
+                        >
+                            →
+                        </a>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         TRENDING NOTES — PREMIUM
+    ====================================================== -->
+
+    {% if trending_notes %}
+
+        <section class="sh-trending-premium">
+
+            <div class="sh-trending-head">
+                <div>
+                    <span class="sh-trending-eyebrow">
+                        <span class="sh-trending-spark">✦</span> POPULAR NOW
+                    </span>
+                    <h2>Trending Notes</h2>
+                    <p>Popular resources based on real student activity.</p>
+                </div>
+
+                <div class="sh-trending-live">
+                    <span class="sh-live-dot"></span>
+                    Live activity
+                </div>
+            </div>
+
+            <div class="sh-trending-grid">
+
+                {% for note in trending_notes %}
+                    <article class="sh-trending-card">
+
+                        <div class="sh-trending-card-top">
+                            <div class="sh-trending-file-icon">
+                                <span>🔥</span>
+                            </div>
+
+                            <span class="sh-trending-rank">
+                                #{{ loop.index }}
+                            </span>
+                        </div>
+
+                        <div class="sh-trending-card-body">
+                            <span class="sh-trending-type">
+                                {{ note.file_name.rsplit('.', 1)[-1]|upper }} · STUDY MATERIAL
+                            </span>
+
+                            <h3>{{ note.title }}</h3>
+
+                            <p class="sh-trending-subject">
+                                {{ note.subject }}
+                                {% if note.course %}
+                                    <span>·</span> {{ note.course }}
+                                {% endif %}
+                            </p>
+
+                            <div class="sh-trending-meta">
+                                {% if note.semester %}
+                                    <span>📚 {{ note.semester }}</span>
+                                {% endif %}
+                                {% if note.education_level %}
+                                    <span>🎓 {{ note.education_level }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="sh-trending-stats">
+                                <span>
+                                    <b>👁</b> {{ note.views or 0 }} views
+                                </span>
+                                <span>
+                                    <b>↓</b> {{ note.downloads or 0 }} downloads
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="sh-trending-actions">
+                            <a
+                                href="{{ url_for('notes.view_note', note_id=note.id) }}"
+                                target="_blank"
+                                class="sh-trending-view"
+                            >
+                                <span>View resource</span>
+                                <span class="sh-trending-arrow">↗</span>
+                            </a>
+
+                            <a
+                                href="{{ url_for('notes.download_note', note_id=note.id) }}"
+                                class="sh-trending-download"
+                            >
+                                ↓ Download
+                            </a>
+
+                            <details class="sh-trending-report">
+                                <summary>⚑ Report</summary>
+                                <div class="sh-trending-report-panel">
+                                    <form method="POST" action="{{ url_for('notes.report_note', note_id=note.id) }}">
+                                        <select name="reason" required>
+                                            <option value="">Select a reason</option>
+                                            <option value="Incorrect or misleading content">Incorrect or misleading content</option>
+                                            <option value="Wrong subject or semester">Wrong subject or semester</option>
+                                            <option value="Duplicate resource">Duplicate resource</option>
+                                            <option value="Inappropriate content">Inappropriate content</option>
+                                            <option value="Copyright issue">Copyright issue</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                        <textarea name="description" rows="2" placeholder="Optional: explain the issue..."></textarea>
+                                        <button type="submit">Submit Report</button> <button type="button" class="sh-report-cancel" onclick="this.closest('details').removeAttribute('open');">Cancel</button>
+                                    </form>
+                                </div>
+                            </details>
+                        </div>
+
+                    </article>
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+    {% endif %}
+
+    {% endif %}
+
+</section>
+
+
+<!-- =========================================================
+     NOTES PAGE CSS
+========================================================= -->
+
+<style>
+
+.sh-notes-page {
+    min-height: calc(100vh - 70px);
+    padding: 0 0 90px;
+    background:
+        linear-gradient(
+            180deg,
+            #f7f9ff 0%,
+            #ffffff 42%
+        );
+    color: #111827;
+}
+
+
+/* =========================================================
+   MESSAGES
+========================================================= */
+
+.sh-notes-messages {
+    width: min(1200px, 90%);
+    margin: 25px auto 0;
+}
+
+.sh-note-message {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 13px 16px;
+
+    border: 1px solid #dce7ff;
+    border-radius: 12px;
+
+    background: #f4f7ff;
+    color: #334155;
+
+    font-size: 12px;
+}
+
+.sh-note-message span {
+    color: #2563eb;
+    font-weight: 800;
+}
+
+.sh-note-message p {
+    margin: 0;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.sh-notes-hero {
+    width: min(1200px, 90%);
+    margin: auto;
+
+    padding: 60px 0 42px;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.sh-notes-eyebrow,
+.sh-section-label {
+    display: inline-block;
+
+    color: #5870c9;
+
+    font-size: 10px;
+    font-weight: 850;
+
+    letter-spacing: 1.8px;
+}
+
+.sh-notes-hero h1 {
+    margin: 10px 0 15px;
+
+    font-size: clamp(42px, 5vw, 68px);
+
+    line-height: .98;
+    letter-spacing: -3px;
+
+    font-weight: 900;
+}
+
+.sh-notes-hero h1 span {
+    background:
+        linear-gradient(
+            90deg,
+            #2563eb,
+            #6366f1
+        );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+}
+
+.sh-notes-hero p {
+    max-width: 600px;
+
+    margin: 0;
+
+    color: #748197;
+
+    font-size: 14px;
+    line-height: 1.75;
+}
+
+.sh-notes-upload-btn {
+    flex-shrink: 0;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 13px 18px;
+
+    border-radius: 13px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #6366f1
+        );
+
+    color: white;
+    text-decoration: none;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    box-shadow:
+        0 12px 25px rgba(37,99,235,.20);
+
+    transition: .2s ease;
+}
+
+.sh-notes-upload-btn:hover {
+    color: white;
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   FILTER CARD
+========================================================= */
+
+.sh-notes-filter-card {
+    width: min(1200px, 90%);
+    margin: 0 auto 42px;
+
+    padding: 27px;
+
+    border: 1px solid #e2e8f2;
+    border-radius: 23px;
+
+    background: rgba(255,255,255,.95);
+
+    box-shadow:
+        0 18px 45px rgba(30,64,175,.06);
+}
+
+.sh-filter-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 23px;
+}
+
+.sh-filter-header h2 {
+    margin: 7px 0 5px;
+
+    font-size: 21px;
+    letter-spacing: -.7px;
+}
+
+.sh-filter-header p {
+    margin: 0;
+
+    color: #8995a8;
+
+    font-size: 11px;
+}
+
+.sh-clear-btn {
+    padding: 9px 13px;
+
+    border-radius: 10px;
+
+    background: #f3f5fa;
+
+    color: #536176;
+    text-decoration: none;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.sh-clear-btn:hover {
+    color: #2563eb;
+    background: #eef4ff;
+}
+
+
+/* =========================================================
+   FILTER FORM
+========================================================= */
+
+.sh-notes-filter-form {
+    display: grid;
+
+    grid-template-columns:
+        minmax(230px, 1.8fr)
+        1fr
+        1fr
+        1fr
+        1fr
+        auto;
+
+    gap: 10px;
+}
+
+.sh-filter-search {
+    min-height: 46px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 0 13px;
+
+    border: 1px solid #dfe5ef;
+    border-radius: 11px;
+
+    background: #fbfcfe;
+}
+
+.sh-filter-search span {
+    font-size: 15px;
+}
+
+.sh-filter-search input {
+    width: 100%;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    font-family: inherit;
+    font-size: 11px;
+}
+
+.sh-notes-filter-form select {
+    min-width: 0;
+    height: 46px;
+
+    padding: 0 11px;
+
+    border: 1px solid #dfe5ef;
+    border-radius: 11px;
+
+    background: #fbfcfe;
+
+    color: #475569;
+
+    font-family: inherit;
+    font-size: 10px;
+
+    outline: none;
+}
+
+.sh-notes-filter-form select:focus,
+.sh-filter-search:focus-within {
+    border-color: #8ba3e9;
+
+    box-shadow:
+        0 0 0 3px rgba(59,130,246,.07);
+}
+
+.sh-filter-btn {
+    height: 46px;
+
+    padding: 0 18px;
+
+    border: none;
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #6366f1
+        );
+
+    color: white;
+
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   RESULT HEADER
+========================================================= */
+
+.sh-notes-result-header {
+    width: min(1200px, 90%);
+    margin: 0 auto 25px;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.sh-notes-result-header h2 {
+    margin: 7px 0 4px;
+
+    font-size: 27px;
+    letter-spacing: -1px;
+}
+
+.sh-notes-result-header p {
+    margin: 0;
+
+    color: #8995a8;
+
+    font-size: 11px;
+}
+
+.sh-result-count {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+
+    color: #8995a8;
+
+    font-size: 11px;
+}
+
+.sh-result-count strong {
+    color: #2563eb;
+
+    font-size: 26px;
+    font-weight: 850;
+}
+
+
+/* =========================================================
+   NOTES GRID
+========================================================= */
+
+.sh-notes-grid {
+    width: min(1200px, 90%);
+    margin: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+
+/* =========================================================
+   NOTE CARD
+========================================================= */
+
+.sh-note-card {
+    min-width: 0;
+
+    padding: 22px;
+
+    border: 1px solid #e4e9f1;
+    border-radius: 20px;
+
+    background: white;
+
+    box-shadow:
+        0 12px 35px rgba(30,64,175,.045);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        border-color .2s ease;
+}
+
+.sh-note-card:hover {
+    transform: translateY(-4px);
+
+    border-color: #d4def3;
+
+    box-shadow:
+        0 20px 45px rgba(30,64,175,.09);
+}
+
+.sh-note-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 17px;
+}
+
+.sh-note-icon {
+    width: 45px;
+    height: 45px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 13px;
+
+    background: #eef4ff;
+
+    font-size: 19px;
+}
+
+.sh-file-badge {
+    padding: 5px 8px;
+
+    border-radius: 7px;
+
+    background: #f3f5f9;
+
+    color: #758196;
+
+    font-size: 8px;
+    font-weight: 800;
+}
+
+.sh-note-card h3 {
+    margin: 0 0 6px;
+
+    color: #172033;
+
+    font-size: 17px;
+    line-height: 1.35;
+    letter-spacing: -.4px;
+}
+
+.sh-note-subject {
+    display: inline-block;
+
+    margin-bottom: 11px;
+
+    color: #4f68c7;
+
+    font-size: 10px;
+    font-weight: 750;
+}
+
+.sh-note-description {
+    min-height: 38px;
+
+    margin: 0 0 15px;
+
+    color: #7b8799;
+
+    font-size: 10px;
+    line-height: 1.6;
+
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   META
+========================================================= */
+
+.sh-note-meta {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    margin-bottom: 15px;
+}
+
+.sh-note-meta span {
+    padding: 6px 8px;
+
+    border-radius: 8px;
+
+    background: #f7f9fc;
+
+    color: #68768b;
+
+    font-size: 8px;
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.sh-note-stats {
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 11px 0;
+
+    border-top: 1px solid #eef1f5;
+    border-bottom: 1px solid #eef1f5;
+
+    color: #8a96a8;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   RATING
+========================================================= */
+
+.sh-note-rating {
+    padding-top: 12px;
+}
+
+.sh-rating-summary {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    margin-bottom: 10px;
+
+    color: #8995a8;
+
+    font-size: 9px;
+}
+
+.sh-rating-summary strong {
+    color: #334155;
+
+    font-size: 10px;
+}
+
+.sh-rating-form {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-wrap: wrap;
+}
+
+.sh-rating-label {
+    width: 100%;
+
+    margin-bottom: 2px;
+
+    color: #8a96a8;
+
+    font-size: 9px;
+}
+
+.sh-stars {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.sh-stars input {
+    display: none;
+}
+
+.sh-stars label {
+    padding: 0 1px;
+
+    color: #cbd2dd;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    transition: .15s ease;
+}
+
+.sh-stars label:hover,
+.sh-stars label:hover ~ label,
+.sh-stars input:checked ~ label {
+    color: #f5b82e;
+}
+
+.sh-rate-btn {
+    padding: 7px 10px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #eef4ff;
+
+    color: #315dc7;
+
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   NOTE ACTIONS
+========================================================= */
+
+.sh-note-actions {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 8px;
+
+    margin-top: 15px;
+}
+
+.sh-view-btn,
+.sh-download-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 38px;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    transition: .2s ease;
+}
+
+.sh-view-btn {
+    border: 1px solid #dfe5ef;
+
+    background: white;
+
+    color: #536176;
+}
+
+.sh-download-btn {
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #6366f1
+        );
+
+    color: white;
+
+    box-shadow:
+        0 8px 18px rgba(37,99,235,.16);
+}
+
+.sh-view-btn:hover {
+    color: #2563eb;
+    border-color: #aebce0;
+}
+
+.sh-download-btn:hover {
+    color: white;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.sh-notes-empty {
+    width: min(700px, 90%);
+    margin: 25px auto 0;
+
+    padding: 55px 25px;
+
+    text-align: center;
+
+    border: 1px solid #e4e9f1;
+    border-radius: 22px;
+
+    background: white;
+}
+
+.sh-empty-icon {
+    width: 60px;
+    height: 60px;
+
+    margin: 0 auto 16px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 18px;
+
+    background: #eef4ff;
+
+    font-size: 25px;
+}
+
+.sh-notes-empty h2 {
+    margin: 0 0 8px;
+
+    font-size: 21px;
+}
+
+.sh-notes-empty p {
+    margin: 0 auto 20px;
+
+    max-width: 430px;
+
+    color: #8a96a8;
+
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   EXTRA SECTIONS
+========================================================= */
+
+.sh-extra-section {
+    width: min(1200px, 90%);
+    margin: 60px auto 0;
+}
+
+.sh-extra-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 20px;
+}
+
+.sh-extra-header h2 {
+    margin: 7px 0 5px;
+
+    font-size: 25px;
+    letter-spacing: -.9px;
+}
+
+.sh-extra-header p {
+    margin: 0;
+
+    color: #8995a8;
+
+    font-size: 11px;
+}
+
+.sh-extra-badge {
+    padding: 7px 10px;
+
+    border-radius: 999px;
+
+    background: #eef4ff;
+
+    color: #536dcc;
+
+    font-size: 8px;
+    font-weight: 800;
+}
+
+.sh-trending-badge {
+    background: #fff6e6;
+    color: #b87817;
+}
+
+
+/* =========================================================
+   MINI GRID
+========================================================= */
+
+.sh-mini-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 13px;
+}
+
+.sh-mini-card {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 15px;
+
+    border: 1px solid #e5eaf2;
+    border-radius: 15px;
+
+    background: white;
+
+    box-shadow:
+        0 8px 25px rgba(30,64,175,.035);
+}
+
+.sh-mini-icon {
+    width: 40px;
+    height: 40px;
+
+    flex-shrink: 0;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 11px;
+
+    background: #eef4ff;
+
+    font-size: 17px;
+}
+
+.sh-fire-icon {
+    background: #fff5e5;
+}
+
+.sh-mini-content {
+    min-width: 0;
+    flex: 1;
+}
+
+.sh-mini-content h3 {
+    margin: 0 0 4px;
+
+    color: #273449;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sh-mini-content p {
+    margin: 0;
+
+    color: #8a96a8;
+
+    font-size: 9px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sh-mini-stats {
+    display: flex;
+    gap: 9px;
+
+    margin-top: 6px;
+
+    color: #9aa5b5;
+
+    font-size: 8px;
+}
+
+.sh-mini-arrow {
+    width: 30px;
+    height: 30px;
+
+    flex-shrink: 0;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 9px;
+
+    background: #f3f6fb;
+
+    color: #4e68c5;
+
+    text-decoration: none;
+
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.sh-mini-arrow:hover {
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #6366f1
+        );
+}
+
+
+/* =========================================================
+   UPLOAD PAGE
+========================================================= */
+
+.sh-upload-page {
+    width: min(1000px, 90%);
+    margin: auto;
+
+    padding: 60px 0 30px;
+}
+
+.sh-upload-card {
+    padding: 34px;
+
+    border: 1px solid #e3e8f1;
+    border-radius: 25px;
+
+    background: white;
+
+    box-shadow:
+        0 20px 50px rgba(30,64,175,.07);
+}
+
+.sh-upload-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 30px;
+}
+
+.sh-upload-header h1 {
+    margin: 8px 0 8px;
+
+    font-size: 30px;
+    letter-spacing: -1px;
+}
+
+.sh-upload-header p {
+    margin: 0;
+
+    color: #8490a3;
+
+    font-size: 11px;
+}
+
+.sh-upload-icon {
+    width: 52px;
+    height: 52px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 15px;
+
+    background: #eef4ff;
+
+    color: #4165c8;
+
+    font-size: 23px;
+    font-weight: 800;
+}
+
+.sh-upload-form {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 19px;
+}
+
+.sh-upload-field {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+.sh-upload-full {
+    grid-column: 1 / -1;
+}
+
+.sh-upload-field label {
+    color: #3f4c61;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.sh-upload-field input,
+.sh-upload-field select,
+.sh-upload-field textarea {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    border: 1px solid #dfe5ef;
+    border-radius: 11px;
+
+    background: #fbfcfe;
+
+    color: #334155;
+
+    font-family: inherit;
+    font-size: 11px;
+
+    outline: none;
+}
+
+.sh-upload-field input,
+.sh-upload-field select {
+    height: 46px;
+
+    padding: 0 12px;
+}
+
+.sh-upload-field textarea {
+    padding: 12px;
+
+    resize: vertical;
+}
+
+.sh-upload-field input:focus,
+.sh-upload-field select:focus,
+.sh-upload-field textarea:focus {
+    border-color: #8ba3e9;
+
+    box-shadow:
+        0 0 0 3px rgba(59,130,246,.07);
+
+    background: white;
+}
+
+.sh-upload-field small {
+    color: #9aa5b5;
+
+    font-size: 9px;
+}
+
+.sh-file-box {
+    position: relative;
+
+    min-height: 75px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 12px;
+
+    border: 1px dashed #b9c7e5;
+    border-radius: 12px;
+
+    background: #f8faff;
+
+    overflow: hidden;
+}
+
+.sh-file-icon {
+    width: 42px;
+    height: 42px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 11px;
+
+    background: white;
+
+    font-size: 19px;
+}
+
+.sh-file-text {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+.sh-file-text strong {
+    color: #334155;
+
+    font-size: 11px;
+}
+
+.sh-file-text span {
+    color: #919cad;
+
+    font-size: 9px;
+}
+
+.sh-file-box input[type="file"] {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    opacity: 0;
+
+    cursor: pointer;
+}
+
+.sh-upload-actions {
+    grid-column: 1 / -1;
+
+    display: flex;
+    justify-content: flex-end;
+
+    gap: 9px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid #edf0f5;
+}
+
+.sh-notes-primary-btn,
+.sh-notes-secondary-btn {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 40px;
+
+    padding: 0 17px;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    font-family: inherit;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+.sh-notes-primary-btn {
+    border: none;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #6366f1
+        );
+
+    color: white;
+}
+
+.sh-notes-primary-btn:hover {
+    color: white;
+}
+
+.sh-notes-secondary-btn {
+    border: 1px solid #dfe5ef;
+
+    background: white;
+
+    color: #5c697d;
+}
+
+.sh-notes-secondary-btn:hover {
+    color: #2563eb;
+    border-color: #b8c6e2;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .sh-notes-filter-form {
+        grid-template-columns:
+            1fr 1fr 1fr;
+    }
+
+    .sh-filter-search {
+        grid-column: 1 / -1;
+    }
+
+    .sh-filter-btn {
+        grid-column: span 1;
+    }
+
+    .sh-notes-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .sh-mini-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 760px) {
+
+    .sh-notes-hero {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .sh-notes-upload-btn {
+        width: 100%;
+    }
+
+    .sh-notes-filter-form {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .sh-filter-search {
+        grid-column: 1 / -1;
+    }
+
+    .sh-filter-btn {
+        grid-column: 1 / -1;
+    }
+
+    .sh-notes-grid,
+    .sh-mini-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sh-upload-form {
+        grid-template-columns: 1fr;
+    }
+
+    .sh-upload-full {
+        grid-column: auto;
+    }
+
+}
+
+
+@media (max-width: 560px) {
+
+    .sh-notes-hero,
+    .sh-notes-filter-card,
+    .sh-notes-result-header,
+    .sh-notes-grid,
+    .sh-extra-section,
+    .sh-notes-messages {
+        width: calc(100% - 30px);
+    }
+
+    .sh-notes-hero {
+        padding-top: 40px;
+    }
+
+    .sh-notes-hero h1 {
+        font-size: 43px;
+        letter-spacing: -2px;
+    }
+
+    .sh-notes-filter-card {
+        padding: 19px;
+    }
+
+    .sh-filter-header {
+        flex-direction: column;
+    }
+
+    .sh-notes-filter-form {
+        grid-template-columns: 1fr;
+    }
+
+    .sh-filter-search,
+    .sh-filter-btn {
+        grid-column: auto;
+    }
+
+    .sh-notes-result-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .sh-note-card {
+        padding: 18px;
+    }
+
+    .sh-upload-page {
+        width: calc(100% - 30px);
+    }
+
+    .sh-upload-card {
+        padding: 22px 18px;
+    }
+
+    .sh-upload-header {
+        flex-direction: column;
+    }
+
+    .sh-upload-actions {
+        flex-direction: column;
+    }
+
+    .sh-notes-primary-btn,
+    .sh-notes-secondary-btn {
+        width: 100%;
+    }
+
+}
+
+</style>
+
+<!-- =========================================================
+     STUDYHUB UPLOAD CATEGORY LOGIC
+========================================================= -->
+
+<script>
+/* =========================================================
+   STUDYHUB CATEGORY SYSTEM
+   Education Level -> Course/Branch -> Semester/Class -> Subject
+   Broad list intentionally includes "Other / My Subject" because
+   exact semester-wise subjects can differ by college/university.
+========================================================= */
+
+const commonEngineering = {
+    "1st Semester": ["Engineering Mathematics I", "Engineering Physics", "Engineering Chemistry", "Programming Fundamentals", "Engineering Graphics", "Engineering Workshop", "Communication Skills", "Basic Electrical Engineering", "Other / My Subject"],
+    "2nd Semester": ["Engineering Mathematics II", "Data Structures", "Digital Logic", "Object Oriented Programming", "Python Programming", "Environmental Studies", "Basic Electronics", "Other / My Subject"]
+};
+
+const branchSubjects = {
+    "Computer Science Engineering (CSE)": {
+        "3rd Semester": ["Data Structures and Applications", "Database Management Systems", "Computer Organization and Architecture", "Operating Systems", "Object Oriented Programming", "Discrete Mathematics", "Other / My Subject"],
+        "4th Semester": ["Design and Analysis of Algorithms", "Database Management Systems", "Computer Networks", "Operating Systems", "Microprocessors and Microcontrollers", "Theory of Computation", "Software Engineering", "Web Technology", "Other / My Subject"],
+        "5th Semester": ["Database Management Systems", "Operating Systems", "Computer Networks", "Software Engineering", "Web Technology", "Artificial Intelligence", "Machine Learning", "Cloud Computing", "Data Science", "Big Data Analytics", "Cryptography and Network Security", "Full Stack Development", "Other / My Subject"],
+        "6th Semester": ["Machine Learning", "Artificial Intelligence", "Compiler Design", "Computer Graphics", "Cloud Computing", "Data Mining", "Data Analytics", "Cyber Security", "Internet of Things", "Distributed Systems", "Software Testing", "Natural Language Processing", "Deep Learning", "Computer Vision", "DevOps", "Mini Project", "Other / My Subject"],
+        "7th Semester": ["Artificial Intelligence", "Machine Learning", "Deep Learning", "Natural Language Processing", "Computer Vision", "Cloud Computing", "Big Data Analytics", "Cyber Security", "Blockchain Technology", "Internet of Things", "Data Science", "Software Architecture", "DevOps", "Project Phase I", "Internship", "Other / My Subject"],
+        "8th Semester": ["Major Project", "Project Phase II", "Advanced Algorithms", "Advanced Database Systems", "Cloud Computing", "Artificial Intelligence", "Machine Learning", "Cyber Security", "Blockchain Technology", "Natural Language Processing", "Computer Vision", "DevOps", "Internship", "Seminar", "Other / My Subject"]
+    },
+    "Information Science & Engineering (ISE)": {
+        "3rd Semester": ["Data Structures", "Database Management Systems", "Computer Organization", "Operating Systems", "Object Oriented Programming", "Other / My Subject"],
+        "4th Semester": ["Design and Analysis of Algorithms", "Computer Networks", "Operating Systems", "DBMS", "Web Technology", "Software Engineering", "Theory of Computation", "Other / My Subject"],
+        "5th Semester": ["Artificial Intelligence", "Machine Learning", "Cloud Computing", "Data Science", "Cyber Security", "Big Data Analytics", "Other / My Subject"],
+        "6th Semester": ["Deep Learning", "Data Mining", "Blockchain", "Internet of Things", "Distributed Systems", "Software Testing", "Mini Project", "Other / My Subject"],
+        "7th Semester": ["Advanced AI", "Machine Learning", "Cloud Computing", "Cyber Security", "Big Data Analytics", "DevOps", "Project Phase I", "Other / My Subject"],
+        "8th Semester": ["Major Project", "Advanced Cloud Computing", "Data Science", "Cyber Security", "Internship", "Seminar", "Other / My Subject"]
+    },
+    "Artificial Intelligence & Machine Learning": {
+        "3rd Semester": ["Data Structures", "Database Management Systems", "Computer Organization", "Probability and Statistics", "Operating Systems", "Python Programming", "Other / My Subject"],
+        "4th Semester": ["Design and Analysis of Algorithms", "Computer Networks", "Artificial Intelligence", "Machine Learning", "Data Visualization", "Software Engineering", "Other / My Subject"],
+        "5th Semester": ["Deep Learning", "Natural Language Processing", "Computer Vision", "Data Science", "Big Data Analytics", "Cloud Computing", "Other / My Subject"],
+        "6th Semester": ["Advanced Machine Learning", "Reinforcement Learning", "Generative AI", "MLOps", "Data Mining", "Mini Project", "Other / My Subject"],
+        "7th Semester": ["Deep Learning", "Generative AI", "Computer Vision", "Natural Language Processing", "MLOps", "Project Phase I", "Other / My Subject"],
+        "8th Semester": ["Major Project", "Advanced AI", "Generative AI", "AI Research", "Internship", "Seminar", "Other / My Subject"]
+    },
+    "Artificial Intelligence & Data Science": {
+        "3rd Semester": ["Probability and Statistics", "Database Management Systems", "Data Structures", "Computer Organization", "Operating Systems", "Other / My Subject"],
+        "4th Semester": ["Design and Analysis of Algorithms", "Artificial Intelligence", "Machine Learning", "Data Visualization", "Computer Networks", "DBMS", "Other / My Subject"],
+        "5th Semester": ["Data Science", "Big Data Analytics", "Deep Learning", "Natural Language Processing", "Cloud Computing", "Data Mining", "Other / My Subject"],
+        "6th Semester": ["Advanced Data Analytics", "Computer Vision", "Generative AI", "MLOps", "Data Engineering", "Mini Project", "Other / My Subject"],
+        "7th Semester": ["Advanced AI", "Big Data", "Data Engineering", "Generative AI", "Cloud Data Platforms", "Project Phase I", "Other / My Subject"],
+        "8th Semester": ["Major Project", "Data Science Project", "AI Research", "Generative AI", "Internship", "Seminar", "Other / My Subject"]
+    },
+    "Electronics & Communication Engineering (ECE)": {
+        "3rd Semester": ["Analog Electronics", "Digital Electronics", "Signals and Systems", "Network Theory", "Microprocessors", "Other / My Subject"],
+        "4th Semester": ["Communication Systems", "Microcontrollers", "Electronic Circuits", "Control Systems", "Electromagnetic Theory", "Other / My Subject"],
+        "5th Semester": ["Digital Signal Processing", "VLSI", "Embedded Systems", "Wireless Communication", "Antenna Theory", "Other / My Subject"],
+        "6th Semester": ["Optical Communication", "Advanced VLSI", "IoT", "Embedded Systems", "Digital Communication", "Mini Project", "Other / My Subject"],
+        "7th Semester": ["Advanced Communication", "RF Engineering", "VLSI Design", "Embedded Systems", "Project Phase I", "Other / My Subject"],
+        "8th Semester": ["Major Project", "Wireless Networks", "Advanced VLSI", "IoT", "Internship", "Other / My Subject"]
+    },
+    "Electrical & Electronics Engineering (EEE)": {
+        "3rd Semester": ["Electrical Machines I", "Power Systems I", "Electrical Measurements", "Control Systems", "Power Electronics", "Other / My Subject"],
+        "4th Semester": ["Electrical Machines II", "Power Systems II", "Signals and Systems", "Microcontrollers", "Other / My Subject"],
+        "5th Semester": ["Renewable Energy", "Electrical Drives", "Power Electronics", "Smart Grid", "High Voltage Engineering", "Other / My Subject"],
+        "6th Semester": ["Power System Protection", "Advanced Electrical Machines", "Electric Vehicles", "Industrial Automation", "Mini Project", "Other / My Subject"],
+        "7th Semester": ["Smart Grid", "Renewable Energy Systems", "Power System Analysis", "Industrial Automation", "Project Phase I", "Other / My Subject"],
+        "8th Semester": ["Major Project", "Advanced Power Systems", "Electric Vehicles", "Internship", "Other / My Subject"]
+    },
+    "Mechanical Engineering": {
+        "3rd Semester": ["Thermodynamics", "Fluid Mechanics", "Manufacturing Processes", "Engineering Materials", "Mechanics of Materials", "Other / My Subject"],
+        "4th Semester": ["Machine Design", "Heat Transfer", "Theory of Machines", "Manufacturing Technology", "Fluid Mechanics", "Other / My Subject"],
+        "5th Semester": ["CAD/CAM", "Dynamics of Machines", "Machine Design", "Industrial Engineering", "Metrology", "Other / My Subject"],
+        "6th Semester": ["Robotics", "Automobile Engineering", "Advanced Manufacturing", "Refrigeration and Air Conditioning", "Mini Project", "Other / My Subject"],
+        "7th Semester": ["Advanced CAD/CAM", "Industrial Automation", "Robotics", "Production Management", "Project Phase I", "Other / My Subject"],
+        "8th Semester": ["Major Project", "Advanced Manufacturing", "Automotive Engineering", "Internship", "Other / My Subject"]
+    },
+    "Civil Engineering": {
+        "3rd Semester": ["Structural Analysis", "Fluid Mechanics", "Surveying", "Building Materials", "Strength of Materials", "Other / My Subject"],
+        "4th Semester": ["Concrete Technology", "Geotechnical Engineering", "Transportation Engineering", "Structural Analysis", "Hydraulics", "Other / My Subject"],
+        "5th Semester": ["Structural Design", "Environmental Engineering", "Hydrology", "Foundation Engineering", "Construction Management", "Other / My Subject"],
+        "6th Semester": ["Advanced Structural Engineering", "Transportation Engineering", "Water Resources Engineering", "Construction Technology", "Mini Project", "Other / My Subject"],
+        "7th Semester": ["Advanced Concrete Design", "Structural Engineering", "Environmental Engineering", "Construction Management", "Project Phase I", "Other / My Subject"],
+        "8th Semester": ["Major Project", "Advanced Structural Design", "Transportation Engineering", "Internship", "Other / My Subject"]
+    },
+    "Electronics & Instrumentation Engineering": {
+        "3rd Semester": ["Measurement Systems", "Analog Electronics", "Digital Electronics", "Signals and Systems", "Microprocessors", "Other / My Subject"],
+        "4th Semester": ["Control Systems", "Industrial Instrumentation", "Microcontrollers", "Sensors and Transducers", "Other / My Subject"],
+        "5th Semester": ["Process Instrumentation", "Industrial Automation", "Embedded Systems", "PLC and SCADA", "Other / My Subject"],
+        "6th Semester": ["Robotics", "Advanced Control Systems", "IoT", "Industrial Automation", "Mini Project", "Other / My Subject"],
+        "7th Semester": ["Advanced Instrumentation", "Process Control", "Industrial IoT", "Project Phase I", "Other / My Subject"],
+        "8th Semester": ["Major Project", "Advanced Automation", "Industrial IoT", "Internship", "Other / My Subject"]
+    }
+};
+
+function withCommonFirstYear(branch) {
+    return {
+        ...commonEngineering,
+        ...(branchSubjects[branch] || {})
+    };
+}
+
+const studyHubCategories = {
+    "10th / SSLC": {
+        "General": {
+            "10th Standard": ["English", "Kannada", "Hindi", "Mathematics", "Science", "Social Science", "Computer Science", "Other / My Subject"]
+        }
+    },
+
+    "12th / PUC": {
+        "Science": {
+            "1st PUC": ["Physics", "Chemistry", "Mathematics", "Biology", "Computer Science", "English", "Kannada", "Other / My Subject"],
+            "2nd PUC": ["Physics", "Chemistry", "Mathematics", "Biology", "Computer Science", "English", "Kannada", "Other / My Subject"]
+        },
+        "Commerce": {
+            "1st PUC": ["Accountancy", "Business Studies", "Economics", "Statistics", "Computer Science", "English", "Other / My Subject"],
+            "2nd PUC": ["Accountancy", "Business Studies", "Economics", "Statistics", "Computer Science", "English", "Other / My Subject"]
+        },
+        "Arts": {
+            "1st PUC": ["History", "Political Science", "Economics", "Sociology", "Geography", "Psychology", "English", "Other / My Subject"],
+            "2nd PUC": ["History", "Political Science", "Economics", "Sociology", "Geography", "Psychology", "English", "Other / My Subject"]
+        }
+    },
+
+    "Diploma": {
+        "Computer Science": {
+            "1st Semester": ["Engineering Mathematics", "Engineering Physics", "Engineering Chemistry", "Computer Fundamentals", "Programming in C", "Other / My Subject"],
+            "2nd Semester": ["Data Structures", "Digital Electronics", "Programming in C", "Engineering Mathematics", "Other / My Subject"],
+            "3rd Semester": ["DBMS", "Computer Networks", "Object Oriented Programming", "Operating Systems", "Other / My Subject"],
+            "4th Semester": ["Web Technology", "Software Engineering", "Microprocessors", "Computer Architecture", "Other / My Subject"],
+            "5th Semester": ["Java Programming", "Advanced DBMS", "Network Security", "Project Management", "Other / My Subject"],
+            "6th Semester": ["Cloud Computing", "Mobile Application Development", "AI Fundamentals", "Project", "Other / My Subject"]
+        },
+        "Electronics & Communication": {},
+        "Electrical & Electronics": {},
+        "Mechanical": {},
+        "Civil": {}
+    },
+
+    "Engineering": {},
+
+    "Degree / UG": {
+        "BCA": {
+            "1st Semester": ["Programming in C", "Computer Fundamentals", "Mathematics", "Digital Electronics", "Other / My Subject"],
+            "2nd Semester": ["Data Structures", "DBMS", "Object Oriented Programming", "Computer Organization", "Other / My Subject"],
+            "3rd Semester": ["Operating Systems", "Computer Networks", "Web Technology", "Software Engineering", "Other / My Subject"],
+            "4th Semester": ["Java", "Python", "Advanced DBMS", "Computer Graphics", "Other / My Subject"],
+            "5th Semester": ["Machine Learning", "Cloud Computing", "Cyber Security", "Data Analytics", "Other / My Subject"],
+            "6th Semester": ["Artificial Intelligence", "Project Work", "Advanced Web Development", "Other / My Subject"]
+        },
+        "BSc Computer Science": {},
+        "BSc Mathematics": {},
+        "BSc Physics": {},
+        "BCom": {},
+        "BA": {}
+    },
+
+    "Postgraduate / PG": {
+        "MCA": {
+            "1st Semester": ["Advanced Data Structures", "Advanced DBMS", "Computer Networks", "Operating Systems", "Other / My Subject"],
+            "2nd Semester": ["Advanced Algorithms", "Web Technologies", "Software Engineering", "Computer Architecture", "Other / My Subject"],
+            "3rd Semester": ["Machine Learning", "Cloud Computing", "Big Data", "Cyber Security", "Other / My Subject"],
+            "4th Semester": ["Project Work", "Seminar", "Advanced Computing", "Internship", "Other / My Subject"]
+        },
+        "MSc Computer Science": {},
+        "MCom": {},
+        "MBA": {}
+    },
+
+    "Professional Course": {
+        "CA": {"Foundation": ["Accounting", "Business Laws", "Quantitative Aptitude", "Business Economics", "Other / My Subject"]},
+        "CS": {"Foundation": ["Business Environment", "Business Management", "Business Economics", "Fundamentals of Accounting", "Other / My Subject"]},
+        "CMA": {"Foundation": ["Business Laws", "Accounting", "Economics", "Mathematics", "Other / My Subject"]}
+    },
+
+    "Other": {
+        "Other Course": {"General": ["General Study Material", "Competitive Exams", "Entrance Exam", "Skill Development", "Other / My Subject"]}
+    }
+};
+
+Object.keys(branchSubjects).forEach(function(branch) {
+    studyHubCategories["Engineering"][branch] = withCommonFirstYear(branch);
+});
+
+/* Generic fallbacks for courses whose exact syllabus varies by institution. */
+const genericUG = {
+    "1st Semester": ["Core Subject 1", "Core Subject 2", "Core Subject 3", "Language / Communication", "Other / My Subject"],
+    "2nd Semester": ["Core Subject 1", "Core Subject 2", "Core Subject 3", "Other / My Subject"],
+    "3rd Semester": ["Core Subject 1", "Core Subject 2", "Core Subject 3", "Other / My Subject"],
+    "4th Semester": ["Core Subject 1", "Core Subject 2", "Core Subject 3", "Other / My Subject"],
+    "5th Semester": ["Core Subject 1", "Core Subject 2", "Core Subject 3", "Other / My Subject"],
+    "6th Semester": ["Core Subject 1", "Core Subject 2", "Core Subject 3", "Project / Elective", "Other / My Subject"]
+};
+
+["BSc Computer Science", "BSc Mathematics", "BSc Physics", "BCom", "BA"].forEach(function(course) {
+    studyHubCategories["Degree / UG"][course] = JSON.parse(JSON.stringify(genericUG));
+});
+
+const genericPG = {
+    "1st Semester": ["Core Subject 1", "Core Subject 2", "Core Subject 3", "Research / Seminar", "Other / My Subject"],
+    "2nd Semester": ["Core Subject 1", "Core Subject 2", "Core Subject 3", "Other / My Subject"],
+    "3rd Semester": ["Core Subject 1", "Core Subject 2", "Elective", "Research", "Other / My Subject"],
+    "4th Semester": ["Project", "Research", "Internship", "Seminar", "Other / My Subject"]
+};
+
+["MSc Computer Science", "MCom", "MBA"].forEach(function(course) {
+    studyHubCategories["Postgraduate / PG"][course] = JSON.parse(JSON.stringify(genericPG));
+});
+
+/* Diploma fallback branches */
+const genericDiploma = {
+    "1st Semester": ["Engineering Mathematics", "Engineering Science", "Programming Fundamentals", "Communication Skills", "Other / My Subject"],
+    "2nd Semester": ["Engineering Mathematics", "Core Subject", "Programming", "Basic Engineering", "Other / My Subject"],
+    "3rd Semester": ["Core Subject", "Core Laboratory", "Engineering Science", "Other / My Subject"],
+    "4th Semester": ["Core Subject", "Core Laboratory", "Applied Subject", "Other / My Subject"],
+    "5th Semester": ["Advanced Core Subject", "Elective", "Practical / Laboratory", "Other / My Subject"],
+    "6th Semester": ["Advanced Core Subject", "Project", "Internship", "Other / My Subject"]
+};
+
+["Electronics & Communication", "Electrical & Electronics", "Mechanical", "Civil"].forEach(function(course) {
+    studyHubCategories["Diploma"][course] = JSON.parse(JSON.stringify(genericDiploma));
+});
+
+/* =========================================================
+   DROPDOWN FUNCTIONS
+========================================================= */
+
+function resetSelect(id, placeholder) {
+    const select = document.getElementById(id);
+    if (!select) return;
+
+    select.innerHTML = "";
+
+    const option = document.createElement("option");
+    option.value = "";
+    option.textContent = placeholder;
+    option.disabled = true;
+    option.selected = true;
+    select.appendChild(option);
+}
+
+function addOptions(select, values) {
+    if (!select || !Array.isArray(values)) return;
+
+    values.forEach(function(value) {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = value;
+        select.appendChild(option);
+    });
+}
+
+function updateStudyHubCategories() {
+    const education = document.getElementById("upload_education_level");
+    const course = document.getElementById("course");
+
+    if (!education || !course) return;
+
+    resetSelect("course", "Select Branch / Course");
+    resetSelect("semester", "Select Semester / Class");
+    resetSelect("subject", "Select Subject");
+    hideCustomSubject();
+
+    const levelData = studyHubCategories[education.value];
+    if (!levelData) return;
+
+    addOptions(course, Object.keys(levelData));
+}
+
+function updateSemesters() {
+    const education = document.getElementById("upload_education_level");
+    const course = document.getElementById("course");
+
+    if (!education || !course) return;
+
+    resetSelect("semester", "Select Semester / Class");
+    resetSelect("subject", "Select Subject");
+    hideCustomSubject();
+
+    if (!education.value || !course.value) return;
+
+    const courseData = studyHubCategories[education.value]?.[course.value];
+    if (!courseData) return;
+
+    addOptions(document.getElementById("semester"), Object.keys(courseData));
+}
+
+function updateSubjects() {
+    const education = document.getElementById("upload_education_level");
+    const course = document.getElementById("course");
+    const semester = document.getElementById("semester");
+    const subject = document.getElementById("subject");
+
+    if (!education || !course || !semester || !subject) return;
+
+    resetSelect("subject", "Select Subject");
+    hideCustomSubject();
+
+    if (!education.value || !course.value || !semester.value) return;
+
+    const subjects = studyHubCategories[education.value]?.[course.value]?.[semester.value] || [];
+
+    addOptions(subject, subjects.length ? subjects : ["General Study Material", "Other / My Subject"]);
+}
+
+function showCustomSubject() {
+    const wrapper = document.getElementById("custom-subject-wrapper");
+    const input = document.getElementById("custom_subject");
+
+    if (wrapper) wrapper.style.display = "block";
+    if (input) {
+        input.required = true;
+        input.focus();
+    }
+}
+
+function hideCustomSubject() {
+    const wrapper = document.getElementById("custom-subject-wrapper");
+    const input = document.getElementById("custom_subject");
+
+    if (wrapper) wrapper.style.display = "none";
+    if (input) {
+        input.required = false;
+        input.value = "";
+    }
+}
+
+function handleSubjectChange() {
+    const subject = document.getElementById("subject");
+    if (!subject) return;
+
+    if (subject.value === "Other / My Subject") {
+        showCustomSubject();
+    } else {
+        hideCustomSubject();
+    }
+}
+
+function showSelectedFile(input) {
+    const fileName = document.getElementById("selected-file-name");
+    const fileType = document.querySelector(".sh-file-text span");
+
+    if (!fileName) return;
+
+    if (input.files && input.files.length > 0) {
+        const file = input.files[0];
+        fileName.textContent = file.name;
+        fileName.style.color = "#2563eb";
+        fileName.style.fontWeight = "800";
+
+        if (fileType) {
+            const sizeMB = file.size / (1024 * 1024);
+            fileType.textContent = sizeMB < 1
+                ? `${(file.size / 1024).toFixed(1)} KB`
+                : `${sizeMB.toFixed(2)} MB`;
+        }
+    } else {
+        fileName.textContent = "Choose your file";
+        fileName.style.color = "";
+        fileName.style.fontWeight = "";
+
+        if (fileType) fileType.textContent = "PDF, DOC, DOCX, PPT or PPTX";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    updateStudyHubCategories();
+
+    const subject = document.getElementById("subject");
+    if (subject) subject.addEventListener("change", handleSubjectChange);
+
+    const fileInput = document.getElementById("file");
+    if (fileInput) fileInput.addEventListener("change", function() {
+        showSelectedFile(this);
+    });
+
+    const uploadForm = document.getElementById("upload-form");
+    if (uploadForm) {
+        uploadForm.addEventListener("submit", function(event) {
+            const subjectSelect = document.getElementById("subject");
+            const customSubject = document.getElementById("custom_subject");
+
+            if (subjectSelect?.value === "Other / My Subject") {
+                const customValue = customSubject?.value.trim() || "";
+
+                if (!customValue) {
+                    event.preventDefault();
+                    alert("Please enter your subject name.");
+                    customSubject?.focus();
+                    return;
+                }
+
+                /* Replace the selected placeholder with the real subject. */
+                let customOption = subjectSelect.querySelector("option[data-custom-subject='true']");
+                if (!customOption) {
+                    customOption = document.createElement("option");
+                    customOption.dataset.customSubject = "true";
+                    subjectSelect.appendChild(customOption);
+                }
+
+                customOption.value = customValue;
+                customOption.textContent = customValue;
+                customOption.selected = true;
+            }
+        });
+    }
+});
+</script>
+
+
+
+
+<!-- =========================================================
+     PREMIUM TRENDING NOTES
+========================================================= -->
+<style>
+.sh-trending-premium {
+    width: min(1200px, 90%);
+    margin: 58px auto 18px;
+    padding: 34px;
+    border: 1px solid rgba(99,102,241,.12);
+    border-radius: 28px;
+    background: linear-gradient(145deg, #ffffff 0%, #f7f8ff 55%, #f2f6ff 100%);
+    box-shadow: 0 22px 55px rgba(30, 41, 59, .08);
+    position: relative;
+    overflow: hidden;
+}
+.sh-trending-premium::before {
+    content: "";
+    position: absolute;
+    width: 260px;
+    height: 260px;
+    right: -120px;
+    top: -150px;
+    border-radius: 50%;
+    background: rgba(99,102,241,.10);
+    filter: blur(8px);
+}
+.sh-trending-head {
+    display:flex; align-items:flex-end; justify-content:space-between; gap:20px;
+    margin-bottom:26px; position:relative; z-index:1;
+}
+.sh-trending-eyebrow {
+    display:inline-flex; align-items:center; gap:7px;
+    color:#6366f1; font-size:10px; font-weight:900; letter-spacing:.16em;
+}
+.sh-trending-spark { font-size:14px; }
+.sh-trending-head h2 { margin:7px 0 5px; font-size:28px; letter-spacing:-.035em; color:#111827; }
+.sh-trending-head p { margin:0; color:#64748b; font-size:13px; }
+.sh-trending-live {
+    display:flex; align-items:center; gap:8px; padding:9px 13px;
+    border:1px solid #dfe4ff; border-radius:999px; background:#fff;
+    color:#475569; font-size:11px; font-weight:800; white-space:nowrap;
+    box-shadow:0 6px 18px rgba(15,23,42,.05);
+}
+.sh-live-dot { width:7px; height:7px; border-radius:50%; background:#22c55e; box-shadow:0 0 0 4px rgba(34,197,94,.12); }
+.sh-trending-grid {
+    display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:17px;
+    position:relative; z-index:1;
+}
+.sh-trending-card {
+    min-width:0; display:flex; flex-direction:column;
+    border:1px solid #e7eaf4; border-radius:20px; overflow:hidden;
+    background:rgba(255,255,255,.92);
+    box-shadow:0 10px 28px rgba(15,23,42,.055);
+    transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+.sh-trending-card:hover { transform:translateY(-5px); border-color:#cfd5ff; box-shadow:0 18px 38px rgba(79,70,229,.12); }
+.sh-trending-card-top {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:17px 17px 0;
+}
+.sh-trending-file-icon {
+    width:45px; height:45px; display:grid; place-items:center; border-radius:14px;
+    background:linear-gradient(135deg,#eef2ff,#f5f3ff); border:1px solid #e2e6ff;
+    font-size:20px;
+}
+.sh-trending-rank {
+    padding:5px 8px; border-radius:8px; background:#f8fafc;
+    color:#64748b; font-size:10px; font-weight:900;
+}
+.sh-trending-card-body { padding:16px 17px 17px; flex:1; }
+.sh-trending-type { color:#818cf8; font-size:9px; font-weight:900; letter-spacing:.12em; }
+.sh-trending-card h3 {
+    margin:7px 0 7px; color:#172033; font-size:16px; line-height:1.35;
+    display:-webkit-box; display:-webkit-box; line-clamp:2; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.sh-trending-subject {
+    margin:0; color:#64748b; font-size:11px; line-height:1.5;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.sh-trending-subject span { color:#cbd5e1; margin:0 3px; }
+.sh-trending-meta { display:flex; flex-wrap:wrap; gap:6px; margin-top:13px; }
+.sh-trending-meta span {
+    max-width:100%; padding:6px 8px; border-radius:8px; background:#f8fafc;
+    color:#64748b; font-size:9px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.sh-trending-stats {
+    display:flex; justify-content:space-between; gap:8px; margin-top:15px;
+    padding-top:13px; border-top:1px solid #eef1f6;
+    color:#64748b; font-size:10px; font-weight:700;
+}
+.sh-trending-stats b { color:#94a3b8; margin-right:3px; }
+.sh-trending-view {
+    display:flex; align-items:center; justify-content:space-between;
+    margin:0 13px 13px; padding:11px 12px; border-radius:11px;
+    background:#f6f7ff; color:#4f46e5; text-decoration:none;
+    font-size:11px; font-weight:900; border:1px solid #e5e7ff;
+    transition:background .2s ease, color .2s ease, transform .2s ease;
+}
+.sh-trending-view:hover { background:#eef2ff; color:#3730a3; }
+.sh-trending-arrow { font-size:16px; transition:transform .2s ease; }
+.sh-trending-view:hover .sh-trending-arrow { transform:translate(2px,-2px); }
+@media (max-width: 900px) {
+    .sh-trending-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 620px) {
+    .sh-trending-premium { width:92%; padding:22px; border-radius:22px; margin-top:38px; }
+    .sh-trending-head { align-items:flex-start; flex-direction:column; }
+    .sh-trending-head h2 { font-size:24px; }
+    .sh-trending-grid { grid-template-columns:1fr; }
+}
+</style>
+
+
+
+<!-- =========================================================
+     PREMIUM POLISH — TRENDING NOTES
+========================================================= -->
+<style>
+.sh-trending-premium{isolation:isolate;}
+.sh-trending-premium::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 0%,rgba(255,255,255,.45) 42%,transparent 58%);transform:translateX(-120%);transition:transform .8s ease;z-index:0;}
+.sh-trending-premium:hover::after{transform:translateX(120%);}
+.sh-trending-live{position:relative;}
+.sh-live-dot{animation:shLivePulse 1.8s ease-in-out infinite;}
+@keyframes shLivePulse{0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,.10);opacity:.8}50%{box-shadow:0 0 0 6px rgba(34,197,94,.18);opacity:1}}
+.sh-trending-card{position:relative;}
+.sh-trending-card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,#2563eb,#6366f1,#8b5cf6);transform:scaleX(0);transform-origin:left;transition:transform .25s ease;}
+.sh-trending-card:hover::before{transform:scaleX(1);}
+.sh-trending-rank{background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:1px solid #e0e7ff;color:#4f46e5;}
+.sh-trending-card:nth-child(1) .sh-trending-rank{background:#eef2ff;color:#4338ca;border-color:#c7d2fe;}
+.sh-trending-card:nth-child(2) .sh-trending-rank{background:#f8fafc;color:#475569;}
+.sh-trending-card:nth-child(3) .sh-trending-rank{background:#fff7ed;color:#b45309;border-color:#fed7aa;}
+.sh-trending-view{position:relative;overflow:hidden;}
+.sh-trending-view::after{content:"";position:absolute;inset:0;background:rgba(99,102,241,.06);transform:translateX(-100%);transition:transform .25s ease;}
+.sh-trending-view:hover::after{transform:translateX(0);}
+@media (prefers-reduced-motion:reduce){.sh-trending-card,.sh-trending-view,.sh-live-dot,.sh-trending-premium::after{animation:none;transition:none;}}
+</style>
+
+
+
+<style id="studyhub-premium-report-v2">
+/* =========================================================
+   STUDYHUB — PREMIUM RESOURCE ACTIONS v2
+   This override intentionally comes LAST so it wins over
+   earlier Notes Repository CSS.
+   ========================================================= */
+
+/* ---------- STANDARD NOTE CARDS ---------- */
+.sh-note-actions{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(112px,.72fr) !important;
+    gap:9px !important;
+    align-items:stretch !important;
+    margin-top:16px !important;
+    position:relative !important;
+    overflow:visible !important;
+}
+
+.sh-note-actions > a,
+.sh-note-actions > .sh-inline-report > summary{
+    width:100% !important;
+    min-height:44px !important;
+    box-sizing:border-box !important;
+    border-radius:12px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:7px !important;
+    padding:0 12px !important;
+    font-size:11px !important;
+    font-weight:850 !important;
+    text-decoration:none !important;
+    cursor:pointer !important;
+    user-select:none !important;
+    list-style:none !important;
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease !important;
+}
+
+.sh-note-actions > .sh-inline-report > summary::-webkit-details-marker,
+.sh-note-actions > .sh-inline-report > summary::marker{
+    display:none !important;
+    content:"" !important;
+}
+
+.sh-note-actions .sh-view-btn{
+    border:1px solid #dce4f0 !important;
+    background:linear-gradient(180deg,#fff,#f8fafc) !important;
+    color:#334155 !important;
+    box-shadow:0 2px 5px rgba(15,23,42,.03) !important;
+}
+
+.sh-note-actions .sh-download-btn{
+    border:1px solid transparent !important;
+    background:linear-gradient(135deg,#2563eb 0%,#4f46e5 100%) !important;
+    color:#fff !important;
+    box-shadow:0 8px 18px rgba(37,99,235,.18) !important;
+}
+
+.sh-note-actions .sh-inline-report > summary{
+    border:1px solid #fecdd3 !important;
+    background:linear-gradient(180deg,#fff8f9,#fff1f2) !important;
+    color:#be123c !important;
+    box-shadow:0 2px 6px rgba(190,24,93,.05) !important;
+}
+
+.sh-note-actions .sh-view-btn:hover,
+.sh-note-actions .sh-inline-report > summary:hover{
+    transform:translateY(-2px) !important;
+}
+
+.sh-note-actions .sh-view-btn:hover{
+    border-color:#c7d2fe !important;
+    box-shadow:0 8px 18px rgba(15,23,42,.08) !important;
+}
+
+.sh-note-actions .sh-download-btn:hover{
+    transform:translateY(-2px) !important;
+    box-shadow:0 12px 25px rgba(37,99,235,.28) !important;
+}
+
+.sh-note-actions .sh-inline-report > summary:hover{
+    border-color:#fda4af !important;
+    background:linear-gradient(180deg,#fff1f2,#ffe4e6) !important;
+    box-shadow:0 9px 20px rgba(190,24,93,.12) !important;
+}
+
+/* ---------- REPORT DROPDOWN / MODAL ---------- */
+.sh-inline-report{
+    position:static !important;
+    display:block !important;
+    overflow:visible !important;
+}
+
+.sh-inline-report-panel{
+    position:fixed !important;
+    z-index:99999 !important;
+    left:50% !important;
+    top:50% !important;
+    transform:translate(-50%,-50%) !important;
+    width:min(430px,calc(100vw - 34px)) !important;
+    max-height:calc(100vh - 40px) !important;
+    overflow:auto !important;
+    box-sizing:border-box !important;
+    padding:22px !important;
+    border:1px solid rgba(226,232,240,.95) !important;
+    border-radius:22px !important;
+    background:rgba(255,255,255,.98) !important;
+    box-shadow:
+        0 35px 90px rgba(15,23,42,.25),
+        0 8px 25px rgba(15,23,42,.10) !important;
+    backdrop-filter:blur(20px) !important;
+    animation:shPremiumReportIn .18s ease-out !important;
+}
+
+.sh-inline-report[open]::before{
+    content:"" !important;
+    position:fixed !important;
+    z-index:99998 !important;
+    inset:0 !important;
+    background:rgba(15,23,42,.42) !important;
+    backdrop-filter:blur(4px) !important;
+}
+
+.sh-inline-report[open] .sh-inline-report-panel{
+    z-index:99999 !important;
+}
+
+@keyframes shPremiumReportIn{
+    from{opacity:0;transform:translate(-50%,-47%) scale(.96);}
+    to{opacity:1;transform:translate(-50%,-50%) scale(1);}
+}
+
+.sh-inline-report-title{
+    display:flex !important;
+    align-items:center !important;
+    gap:12px !important;
+    padding:0 0 16px !important;
+    margin:0 0 16px !important;
+    border-bottom:1px solid #eef2f7 !important;
+}
+
+.sh-inline-report-title > span{
+    width:42px !important;
+    height:42px !important;
+    flex:0 0 42px !important;
+    display:grid !important;
+    place-items:center !important;
+    border-radius:13px !important;
+    background:linear-gradient(135deg,#fff1f2,#ffe4e6) !important;
+    color:#e11d48 !important;
+    box-shadow:inset 0 0 0 1px #fecdd3 !important;
+    font-size:18px !important;
+}
+
+.sh-inline-report-title strong{
+    display:block !important;
+    color:#172033 !important;
+    font-size:14px !important;
+    font-weight:850 !important;
+}
+
+.sh-inline-report-title small{
+    display:block !important;
+    margin-top:3px !important;
+    color:#94a3b8 !important;
+    font-size:11px !important;
+}
+
+.sh-inline-report-form{
+    display:grid !important;
+    gap:11px !important;
+}
+
+.sh-inline-report-form select,
+.sh-inline-report-form textarea{
+    width:100% !important;
+    box-sizing:border-box !important;
+    border:1px solid #e2e8f0 !important;
+    border-radius:12px !important;
+    background:#f8fafc !important;
+    color:#334155 !important;
+    padding:11px 12px !important;
+    font:inherit !important;
+    font-size:10px !important;
+    outline:none !important;
+    transition:.2s ease !important;
+}
+
+.sh-inline-report-form select:focus,
+.sh-inline-report-form textarea:focus{
+    background:#fff !important;
+    border-color:#fb7185 !important;
+    box-shadow:0 0 0 4px rgba(244,63,94,.08) !important;
+}
+
+.sh-inline-report-form textarea{
+    min-height:88px !important;
+    resize:vertical !important;
+}
+
+.sh-inline-report-form button{
+    min-height:42px !important;
+    border:0 !important;
+    border-radius:12px !important;
+    background:linear-gradient(135deg,#e11d48,#be123c) !important;
+    color:#fff !important;
+    font-size:10px !important;
+    font-weight:850 !important;
+    cursor:pointer !important;
+    box-shadow:0 9px 20px rgba(225,29,72,.20) !important;
+    transition:.2s ease !important;
+}
+
+.sh-inline-report-form button:hover{
+    transform:translateY(-2px) !important;
+    box-shadow:0 13px 26px rgba(225,29,72,.28) !important;
+}
+
+/* ---------- TRENDING CARDS ---------- */
+.sh-trending-actions{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(95px,.72fr) !important;
+    gap:8px !important;
+    margin:13px !important;
+    position:relative !important;
+    overflow:visible !important;
+}
+
+.sh-trending-actions > a,
+.sh-trending-actions > .sh-trending-report > summary{
+    min-height:40px !important;
+    width:100% !important;
+    box-sizing:border-box !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    border-radius:11px !important;
+    padding:0 9px !important;
+    font-size:8.5px !important;
+    font-weight:850 !important;
+    cursor:pointer !important;
+    text-decoration:none !important;
+    list-style:none !important;
+    transition:.2s ease !important;
+}
+
+.sh-trending-report{
+    display:block !important;
+    position:static !important;
+}
+
+.sh-trending-report > summary::-webkit-details-marker,
+.sh-trending-report > summary::marker{
+    display:none !important;
+    content:"" !important;
+}
+
+.sh-trending-view{
+    border:1px solid #dbe4ff !important;
+    background:linear-gradient(180deg,#f8faff,#f1f5ff) !important;
+    color:#4f46e5 !important;
+}
+
+.sh-trending-download{
+    border:1px solid #dbe4ff !important;
+    background:linear-gradient(180deg,#f8faff,#eef2ff) !important;
+    color:#4338ca !important;
+}
+
+.sh-trending-report > summary{
+    border:1px solid #fecdd3 !important;
+    background:linear-gradient(180deg,#fff8f9,#fff1f2) !important;
+    color:#be123c !important;
+}
+
+.sh-trending-view:hover,
+.sh-trending-download:hover,
+.sh-trending-report > summary:hover{
+    transform:translateY(-2px) !important;
+    box-shadow:0 8px 18px rgba(15,23,42,.08) !important;
+}
+
+.sh-trending-report-panel{
+    position:fixed !important;
+    z-index:99999 !important;
+    left:50% !important;
+    top:50% !important;
+    transform:translate(-50%,-50%) !important;
+    width:min(400px,calc(100vw - 34px)) !important;
+    box-sizing:border-box !important;
+    padding:20px !important;
+    border:1px solid #e2e8f0 !important;
+    border-radius:20px !important;
+    background:#fff !important;
+    box-shadow:0 30px 80px rgba(15,23,42,.25) !important;
+}
+
+.sh-trending-report[open]::before{
+    content:"" !important;
+    position:fixed !important;
+    z-index:99998 !important;
+    inset:0 !important;
+    background:rgba(15,23,42,.42) !important;
+    backdrop-filter:blur(4px) !important;
+}
+
+.sh-trending-report-panel form{
+    display:grid !important;
+    gap:10px !important;
+}
+
+.sh-trending-report-panel select,
+.sh-trending-report-panel textarea{
+    width:100% !important;
+    box-sizing:border-box !important;
+    border:1px solid #e2e8f0 !important;
+    border-radius:11px !important;
+    padding:10px 11px !important;
+    background:#f8fafc !important;
+    font:inherit !important;
+    font-size:10px !important;
+}
+
+.sh-trending-report-panel button{
+    min-height:40px !important;
+    border:0 !important;
+    border-radius:11px !important;
+    background:linear-gradient(135deg,#e11d48,#be123c) !important;
+    color:#fff !important;
+    font-weight:850 !important;
+    cursor:pointer !important;
+}
+
+/* ---------- MOBILE ---------- */
+@media(max-width:700px){
+    .sh-note-actions,
+    .sh-trending-actions{
+        grid-template-columns:1fr 1fr !important;
+    }
+
+    .sh-note-actions > .sh-inline-report,
+    .sh-trending-actions > .sh-trending-report{
+        grid-column:1 / -1 !important;
+    }
+
+    .sh-note-actions > .sh-inline-report > summary,
+    .sh-trending-actions > .sh-trending-report > summary{
+        width:100% !important;
+    }
+}
+</style>
+
+{% endblock %}
+
+<style>
+/* =========================================================
+   LARGE PREMIUM REPORT PANEL
+   ========================================================= */
+.sh-inline-report-panel,
+.sh-trending-report-panel{
+    width:min(92vw,560px) !important;
+    min-height:300px !important;
+    padding:30px !important;
+    box-sizing:border-box !important;
+    border-radius:22px !important;
+    background:rgba(255,255,255,.99) !important;
+    box-shadow:
+        0 35px 90px rgba(15,23,42,.24),
+        0 10px 30px rgba(15,23,42,.10) !important;
+}
+
+.sh-inline-report-title{
+    display:flex !important;
+    align-items:center !important;
+    gap:14px !important;
+    margin-bottom:22px !important;
+    padding-bottom:18px !important;
+}
+
+.sh-inline-report-title > span{
+    width:48px !important;
+    height:48px !important;
+    border-radius:14px !important;
+    font-size:20px !important;
+}
+
+.sh-inline-report-title strong{
+    font-size:18px !important;
+    font-weight:850 !important;
+}
+
+.sh-inline-report-title small{
+    display:block !important;
+    margin-top:5px !important;
+    font-size:11px !important;
+}
+
+.sh-inline-report-form,
+.sh-trending-report-panel form{
+    display:grid !important;
+    gap:16px !important;
+}
+
+.sh-inline-report-form label{
+    font-size:11px !important;
+    font-weight:800 !important;
+    color:#475569 !important;
+}
+
+.sh-inline-report-form select,
+.sh-inline-report-form textarea,
+.sh-trending-report-panel select,
+.sh-trending-report-panel textarea{
+    width:100% !important;
+    min-height:48px !important;
+    box-sizing:border-box !important;
+    padding:13px 15px !important;
+    border-radius:13px !important;
+    font-size:12px !important;
+}
+
+.sh-inline-report-form textarea,
+.sh-trending-report-panel textarea{
+    min-height:125px !important;
+    line-height:1.55 !important;
+}
+
+.sh-inline-report-actions{
+    display:flex !important;
+    justify-content:flex-end !important;
+    gap:10px !important;
+    margin-top:4px !important;
+}
+
+.sh-inline-report-actions button{
+    min-height:46px !important;
+    padding:0 22px !important;
+    border-radius:12px !important;
+    font-size:11px !important;
+}
+
+@media(max-width:600px){
+    .sh-inline-report-panel,
+    .sh-trending-report-panel{
+        width:92vw !important;
+        padding:22px !important;
+        min-height:0 !important;
+    }
+}
+</style>
+
+
+<style>
+/* =========================================================
+   REPORT ACTIONS — PREMIUM + PERFECTLY ALIGNED
+   ========================================================= */
+
+.sh-inline-report-actions{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-end !important;
+    gap:10px !important;
+    width:100% !important;
+    margin-top:6px !important;
+    padding-top:4px !important;
+}
+
+.sh-inline-report-actions button{
+    width:118px !important;
+    height:44px !important;
+    min-height:44px !important;
+    margin:0 !important;
+    padding:0 16px !important;
+    border-radius:12px !important;
+    box-sizing:border-box !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    font-size:11px !important;
+    font-weight:800 !important;
+    line-height:1 !important;
+    position:relative !important;
+    top:auto !important;
+    left:auto !important;
+    transform:none !important;
+}
+
+/* Submit */
+.sh-inline-report-actions button[type="submit"]{
+    background:linear-gradient(135deg,#e11d48,#be123c) !important;
+    border:1px solid #be123c !important;
+    color:#fff !important;
+    box-shadow:0 7px 18px rgba(190,24,93,.20) !important;
+}
+
+/* Cancel */
+.sh-inline-report-actions .sh-report-cancel{
+    background:#fff !important;
+    border:1px solid #cbd5e1 !important;
+    color:#475569 !important;
+    box-shadow:0 4px 12px rgba(15,23,42,.06) !important;
+    cursor:pointer !important;
+}
+
+.sh-inline-report-actions button[type="submit"]:hover,
+.sh-inline-report-actions .sh-report-cancel:hover{
+    transform:none !important;
+}
+
+.sh-inline-report-actions button[type="submit"]:hover{
+    background:linear-gradient(135deg,#f43f5e,#be123c) !important;
+    box-shadow:0 9px 22px rgba(190,24,93,.26) !important;
+}
+
+.sh-inline-report-actions .sh-report-cancel:hover{
+    background:#f8fafc !important;
+    border-color:#94a3b8 !important;
+}
+
+/* Keep both buttons on one clean row */
+.sh-inline-report-actions > *{
+    flex:0 0 118px !important;
+}
+
+/* Mobile */
+@media(max-width:600px){
+    .sh-inline-report-actions{
+        justify-content:stretch !important;
+    }
+
+    .sh-inline-report-actions > *,
+    .sh-inline-report-actions button{
+        flex:1 1 0 !important;
+        width:auto !important;
+    }
+}
+</style>
+
+
+<style>
+/* =========================================================
+   STUDYHUB — FINAL PREMIUM REPORT SYSTEM
+   ========================================================= */
+
+/* Prevent accidental layout movement */
+.sh-note-actions,
+.sh-inline-report,
+.sh-inline-report summary,
+.sh-inline-report-panel,
+.sh-inline-report-actions,
+.sh-inline-report-actions > * {
+    transform: none !important;
+}
+
+/* Card action row */
+.sh-note-actions{
+    display:grid !important;
+    grid-template-columns:1fr 1fr 1fr !important;
+    gap:9px !important;
+    align-items:stretch !important;
+    margin-top:14px !important;
+}
+
+/* All three action buttons */
+.sh-note-actions > a,
+.sh-note-actions > .sh-inline-report > summary{
+    width:100% !important;
+    height:44px !important;
+    min-height:44px !important;
+    box-sizing:border-box !important;
+    border-radius:12px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    font-size:10px !important;
+    font-weight:850 !important;
+    text-decoration:none !important;
+}
+
+/* View */
+.sh-note-actions .sh-view-btn{
+    background:linear-gradient(180deg,#fff,#f8fafc) !important;
+    border:1px solid #dbe3ef !important;
+    color:#334155 !important;
+}
+
+/* Download */
+.sh-note-actions .sh-download-btn{
+    background:linear-gradient(135deg,#2563eb,#4f46e5) !important;
+    border:1px solid transparent !important;
+    color:#fff !important;
+    box-shadow:0 8px 18px rgba(37,99,235,.18) !important;
+}
+
+/* Report */
+.sh-note-actions .sh-inline-report summary{
+    background:linear-gradient(180deg,#fff7f8,#fff1f2) !important;
+    border:1px solid #fecdd3 !important;
+    color:#be123c !important;
+    cursor:pointer !important;
+}
+
+/* Keep hover premium but NEVER move */
+.sh-note-actions .sh-view-btn:hover,
+.sh-note-actions .sh-download-btn:hover,
+.sh-note-actions .sh-inline-report summary:hover{
+    transform:none !important;
+}
+
+.sh-note-actions .sh-view-btn:hover{
+    background:#f8fafc !important;
+    border-color:#c7d2fe !important;
+    box-shadow:0 7px 18px rgba(15,23,42,.07) !important;
+}
+
+.sh-note-actions .sh-download-btn:hover{
+    box-shadow:0 10px 24px rgba(37,99,235,.26) !important;
+}
+
+.sh-note-actions .sh-inline-report summary:hover{
+    background:#ffecef !important;
+    border-color:#fda4af !important;
+    box-shadow:0 8px 20px rgba(190,24,93,.12) !important;
+}
+
+/* Remove native disclosure triangle */
+.sh-inline-report summary::-webkit-details-marker{
+    display:none !important;
+}
+.sh-inline-report summary::marker{
+    display:none !important;
+}
+
+/* Premium report dialog */
+.sh-inline-report-panel{
+    position:fixed !important;
+    left:50% !important;
+    top:50% !important;
+    z-index:10050 !important;
+    width:min(92vw,560px) !important;
+    min-height:0 !important;
+    padding:30px !important;
+    box-sizing:border-box !important;
+    transform:translate(-50%,-50%) !important;
+    border:1px solid rgba(226,232,240,.95) !important;
+    border-radius:22px !important;
+    background:rgba(255,255,255,.99) !important;
+    box-shadow:
+        0 40px 100px rgba(15,23,42,.28),
+        0 10px 30px rgba(15,23,42,.10) !important;
+}
+
+/* Backdrop */
+.sh-inline-report::after{
+    content:"" !important;
+    position:fixed !important;
+    inset:0 !important;
+    z-index:10040 !important;
+    background:rgba(15,23,42,.38) !important;
+    backdrop-filter:blur(7px) !important;
+    pointer-events:none !important;
+    display:none !important;
+}
+.sh-inline-report[open]::after{
+    display:block !important;
+}
+
+/* Ensure panel stays above backdrop */
+.sh-inline-report[open] .sh-inline-report-panel{
+    display:block !important;
+}
+
+/* Report header */
+.sh-inline-report-title{
+    display:flex !important;
+    align-items:center !important;
+    gap:14px !important;
+    padding:0 0 20px !important;
+    margin:0 0 22px !important;
+    border-bottom:1px solid #eef2f7 !important;
+}
+
+.sh-inline-report-title > span{
+    flex:0 0 48px !important;
+    width:48px !important;
+    height:48px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    border-radius:14px !important;
+    background:linear-gradient(135deg,#fff1f2,#ffe4e6) !important;
+    box-shadow:inset 0 0 0 1px #fecdd3 !important;
+    color:#e11d48 !important;
+}
+
+.sh-inline-report-title strong{
+    display:block !important;
+    font-size:17px !important;
+    font-weight:850 !important;
+    color:#172033 !important;
+}
+
+.sh-inline-report-title small{
+    display:block !important;
+    margin-top:5px !important;
+    font-size:10px !important;
+    color:#94a3b8 !important;
+}
+
+/* Inputs */
+.sh-inline-report-form{
+    display:grid !important;
+    gap:14px !important;
+}
+
+.sh-inline-report-form select,
+.sh-inline-report-form textarea{
+    width:100% !important;
+    box-sizing:border-box !important;
+    border:1px solid #dbe3ef !important;
+    border-radius:13px !important;
+    background:#f8fafc !important;
+    color:#334155 !important;
+    outline:none !important;
+    font-size:12px !important;
+    transition:border-color .2s ease,box-shadow .2s ease,background .2s ease !important;
+}
+
+.sh-inline-report-form select{
+    height:50px !important;
+    padding:0 14px !important;
+}
+
+.sh-inline-report-form textarea{
+    min-height:125px !important;
+    padding:14px !important;
+    resize:vertical !important;
+    line-height:1.55 !important;
+}
+
+.sh-inline-report-form select:focus,
+.sh-inline-report-form textarea:focus{
+    background:#fff !important;
+    border-color:#fb7185 !important;
+    box-shadow:0 0 0 4px rgba(244,63,94,.08) !important;
+}
+
+/* Buttons */
+.sh-inline-report-actions{
+    display:flex !important;
+    justify-content:flex-end !important;
+    align-items:center !important;
+    gap:10px !important;
+    margin-top:5px !important;
+}
+
+.sh-inline-report-actions button{
+    flex:0 0 132px !important;
+    width:132px !important;
+    height:46px !important;
+    min-height:46px !important;
+    margin:0 !important;
+    border-radius:12px !important;
+    box-sizing:border-box !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    font-size:11px !important;
+    font-weight:850 !important;
+    cursor:pointer !important;
+    transform:none !important;
+}
+
+.sh-inline-report-actions button[type="submit"]{
+    background:linear-gradient(135deg,#e11d48,#be123c) !important;
+    border:1px solid #be123c !important;
+    color:#fff !important;
+    box-shadow:0 8px 20px rgba(190,24,93,.20) !important;
+}
+
+.sh-inline-report-actions .sh-report-cancel{
+    background:#fff !important;
+    border:1px solid #cbd5e1 !important;
+    color:#475569 !important;
+    box-shadow:0 4px 12px rgba(15,23,42,.06) !important;
+}
+
+.sh-inline-report-actions button:hover,
+.sh-inline-report-actions button:focus,
+.sh-inline-report-actions button:active{
+    transform:none !important;
+}
+
+.sh-inline-report-actions button[type="submit"]:hover{
+    background:linear-gradient(135deg,#f43f5e,#be123c) !important;
+    box-shadow:0 10px 24px rgba(190,24,93,.26) !important;
+}
+
+.sh-inline-report-actions .sh-report-cancel:hover{
+    background:#f8fafc !important;
+    border-color:#94a3b8 !important;
+}
+
+/* Trending cards: clean premium 2-button row + report */
+.sh-trending-actions{
+    display:grid !important;
+    grid-template-columns:1fr 1fr 1fr !important;
+    gap:8px !important;
+    margin:10px 13px 13px !important;
+}
+
+.sh-trending-actions > *,
+.sh-trending-actions summary{
+    min-height:40px !important;
+    border-radius:11px !important;
+    box-sizing:border-box !important;
+}
+
+/* Mobile */
+@media(max-width:700px){
+    .sh-note-actions{
+        grid-template-columns:1fr 1fr !important;
+    }
+
+    .sh-note-actions .sh-inline-report{
+        grid-column:1 / -1 !important;
+    }
+
+    .sh-inline-report-panel{
+        width:92vw !important;
+        padding:22px !important;
+    }
+
+    .sh-inline-report-actions button{
+        flex:1 1 0 !important;
+        width:auto !important;
+    }
+
+    .sh-trending-actions{
+        grid-template-columns:1fr !important;
+    }
+}
+</style>

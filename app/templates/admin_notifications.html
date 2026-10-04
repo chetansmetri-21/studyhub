@@ -1,0 +1,604 @@
+{% extends "base.html" %}
+
+{% block title %}
+Admin Notifications - StudyHub
+{% endblock %}
+
+
+{% block content %}
+
+<div class="admin-notifications-page">
+
+    <!-- HERO -->
+    <section class="notification-hero">
+
+        <div class="hero-badge">
+            ADMIN COMMUNICATION
+        </div>
+
+        <h1>
+            Notification Center
+        </h1>
+
+        <p>
+            Send important announcements and updates
+            directly to StudyHub students.
+        </p>
+
+    </section>
+
+
+    <!-- STATS -->
+    <section class="notification-stats">
+
+        <div class="notification-stat">
+            <span>👥</span>
+
+            <div>
+                <small>Total Users</small>
+                <strong>
+                    {{ total_users }}
+                </strong>
+            </div>
+        </div>
+
+
+        <div class="notification-stat">
+            <span>🔔</span>
+
+            <div>
+                <small>Total Notifications</small>
+                <strong>
+                    {{ total_notifications }}
+                </strong>
+            </div>
+        </div>
+
+
+        <div class="notification-stat">
+            <span>📩</span>
+
+            <div>
+                <small>Unread</small>
+                <strong>
+                    {{ unread_notifications }}
+                </strong>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- SEND NOTIFICATION -->
+    <section class="notification-panel">
+
+        <div class="panel-heading">
+
+            <div class="panel-icon">
+                ✉️
+            </div>
+
+            <div>
+                <span>
+                    CREATE MESSAGE
+                </span>
+
+                <h2>
+                    Send Notification
+                </h2>
+
+                <p>
+                    Broadcast an announcement or send
+                    a message to one student.
+                </p>
+            </div>
+
+        </div>
+
+
+        <form
+            method="POST"
+            action="{{ url_for('enhancements.admin_send_notification') }}"
+            class="notification-form"
+        >
+
+            <div class="form-group">
+
+                <label>
+                    Notification Title
+                </label>
+
+                <input
+                    type="text"
+                    name="title"
+                    maxlength="200"
+                    placeholder="Example: New PYQ collection available"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Message
+                </label>
+
+                <textarea
+                    name="message"
+                    rows="5"
+                    placeholder="Write your notification message..."
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Optional Link
+                </label>
+
+                <input
+                    type="text"
+                    name="link"
+                    placeholder="/pyq or /notes"
+                >
+
+                <small>
+                    Example:
+                    <code>/pyq</code>
+                    or
+                    <code>/notes</code>
+                </small>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Send To
+                </label>
+
+                <div class="recipient-options">
+
+                    <label class="recipient-option">
+
+                        <input
+                            type="radio"
+                            name="recipient_type"
+                            value="all"
+                            checked
+                            onchange="toggleRecipient()"
+                        >
+
+                        <span>
+                            👥 All Students
+                        </span>
+
+                    </label>
+
+
+                    <label class="recipient-option">
+
+                        <input
+                            type="radio"
+                            name="recipient_type"
+                            value="user"
+                            onchange="toggleRecipient()"
+                        >
+
+                        <span>
+                            👤 Specific Student
+                        </span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="form-group"
+                id="specificUserBox"
+                style="display:none;"
+            >
+
+                <label>
+                    Select Student
+                </label>
+
+                <select name="user_id">
+
+                    <option value="">
+                        Select a student
+                    </option>
+
+                    {% for user in users %}
+
+                    <option value="{{ user.id }}">
+                        {{ user.name }}
+                        —
+                        {{ user.email }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="send-button"
+            >
+                <span>📨</span>
+                Send Notification
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- INFORMATION -->
+    <section class="notification-info">
+
+        <div>
+            💡
+        </div>
+
+        <div>
+            <strong>
+                Notification Tips
+            </strong>
+
+            <p>
+                Use notifications for important academic
+                announcements, new resources, system updates,
+                or StudyHub events.
+            </p>
+        </div>
+
+    </section>
+
+</div>
+
+
+<style>
+
+.admin-notifications-page {
+    width: min(1100px, 92%);
+    margin: 50px auto 90px;
+}
+
+
+/* HERO */
+
+.notification-hero {
+    padding: 42px;
+    border-radius: 28px;
+    background:
+        linear-gradient(
+            135deg,
+            #eef2ff,
+            #f8fafc
+        );
+    border: 1px solid #dbe4f0;
+    margin-bottom: 28px;
+}
+
+.hero-badge {
+    display: inline-block;
+    color: #4f46e5;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .16em;
+    margin-bottom: 10px;
+}
+
+.notification-hero h1 {
+    margin: 0;
+    font-size: 42px;
+    color: #0f172a;
+}
+
+.notification-hero p {
+    margin: 10px 0 0;
+    color: #64748b;
+    font-size: 16px;
+}
+
+
+/* STATS */
+
+.notification-stats {
+    display: grid;
+    grid-template-columns:
+        repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.notification-stat {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 22px;
+    background: #ffffff;
+    border: 1px solid #dbe4f0;
+    border-radius: 20px;
+    box-shadow:
+        0 10px 30px rgba(15,23,42,.05);
+}
+
+.notification-stat > span {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: #eef2ff;
+    font-size: 22px;
+}
+
+.notification-stat small {
+    display: block;
+    color: #64748b;
+    font-weight: 650;
+}
+
+.notification-stat strong {
+    display: block;
+    margin-top: 4px;
+    font-size: 28px;
+    color: #0f172a;
+}
+
+
+/* PANEL */
+
+.notification-panel {
+    background: #ffffff;
+    border: 1px solid #dbe4f0;
+    border-radius: 26px;
+    padding: 34px;
+    box-shadow:
+        0 15px 45px rgba(15,23,42,.06);
+}
+
+.panel-heading {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 28px;
+}
+
+.panel-icon {
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    background: #eef2ff;
+    font-size: 23px;
+}
+
+.panel-heading span {
+    color: #4f46e5;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .14em;
+}
+
+.panel-heading h2 {
+    margin: 4px 0;
+    color: #0f172a;
+}
+
+.panel-heading p {
+    margin: 0;
+    color: #64748b;
+}
+
+
+/* FORM */
+
+.notification-form {
+    display: grid;
+    gap: 20px;
+}
+
+.form-group {
+    display: grid;
+    gap: 8px;
+}
+
+.form-group label {
+    color: #334155;
+    font-size: 14px;
+    font-weight: 750;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px 15px;
+    border: 1px solid #cbd5e1;
+    border-radius: 13px;
+    background: #f8fafc;
+    color: #0f172a;
+    font: inherit;
+    outline: none;
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 130px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #6366f1;
+    box-shadow:
+        0 0 0 4px rgba(99,102,241,.10);
+}
+
+.form-group small {
+    color: #64748b;
+}
+
+.form-group code {
+    background: #eef2ff;
+    padding: 2px 6px;
+    border-radius: 5px;
+}
+
+
+/* RECIPIENT */
+
+.recipient-options {
+    display: grid;
+    grid-template-columns:
+        repeat(2, 1fr);
+    gap: 12px;
+}
+
+.recipient-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    border: 1px solid #dbe4f0;
+    border-radius: 13px;
+    cursor: pointer;
+    background: #f8fafc;
+    font-weight: 700;
+}
+
+.recipient-option:hover {
+    border-color: #818cf8;
+}
+
+.recipient-option input {
+    width: auto;
+}
+
+
+/* BUTTON */
+
+.send-button {
+    border: none;
+    padding: 15px 22px;
+    border-radius: 13px;
+    background: #4f46e5;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.send-button:hover {
+    background: #4338ca;
+}
+
+
+/* INFO */
+
+.notification-info {
+    display: flex;
+    gap: 14px;
+    margin-top: 22px;
+    padding: 20px 22px;
+    border-radius: 18px;
+    background: #f8fafc;
+    border: 1px solid #dbe4f0;
+}
+
+.notification-info > div:first-child {
+    font-size: 22px;
+}
+
+.notification-info strong {
+    color: #0f172a;
+}
+
+.notification-info p {
+    margin: 5px 0 0;
+    color: #64748b;
+    line-height: 1.6;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 750px) {
+
+    .notification-hero {
+        padding: 28px;
+    }
+
+    .notification-hero h1 {
+        font-size: 32px;
+    }
+
+    .notification-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .notification-panel {
+        padding: 22px;
+    }
+
+    .recipient-options {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+
+<script>
+
+function toggleRecipient() {
+
+    const selected =
+        document.querySelector(
+            'input[name="recipient_type"]:checked'
+        );
+
+    const box =
+        document.getElementById(
+            "specificUserBox"
+        );
+
+    if (
+        selected &&
+        selected.value === "user"
+    ) {
+
+        box.style.display = "grid";
+
+    } else {
+
+        box.style.display = "none";
+
+    }
+}
+
+</script>
+
+{% endblock %}

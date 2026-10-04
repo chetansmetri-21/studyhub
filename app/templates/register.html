@@ -1,0 +1,1628 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account — StudyHub{% endblock %}
+
+{% block content %}
+
+<section class="sh-auth-page">
+
+    <div class="sh-auth-shell">
+
+        <!-- =====================================================
+             LEFT PREMIUM VISUAL
+        ====================================================== -->
+
+        <div class="sh-auth-visual">
+
+            <div class="sh-auth-orb sh-auth-orb-one"></div>
+            <div class="sh-auth-orb sh-auth-orb-two"></div>
+
+            <!-- BRAND -->
+
+            <div class="sh-auth-brand">
+
+                <div class="sh-auth-brand-icon">
+                    📚
+                </div>
+
+                <div>
+                    <strong>StudyHub</strong>
+
+                    <span>
+                        Academic resources, organized smarter.
+                    </span>
+                </div>
+
+            </div>
+
+
+            <!-- LEFT CONTENT -->
+
+            <div class="sh-auth-visual-content">
+
+                <span class="sh-auth-eyebrow">
+                    START YOUR JOURNEY
+                </span>
+
+                <h1>
+                    Everything you need<br>
+                    <span>to study smarter.</span>
+                </h1>
+
+                <p>
+                    Create your StudyHub account and bring your
+                    notes, question papers and exam insights together.
+                </p>
+
+
+                <!-- FEATURE 1 -->
+
+                <div class="sh-auth-points">
+
+                    <div class="sh-auth-point">
+
+                        <span>✓</span>
+
+                        <div>
+
+                            <strong>
+                                Build Your Resource Library
+                            </strong>
+
+                            <small>
+                                Keep useful academic resources organized.
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FEATURE 2 -->
+
+                    <div class="sh-auth-point">
+
+                        <span>✓</span>
+
+                        <div>
+
+                            <strong>
+                                Explore PYQ Insights
+                            </strong>
+
+                            <small>
+                                Understand repeated questions and topics.
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FEATURE 3 -->
+
+                    <div class="sh-auth-point">
+
+                        <span>✓</span>
+
+                        <div>
+
+                            <strong>
+                                Prepare With Confidence
+                            </strong>
+
+                            <small>
+                                Use your academic resources more effectively.
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SMALL TRUST BADGE -->
+
+                <div class="sh-auth-trust">
+
+                    <span class="sh-auth-trust-icon">
+                        ✦
+                    </span>
+
+                    <div>
+                        <strong>
+                            Your academic workspace
+                        </strong>
+
+                        <small>
+                            Built for focused learning.
+                        </small>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             RIGHT REGISTER PANEL
+        ====================================================== -->
+
+        <div class="sh-auth-form-panel">
+
+            <div class="sh-auth-form-inner">
+
+
+                <!-- MOBILE LOGO -->
+
+                <div class="sh-auth-mobile-logo">
+
+                    📚
+
+                    <strong>
+                        StudyHub
+                    </strong>
+
+                </div>
+
+
+                <!-- HEADER -->
+
+                <div class="sh-auth-form-header">
+
+                    <span class="sh-auth-label">
+                        GET STARTED
+                    </span>
+
+                    <h2>
+                        Create your account
+                    </h2>
+
+                    <p>
+                        Join StudyHub and organize your academic
+                        resources in one place.
+                    </p>
+
+                </div>
+
+
+                <!-- =================================================
+                     FLASH MESSAGES
+                ================================================== -->
+
+                {% with messages = get_flashed_messages() %}
+
+                    {% if messages %}
+
+                        <div class="sh-auth-messages">
+
+                            {% for message in messages %}
+
+                                <div class="sh-auth-message">
+                                    {{ message }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+                {% endwith %}
+
+
+                <!-- =================================================
+                     REGISTER FORM
+                ================================================== -->
+
+                <form
+                    method="POST"
+                    class="sh-auth-form"
+                >
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token() }}"
+                    >
+
+                    <!-- FULL NAME -->
+
+                    <div class="sh-field">
+
+                        <label for="name">
+                            Full Name
+                        </label>
+
+                        <div class="sh-input-wrap">
+
+                            <span class="sh-input-icon">
+                                👤
+                            </span>
+
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                placeholder="Enter your full name"
+                                autocomplete="name"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="sh-field">
+
+                        <label for="email">
+                            Email Address
+                        </label>
+
+                        <div class="sh-input-wrap">
+
+                            <span class="sh-input-icon">
+                                ✉
+                            </span>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="you@example.com"
+                                autocomplete="email"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PASSWORD -->
+
+                    <div class="sh-field">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+                        <div class="sh-input-wrap">
+
+                            <span class="sh-input-icon">
+                                🔒
+                            </span>
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Create a password"
+                                autocomplete="new-password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="sh-password-toggle"
+                                onclick="toggleRegisterPassword()"
+                                aria-label="Show password"
+                                title="Show password"
+                            >
+                                👁️
+                            </button>
+
+                        </div>
+
+
+                        <!-- PASSWORD HINT -->
+
+                        <div class="sh-password-hint">
+
+                            <span>
+                                ●
+                            </span>
+
+                            Use a password you can remember securely.
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CREATE ACCOUNT BUTTON -->
+
+                    <button
+                        type="submit"
+                        class="sh-auth-submit"
+                    >
+
+                        <span>
+                            Create StudyHub Account
+                        </span>
+
+                        <span class="sh-submit-arrow">
+                            →
+                        </span>
+
+                    </button>
+
+                </form>
+
+
+                <!-- =================================================
+                     LOGIN
+                ================================================== -->
+
+                <div class="sh-auth-divider">
+
+                    <span>
+                        Already have an account?
+                    </span>
+
+                </div>
+
+
+                <a
+                    href="{{ url_for('auth.login') }}"
+                    class="sh-auth-secondary"
+                >
+                    Login to StudyHub
+                </a>
+
+
+                <!-- BOTTOM TEXT -->
+
+                <p class="sh-auth-bottom-text">
+
+                    Create an account to access StudyHub's
+                    academic resource platform.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =============================================================
+     PASSWORD SHOW / HIDE
+============================================================== -->
+
+<script>
+
+function toggleRegisterPassword() {
+
+    const password =
+        document.getElementById("password");
+
+    const button =
+        document.querySelector(".sh-password-toggle");
+
+
+    if (!password || !button) {
+        return;
+    }
+
+
+    if (password.type === "password") {
+
+        password.type = "text";
+
+        button.textContent = "🙈";
+
+        button.setAttribute(
+            "aria-label",
+            "Hide password"
+        );
+
+        button.setAttribute(
+            "title",
+            "Hide password"
+        );
+
+    } else {
+
+        password.type = "password";
+
+        button.textContent = "👁️";
+
+        button.setAttribute(
+            "aria-label",
+            "Show password"
+        );
+
+        button.setAttribute(
+            "title",
+            "Show password"
+        );
+
+    }
+
+}
+
+</script>
+
+
+<style>
+
+/* =============================================================
+   STUDYHUB PREMIUM REGISTER PAGE
+============================================================= */
+
+.sh-auth-page {
+
+    width: 100%;
+
+    min-height: calc(100vh - 150px);
+
+    padding: 45px 24px 65px;
+
+    box-sizing: border-box;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+
+        radial-gradient(
+            circle at 8% 15%,
+            rgba(37, 99, 235, 0.10),
+            transparent 28%
+        ),
+
+        radial-gradient(
+            circle at 92% 85%,
+            rgba(124, 58, 237, 0.10),
+            transparent 30%
+        ),
+
+        #f6f8fc;
+
+}
+
+
+/* =============================================================
+   MAIN CARD
+============================================================= */
+
+.sh-auth-shell {
+
+    width: min(1120px, 100%);
+
+    min-height: 650px;
+
+    display: grid !important;
+
+    grid-template-columns:
+        1.05fr
+        0.95fr !important;
+
+    background: #ffffff;
+
+    border: 1px solid #e5eaf2;
+
+    border-radius: 28px;
+
+    overflow: hidden;
+
+    box-shadow:
+
+        0 30px 80px
+        rgba(15, 23, 42, 0.12),
+
+        0 8px 25px
+        rgba(15, 23, 42, 0.05);
+
+}
+
+
+/* =============================================================
+   LEFT VISUAL
+============================================================= */
+
+.sh-auth-visual {
+
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 52px;
+
+    color: #ffffff;
+
+    background:
+
+        radial-gradient(
+            circle at 85% 15%,
+            rgba(96, 165, 250, 0.22),
+            transparent 25%
+        ),
+
+        radial-gradient(
+            circle at 10% 90%,
+            rgba(167, 139, 250, 0.18),
+            transparent 28%
+        ),
+
+        linear-gradient(
+            145deg,
+            #0f172a 0%,
+            #172554 42%,
+            #312e81 100%
+        );
+
+}
+
+
+/* =============================================================
+   ORBS
+============================================================= */
+
+.sh-auth-orb {
+
+    position: absolute;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    filter: blur(2px);
+
+}
+
+
+.sh-auth-orb-one {
+
+    width: 280px;
+
+    height: 280px;
+
+    right: -110px;
+
+    top: -110px;
+
+    background:
+        rgba(96, 165, 250, 0.16);
+
+}
+
+
+.sh-auth-orb-two {
+
+    width: 230px;
+
+    height: 230px;
+
+    left: -120px;
+
+    bottom: -90px;
+
+    background:
+        rgba(167, 139, 250, 0.14);
+
+}
+
+
+/* =============================================================
+   BRAND
+============================================================= */
+
+.sh-auth-brand {
+
+    position: relative;
+
+    z-index: 2;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+}
+
+
+.sh-auth-brand-icon {
+
+    width: 48px;
+
+    height: 48px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 15px;
+
+    background:
+        rgba(255,255,255,.10);
+
+    border:
+        1px solid rgba(255,255,255,.15);
+
+    font-size: 23px;
+
+    box-shadow:
+
+        inset 0 1px
+        rgba(255,255,255,.12),
+
+        0 8px 20px
+        rgba(0,0,0,.12);
+
+}
+
+
+.sh-auth-brand strong {
+
+    display: block;
+
+    font-size: 21px;
+
+    letter-spacing: -.5px;
+
+}
+
+
+.sh-auth-brand span {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color:
+        rgba(255,255,255,.62);
+
+    font-size: 12px;
+
+}
+
+
+/* =============================================================
+   LEFT CONTENT
+============================================================= */
+
+.sh-auth-visual-content {
+
+    position: relative;
+
+    z-index: 2;
+
+    margin-top: 90px;
+
+}
+
+
+.sh-auth-eyebrow {
+
+    display: inline-block;
+
+    color: #93c5fd;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.8px;
+
+}
+
+
+.sh-auth-visual h1 {
+
+    margin: 16px 0 19px;
+
+    max-width: 520px;
+
+    font-size:
+        clamp(40px, 4vw, 58px);
+
+    line-height: 1.03;
+
+    letter-spacing: -2.8px;
+
+}
+
+
+.sh-auth-visual h1 span {
+
+    color: #93c5fd;
+
+}
+
+
+.sh-auth-visual-content > p {
+
+    max-width: 450px;
+
+    margin: 0;
+
+    color:
+        rgba(255,255,255,.70);
+
+    font-size: 15px;
+
+    line-height: 1.75;
+
+}
+
+
+/* =============================================================
+   FEATURE POINTS
+============================================================= */
+
+.sh-auth-points {
+
+    margin-top: 36px;
+
+    display: grid;
+
+    gap: 17px;
+
+}
+
+
+.sh-auth-point {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 13px;
+
+}
+
+
+.sh-auth-point > span {
+
+    width: 27px;
+
+    height: 27px;
+
+    flex: 0 0 27px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 50%;
+
+    color: #dbeafe;
+
+    background:
+        rgba(96,165,250,.12);
+
+    border:
+        1px solid
+        rgba(147,197,253,.22);
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+}
+
+
+.sh-auth-point strong {
+
+    display: block;
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+}
+
+
+.sh-auth-point small {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color:
+        rgba(255,255,255,.55);
+
+    font-size: 12px;
+
+}
+
+
+/* =============================================================
+   TRUST BADGE
+============================================================= */
+
+.sh-auth-trust {
+
+    margin-top: 35px;
+
+    width: fit-content;
+
+    max-width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 10px 14px;
+
+    border-radius: 13px;
+
+    background:
+        rgba(255,255,255,.07);
+
+    border:
+        1px solid
+        rgba(255,255,255,.10);
+
+    backdrop-filter: blur(10px);
+
+}
+
+
+.sh-auth-trust-icon {
+
+    width: 28px;
+
+    height: 28px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 9px;
+
+    background:
+        rgba(147,197,253,.13);
+
+    color: #bfdbfe;
+
+    font-size: 13px;
+
+}
+
+
+.sh-auth-trust strong {
+
+    display: block;
+
+    color: #ffffff;
+
+    font-size: 11px;
+
+}
+
+
+.sh-auth-trust small {
+
+    display: block;
+
+    margin-top: 2px;
+
+    color:
+        rgba(255,255,255,.48);
+
+    font-size: 10px;
+
+}
+
+
+/* =============================================================
+   RIGHT FORM
+============================================================= */
+
+.sh-auth-form-panel {
+
+    min-width: 0;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    padding: 45px 55px !important;
+
+    background: #ffffff;
+
+}
+
+
+.sh-auth-form-inner {
+
+    width:
+        min(400px, 100%) !important;
+
+    display: block !important;
+
+}
+
+
+/* =============================================================
+   MOBILE LOGO
+============================================================= */
+
+.sh-auth-mobile-logo {
+
+    display: none;
+
+}
+
+
+/* =============================================================
+   FORM HEADER
+============================================================= */
+
+.sh-auth-form-header {
+
+    margin-bottom: 26px;
+
+    display: block !important;
+
+}
+
+
+.sh-auth-label {
+
+    display: inline-block;
+
+    color: #2563eb;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.7px;
+
+}
+
+
+.sh-auth-form-header h2 {
+
+    display: block !important;
+
+    margin: 9px 0 9px;
+
+    color: #111827;
+
+    font-size: 35px;
+
+    line-height: 1.12;
+
+    letter-spacing: -1.5px;
+
+}
+
+
+.sh-auth-form-header p {
+
+    max-width: 370px;
+
+    margin: 0;
+
+    color: #6b7280;
+
+    font-size: 14px;
+
+    line-height: 1.65;
+
+}
+
+
+/* =============================================================
+   FLASH MESSAGES
+============================================================= */
+
+.sh-auth-messages {
+
+    display: block !important;
+
+    margin-bottom: 18px;
+
+}
+
+
+.sh-auth-message {
+
+    padding: 11px 13px;
+
+    border-radius: 12px;
+
+    background: #eff6ff;
+
+    border: 1px solid #dbeafe;
+
+    color: #1d4ed8;
+
+    font-size: 13px;
+
+}
+
+
+/* =============================================================
+   FORM
+============================================================= */
+
+.sh-auth-form {
+
+    width: 100% !important;
+
+    display: grid !important;
+
+    grid-template-columns: 1fr !important;
+
+    gap: 17px !important;
+
+    margin: 0;
+
+}
+
+
+.sh-field {
+
+    width: 100% !important;
+
+    display: block !important;
+
+}
+
+
+.sh-field label {
+
+    display: block !important;
+
+    margin-bottom: 7px;
+
+    color: #334155;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+}
+
+
+/* =============================================================
+   INPUT WRAPPER
+============================================================= */
+
+.sh-input-wrap {
+
+    position: relative;
+
+    width: 100% !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+}
+
+
+.sh-input-icon {
+
+    position: absolute;
+
+    left: 15px;
+
+    color: #94a3b8;
+
+    font-size: 16px;
+
+    pointer-events: none;
+
+    z-index: 2;
+
+}
+
+
+/* =============================================================
+   INPUT
+============================================================= */
+
+.sh-input-wrap input {
+
+    width: 100% !important;
+
+    height: 52px !important;
+
+    box-sizing: border-box !important;
+
+    padding:
+        0 48px 0 45px !important;
+
+    border:
+        1px solid #dce3ed !important;
+
+    border-radius: 14px !important;
+
+    outline: none;
+
+    background: #f8fafc !important;
+
+    color: #111827;
+
+    font-size: 14px;
+
+    transition:
+
+        border-color .2s ease,
+
+        box-shadow .2s ease,
+
+        background .2s ease;
+
+}
+
+
+.sh-input-wrap input::placeholder {
+
+    color: #a8b0bd;
+
+}
+
+
+.sh-input-wrap input:focus {
+
+    border-color:
+        #6366f1 !important;
+
+    background:
+        #ffffff !important;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(99,102,241,.10) !important;
+
+}
+
+
+/* =============================================================
+   PASSWORD TOGGLE
+============================================================= */
+
+.sh-password-toggle {
+
+    position: absolute;
+
+    right: 12px;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    width: 34px;
+
+    height: 34px;
+
+    display: grid;
+
+    place-items: center;
+
+    border: 0;
+
+    border-radius: 9px;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+    opacity: .60;
+
+    z-index: 5;
+
+    transition:
+        background .2s ease,
+        opacity .2s ease;
+
+}
+
+
+.sh-password-toggle:hover {
+
+    background: #eef2ff;
+
+    opacity: 1;
+
+}
+
+
+/* =============================================================
+   PASSWORD HINT
+============================================================= */
+
+.sh-password-hint {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    margin-top: 7px;
+
+    color: #94a3b8;
+
+    font-size: 10.5px;
+
+}
+
+
+.sh-password-hint span {
+
+    color: #6366f1;
+
+    font-size: 8px;
+
+}
+
+
+/* =============================================================
+   CREATE ACCOUNT BUTTON
+============================================================= */
+
+.sh-auth-submit {
+
+    width: 100% !important;
+
+    height: 54px !important;
+
+    margin:
+        4px 0 0 !important;
+
+    padding:
+        0 18px !important;
+
+    box-sizing: border-box !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: space-between !important;
+
+    border: 0 !important;
+
+    border-radius: 14px !important;
+
+    cursor: pointer;
+
+    color: #ffffff !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #4f46e5
+        ) !important;
+
+    box-shadow:
+        0 12px 28px
+        rgba(37,99,235,.22) !important;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    transition:
+
+        transform .2s ease,
+
+        box-shadow .2s ease;
+
+}
+
+
+.sh-auth-submit:hover {
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 16px 34px
+        rgba(37,99,235,.28) !important;
+
+}
+
+
+.sh-submit-arrow {
+
+    font-size: 20px;
+
+    line-height: 1;
+
+}
+
+
+/* =============================================================
+   DIVIDER
+============================================================= */
+
+.sh-auth-divider {
+
+    width: 100%;
+
+    margin:
+        23px 0 14px;
+
+    display: block !important;
+
+    text-align: center;
+
+    color: #94a3b8;
+
+    font-size: 12px;
+
+}
+
+
+/* =============================================================
+   LOGIN BUTTON
+============================================================= */
+
+.sh-auth-secondary {
+
+    width: 100% !important;
+
+    height: 49px !important;
+
+    box-sizing: border-box !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: center !important;
+
+    border:
+        1px solid #dce3ed !important;
+
+    border-radius: 13px !important;
+
+    color: #334155 !important;
+
+    background: #ffffff !important;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition:
+
+        border-color .2s ease,
+
+        color .2s ease,
+
+        background .2s ease,
+
+        transform .2s ease;
+
+}
+
+
+.sh-auth-secondary:hover {
+
+    border-color:
+        #93c5fd !important;
+
+    color:
+        #2563eb !important;
+
+    background:
+        #f8fbff !important;
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+/* =============================================================
+   BOTTOM TEXT
+============================================================= */
+
+.sh-auth-bottom-text {
+
+    width: 100%;
+
+    margin:
+        17px 0 0;
+
+    text-align: center;
+
+    color: #94a3b8;
+
+    font-size: 10.5px;
+
+    line-height: 1.6;
+
+}
+
+
+/* =============================================================
+   TABLET
+============================================================= */
+
+@media (max-width: 900px) {
+
+    .sh-auth-visual {
+
+        padding: 40px;
+
+    }
+
+    .sh-auth-form-panel {
+
+        padding:
+            40px !important;
+
+    }
+
+    .sh-auth-visual-content {
+
+        margin-top: 70px;
+
+    }
+
+    .sh-auth-visual h1 {
+
+        font-size: 43px;
+
+        letter-spacing: -2px;
+
+    }
+
+}
+
+
+/* =============================================================
+   MOBILE
+============================================================= */
+
+@media (max-width: 760px) {
+
+    .sh-auth-page {
+
+        min-height:
+            calc(100vh - 100px);
+
+        padding:
+            25px 14px 45px;
+
+    }
+
+
+    .sh-auth-shell {
+
+        width:
+            min(520px, 100%) !important;
+
+        min-height:
+            auto !important;
+
+        grid-template-columns:
+            1fr !important;
+
+        border-radius:
+            24px;
+
+    }
+
+
+    .sh-auth-visual {
+
+        display:
+            none !important;
+
+    }
+
+
+    .sh-auth-form-panel {
+
+        padding:
+            38px 30px !important;
+
+    }
+
+
+    .sh-auth-mobile-logo {
+
+        display:
+            flex !important;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        gap:
+            8px;
+
+        margin-bottom:
+            28px;
+
+        color:
+            #2563eb;
+
+        font-size:
+            20px;
+
+    }
+
+}
+
+
+/* =============================================================
+   SMALL MOBILE
+============================================================= */
+
+@media (max-width: 480px) {
+
+    .sh-auth-page {
+
+        padding:
+            15px 10px 35px;
+
+    }
+
+
+    .sh-auth-shell {
+
+        border-radius:
+            20px;
+
+    }
+
+
+    .sh-auth-form-panel {
+
+        padding:
+            30px 20px !important;
+
+    }
+
+
+    .sh-auth-form-header h2 {
+
+        font-size:
+            29px;
+
+        letter-spacing:
+            -1px;
+
+    }
+
+
+    .sh-auth-form-header p {
+
+        font-size:
+            13px;
+
+    }
+
+}
+
+</style>
+
+{% endblock %}

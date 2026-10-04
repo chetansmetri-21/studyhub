@@ -1,0 +1,583 @@
+{% extends "base.html" %}
+
+{% block title %}
+StudyHub Community
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+.community-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 35px 20px 60px;
+}
+
+.community-hero {
+    background: linear-gradient(
+        135deg,
+        #4f46e5,
+        #7c3aed
+    );
+    color: white;
+    border-radius: 24px;
+    padding: 40px;
+    margin-bottom: 30px;
+}
+
+.community-hero h1 {
+    margin: 0 0 10px;
+    font-size: 36px;
+}
+
+.community-hero p {
+    margin: 0;
+    opacity: .9;
+}
+
+.community-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        2,
+        minmax(0, 1fr)
+    );
+    gap: 24px;
+    margin-bottom: 30px;
+}
+
+.community-card {
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 8px 25px rgba(
+        0,
+        0,
+        0,
+        .05
+    );
+}
+
+.community-card h2 {
+    margin-top: 0;
+}
+
+.community-item {
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.community-item:last-child {
+    border-bottom: none;
+}
+
+.community-item h3 {
+    margin: 0 0 5px;
+}
+
+.community-meta {
+    color: #6b7280;
+    font-size: 13px;
+    margin: 5px 0;
+}
+
+.community-form {
+    display: grid;
+    gap: 12px;
+}
+
+.community-form input,
+.community-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+}
+
+.community-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.community-button {
+    border: none;
+    border-radius: 10px;
+    padding: 11px 18px;
+    cursor: pointer;
+    background: #4f46e5;
+    color: white;
+    font-weight: 600;
+}
+
+.community-link {
+    color: #4f46e5;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.badge {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: #eef2ff;
+    color: #4338ca;
+    font-size: 12px;
+}
+
+.notification-link {
+    display: inline-block;
+    margin-top: 10px;
+}
+
+@media (max-width: 800px) {
+
+    .community-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .community-hero {
+        padding: 28px;
+    }
+
+    .community-hero h1 {
+        font-size: 28px;
+    }
+}
+
+</style>
+
+
+<div class="community-container">
+
+    <section class="community-hero">
+
+        <h1>
+            🤝 StudyHub Community
+        </h1>
+
+        <p>
+            Discover trending resources, request
+            missing materials and build notes together.
+        </p>
+
+        {% if unread_count > 0 %}
+
+            <a
+                href="{{ url_for('community.notifications') }}"
+                class="notification-link"
+                style="color:white;"
+            >
+                🔔 {{ unread_count }} unread notification{% if unread_count != 1 %}s{% endif %}
+            </a>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- ================================================= -->
+    <!-- RESOURCE REQUEST + COLLABORATIVE NOTE -->
+    <!-- ================================================= -->
+
+    <div class="community-grid">
+
+
+        <!-- RESOURCE REQUEST -->
+
+        <div class="community-card">
+
+            <h2>
+                📋 Request a Resource
+            </h2>
+
+            <p>
+                Can't find a note or PYQ?
+                Ask other students.
+            </p>
+
+            <form
+                method="POST"
+                action="{{ url_for('community.create_request') }}"
+                class="community-form"
+            >
+
+                <input
+                    name="title"
+                    placeholder="What resource do you need?"
+                    required
+                >
+
+                <input
+                    name="subject"
+                    placeholder="Subject"
+                >
+
+                <input
+                    name="course"
+                    placeholder="Course"
+                >
+
+                <input
+                    name="semester"
+                    placeholder="Semester / Year"
+                >
+
+                <textarea
+                    name="description"
+                    placeholder="Describe what you are looking for..."
+                ></textarea>
+
+                <button
+                    class="community-button"
+                    type="submit"
+                >
+                    Post Request
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- COLLABORATIVE NOTE -->
+
+        <div class="community-card">
+
+            <h2>
+                🤝 Create Collaborative Note
+            </h2>
+
+            <p>
+                Start a shared study note and let
+                other students contribute.
+            </p>
+
+            <form
+                method="POST"
+                action="{{ url_for('community.create_collaborative_note') }}"
+                class="community-form"
+            >
+
+                <input
+                    name="title"
+                    placeholder="Note title"
+                    required
+                >
+
+                <input
+                    name="subject"
+                    placeholder="Subject"
+                    required
+                >
+
+                <input
+                    name="course"
+                    placeholder="Course"
+                >
+
+                <input
+                    name="semester"
+                    placeholder="Semester"
+                >
+
+                <textarea
+                    name="content"
+                    placeholder="Start your study note..."
+                ></textarea>
+
+                <button
+                    class="community-button"
+                    type="submit"
+                >
+                    Create Note
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- TRENDING NOTES -->
+    <!-- ================================================= -->
+
+    <div class="community-card">
+
+        <h2>
+            🔥 Trending Notes
+        </h2>
+
+        {% if trending_notes %}
+
+            {% for note in trending_notes %}
+
+                <div class="community-item">
+
+                    <h3>
+                        {{ note.title }}
+                    </h3>
+
+                    <div class="community-meta">
+
+                        {{ note.subject }}
+
+                        {% if note.course %}
+                            · {{ note.course }}
+                        {% endif %}
+
+                    </div>
+
+                    <div class="community-meta">
+
+                        👁 {{ note.views or 0 }}
+
+                        &nbsp;&nbsp;
+
+                        📥 {{ note.downloads or 0 }}
+
+                    </div>
+
+                    <a
+                        class="community-link"
+                        href="{{ url_for('notes.view_note', note_id=note.id) }}"
+                    >
+                        View Note →
+                    </a>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>
+                No trending notes yet.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <br>
+
+
+    <!-- ================================================= -->
+    <!-- TRENDING PYQs -->
+    <!-- ================================================= -->
+
+    <div class="community-card">
+
+        <h2>
+            🔥 Trending PYQs
+        </h2>
+
+        {% if trending_pyqs %}
+
+            {% for pyq in trending_pyqs %}
+
+                <div class="community-item">
+
+                    <h3>
+                        {{ pyq.title }}
+                    </h3>
+
+                    <div class="community-meta">
+
+                        {{ pyq.subject }}
+
+                        · {{ pyq.exam_year }}
+
+                        {% if pyq.exam_session %}
+                            · {{ pyq.exam_session }}
+                        {% endif %}
+
+                    </div>
+
+                    <div class="community-meta">
+
+                        👁 {{ pyq.views or 0 }}
+
+                        &nbsp;&nbsp;
+
+                        📥 {{ pyq.downloads or 0 }}
+
+                    </div>
+
+                    <a
+                        class="community-link"
+                        href="{{ url_for('pyq.preview_pyq', pyq_id=pyq.id) }}"
+                    >
+                        View PYQ →
+                    </a>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>
+                No trending PYQs yet.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <br>
+
+
+    <!-- ================================================= -->
+    <!-- RESOURCE REQUESTS -->
+    <!-- ================================================= -->
+
+    <div class="community-card">
+
+        <h2>
+            📋 Open Resource Requests
+        </h2>
+
+        {% if resource_requests %}
+
+            {% for item in resource_requests %}
+
+                <div class="community-item">
+
+                    <h3>
+                        {{ item.title }}
+                    </h3>
+
+                    <div class="community-meta">
+
+                        {% if item.subject %}
+                            📚 {{ item.subject }}
+                        {% endif %}
+
+                        {% if item.course %}
+                            · {{ item.course }}
+                        {% endif %}
+
+                        {% if item.semester %}
+                            · {{ item.semester }}
+                        {% endif %}
+
+                    </div>
+
+                    {% if item.description %}
+
+                        <p>
+                            {{ item.description }}
+                        </p>
+
+                    {% endif %}
+
+                    <span class="badge">
+                        Open Request
+                    </span>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>
+                No open resource requests.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <br>
+
+
+    <!-- ================================================= -->
+    <!-- MY COLLABORATIVE NOTES -->
+    <!-- ================================================= -->
+
+    <div class="community-card">
+
+        <h2>
+            🤝 My Collaborative Notes
+        </h2>
+
+        {% if collaborative_notes %}
+
+            {% for note in collaborative_notes %}
+
+                <div class="community-item">
+
+                    <h3>
+                        {{ note.title }}
+                    </h3>
+
+                    <div class="community-meta">
+
+                        {{ note.subject }}
+
+                        {% if note.course %}
+                            · {{ note.course }}
+                        {% endif %}
+
+                    </div>
+
+                    <a
+                        class="community-link"
+                        href="{{ url_for(
+                            'community.view_collaborative',
+                            note_id=note.id
+                        ) }}"
+                    >
+                        Open Collaborative Note →
+                    </a>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>
+                You haven't created any collaborative
+                notes yet.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <br>
+
+
+    <div class="community-card">
+
+        <h2>
+            🔔 Notifications
+        </h2>
+
+        <p>
+            Stay updated about resource requests
+            and collaborative activity.
+        </p>
+
+        <a
+            href="{{ url_for('community.notifications') }}"
+            class="community-link"
+        >
+            View Notifications →
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

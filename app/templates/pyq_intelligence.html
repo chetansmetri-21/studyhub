@@ -1,0 +1,5123 @@
+{% extends "base.html" %}
+
+{% block title %}PYQ Intelligence — StudyHub{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   STUDYHUB PYQ INTELLIGENCE — PREMIUM UI
+   ========================================================= */
+
+:root {
+    --intel-blue: #2563eb;
+    --intel-blue-light: #3b82f6;
+    --intel-purple: #7c3aed;
+    --intel-cyan: #06b6d4;
+    --intel-pink: #ec4899;
+    --intel-green: #10b981;
+    --intel-orange: #f59e0b;
+
+    --intel-navy: #14213d;
+    --intel-text: #1e293b;
+    --intel-muted: #64748b;
+
+    --intel-border: rgba(59, 130, 246, 0.15);
+    --intel-border-hover: rgba(59, 130, 246, 0.32);
+
+    --intel-card:
+        rgba(255, 255, 255, 0.82);
+
+    --intel-soft:
+        rgba(239, 246, 255, 0.72);
+
+    --intel-shadow:
+        0 20px 55px rgba(37, 99, 235, 0.09);
+
+    --intel-radius-xl: 28px;
+    --intel-radius-lg: 22px;
+    --intel-radius-md: 16px;
+}
+
+
+/* =========================================================
+   MAIN CONTAINER
+   ========================================================= */
+
+.intelligence-container {
+    width: min(1550px, 94%);
+    margin: 0 auto;
+    padding: 34px 0 90px;
+}
+
+
+/* =========================================================
+   STUDYHUB PYQ INTELLIGENCE — PREMIUM THEME
+   ========================================================= */
+
+:root {
+    --intel-primary: #4f46e5;
+    --intel-primary-dark: #3730a3;
+    --intel-secondary: #2563eb;
+    --intel-cyan: #06b6d4;
+    --intel-purple: #7c3aed;
+
+    --intel-soft: #ffffff;
+    --intel-soft-blue: #f5f7ff;
+
+    --intel-border: rgba(79, 70, 229, 0.14);
+
+    --intel-text: #111827;
+    --intel-muted: #64748b;
+
+    --intel-radius-lg: 22px;
+    --intel-radius-xl: 30px;
+
+    --intel-shadow:
+        0 20px 60px rgba(30, 41, 59, 0.08);
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.intel-hero {
+    position: relative;
+    overflow: hidden;
+
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1.35fr)
+        minmax(300px, 0.65fr);
+
+    gap: 30px;
+
+    padding: 52px;
+
+    border: 1px solid rgba(99, 102, 241, 0.18);
+
+    border-radius: var(--intel-radius-xl);
+
+    background:
+        radial-gradient(
+            circle at 85% 15%,
+            rgba(99, 102, 241, 0.38),
+            transparent 34%
+        ),
+        radial-gradient(
+            circle at 15% 90%,
+            rgba(6, 182, 212, 0.25),
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            #eef2ff 0%,
+            #f8fafc 45%,
+            #eef2ff 100%
+        );
+
+    box-shadow:
+        0 25px 70px rgba(79, 70, 229, 0.12);
+
+    margin-bottom: 28px;
+}
+
+.intel-hero::before {
+    content: "";
+
+    position: absolute;
+
+    width: 340px;
+    height: 340px;
+
+    right: -120px;
+    top: -150px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid rgba(79, 70, 229, 0.14);
+
+    box-shadow:
+        0 0 0 35px rgba(79, 70, 229, 0.025),
+        0 0 0 70px rgba(79, 70, 229, 0.018);
+
+    animation:
+        intelOrbit 20s linear infinite;
+}
+
+.intel-hero::after {
+    content: "";
+
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    right: 70px;
+    bottom: -105px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid rgba(6, 182, 212, 0.18);
+
+    animation:
+        intelOrbit 13s linear infinite reverse;
+}
+
+@keyframes intelOrbit {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+.intel-hero-content {
+    position: relative;
+
+    z-index: 2;
+}
+
+
+.intel-eyebrow {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 8px 13px;
+
+    border-radius: 999px;
+
+    color: #3730a3;
+
+    background:
+        rgba(255, 255, 255, 0.72);
+
+    border:
+        1px solid rgba(79, 70, 229, 0.16);
+
+    box-shadow:
+        0 8px 25px rgba(79, 70, 229, 0.06);
+
+    font-size: 10px;
+
+    font-weight: 850;
+
+    letter-spacing: 0.16em;
+
+    text-transform: uppercase;
+}
+
+
+.intel-eyebrow-dot {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #4f46e5,
+            #06b6d4
+        );
+
+    box-shadow:
+        0 0 0 5px rgba(79, 70, 229, 0.10),
+        0 0 14px rgba(79, 70, 229, 0.45);
+}
+
+
+.intel-hero h1 {
+    margin: 22px 0 14px;
+
+    color: #111827;
+
+    font-size:
+        clamp(42px, 5vw, 72px);
+
+    line-height: 0.98;
+
+    letter-spacing: -0.06em;
+}
+
+
+.intel-gradient-text {
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    color: #ffffff;
+    -webkit-text-fill-color: #ffffff;
+}
+
+
+.intel-hero-description {
+    max-width: 780px;
+
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 16px;
+
+    line-height: 1.8;
+}
+
+
+.intel-hero-meta {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    margin-top: 27px;
+}
+
+
+.intel-meta-pill {
+    padding: 10px 14px;
+
+    border-radius: 999px;
+
+    color: #334155;
+
+    background:
+        rgba(255, 255, 255, 0.78);
+
+    border:
+        1px solid rgba(79, 70, 229, 0.13);
+
+    box-shadow:
+        0 7px 20px rgba(79, 70, 229, 0.055);
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+
+.intel-meta-pill:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 12px 28px rgba(79, 70, 229, 0.12);
+}
+
+
+/* =========================================================
+   HERO VISUAL
+   ========================================================= */
+
+.intel-visual {
+    position: relative;
+
+    min-height: 300px;
+
+    display: grid;
+
+    place-items: center;
+}
+
+
+.intel-orbit {
+    position: relative;
+
+    width: 250px;
+    height: 250px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid rgba(79, 70, 229, 0.18);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(79, 70, 229, 0.08),
+            transparent 65%
+        );
+
+    box-shadow:
+        inset 0 0 55px rgba(79, 70, 229, 0.07),
+        0 20px 60px rgba(79, 70, 229, 0.08);
+}
+
+
+.intel-orbit::before,
+.intel-orbit::after {
+    content: "";
+
+    position: absolute;
+
+    inset: 25px;
+
+    border-radius: 50%;
+
+    border:
+        1px dashed rgba(79, 70, 229, 0.23);
+}
+
+
+.intel-orbit::after {
+    inset: 60px;
+
+    border-style: solid;
+
+    border-color:
+        rgba(6, 182, 212, 0.18);
+}
+
+
+.intel-core {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    width: 88px;
+    height: 88px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 27px;
+
+    font-size: 36px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #4f46e5,
+            #7c3aed
+        );
+
+    border:
+        1px solid rgba(255,255,255,0.5);
+
+    box-shadow:
+        0 20px 50px rgba(79, 70, 229, 0.30),
+        inset 0 1px 0 rgba(255,255,255,0.35);
+
+    animation:
+        intelPulse 3s ease-in-out infinite;
+}
+
+
+@keyframes intelPulse {
+
+    0%, 100% {
+        transform:
+            translate(-50%, -50%)
+            scale(1);
+    }
+
+    50% {
+        transform:
+            translate(-50%, -50%)
+            scale(1.07);
+    }
+
+}
+
+
+.intel-node {
+    position: absolute;
+
+    width: 50px;
+    height: 50px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 16px;
+
+    background:
+        rgba(255,255,255,0.92);
+
+    border:
+        1px solid rgba(79,70,229,0.15);
+
+    box-shadow:
+        0 14px 32px rgba(30,41,59,0.12);
+
+    font-size: 19px;
+
+    animation:
+        intelFloat 4s ease-in-out infinite;
+}
+
+
+.intel-node:nth-child(2) {
+    top: 0;
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+}
+
+
+.intel-node:nth-child(3) {
+    right: 0;
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    animation-delay:
+        0.8s;
+}
+
+
+.intel-node:nth-child(4) {
+    bottom: 0;
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    animation-delay:
+        1.4s;
+}
+
+
+.intel-node:nth-child(5) {
+    left: 0;
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    animation-delay:
+        2s;
+}
+
+
+@keyframes intelFloat {
+
+    0%, 100% {
+        margin-top: 0;
+    }
+
+    50% {
+        margin-top: -8px;
+    }
+
+}
+
+
+/* =========================================================
+   FILTER PANEL
+   ========================================================= */
+
+.intel-panel {
+    padding: 27px;
+
+    border:
+        1px solid rgba(79,70,229,0.12);
+
+    border-radius:
+        var(--intel-radius-lg);
+
+    background:
+        rgba(255,255,255,0.92);
+
+    box-shadow:
+        0 15px 45px rgba(30,41,59,0.055);
+
+    margin-bottom: 27px;
+}
+
+
+.intel-panel-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    gap: 20px;
+
+    margin-bottom: 22px;
+}
+
+
+.intel-panel-title {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 20px;
+
+    letter-spacing: -0.025em;
+}
+
+
+.intel-panel-description {
+    margin: 6px 0 0;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+.intel-filter-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+
+.intel-filter-label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #64748b;
+
+    font-size: 10px;
+
+    font-weight: 850;
+
+    letter-spacing: 0.12em;
+
+    text-transform: uppercase;
+}
+
+
+.intel-filter-group select {
+    width: 100%;
+
+    min-height: 48px;
+
+    padding: 0 14px;
+
+    border-radius: 14px;
+
+    border:
+        1px solid #e2e8f0;
+
+    background:
+        #f8fafc;
+
+    color: #1e293b;
+
+    outline: none;
+
+    font: inherit;
+
+    font-size: 13px;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+}
+
+
+.intel-filter-group select:hover {
+    background: #ffffff;
+
+    border-color:
+        rgba(79,70,229,0.28);
+}
+
+
+.intel-filter-group select:focus {
+    background: #ffffff;
+
+    border-color:
+        #6366f1;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(99,102,241,0.10);
+}
+
+
+.intel-filter-actions {
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    margin-top: 18px;
+}
+
+
+.intel-button {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    min-height: 44px;
+
+    padding: 0 18px;
+
+    border-radius: 13px;
+
+    border:
+        1px solid #e2e8f0;
+
+    text-decoration: none;
+
+    color: #334155;
+
+    background: #f8fafc;
+
+    font-size: 13px;
+
+    font-weight: 750;
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        border-color .2s ease;
+}
+
+
+.intel-button:hover {
+    transform:
+        translateY(-2px);
+
+    border-color:
+        rgba(79,70,229,0.22);
+
+    box-shadow:
+        0 10px 25px
+        rgba(79,70,229,0.10);
+}
+
+
+.intel-filter-actions .intel-button:last-child {
+    color: white;
+
+    border-color: transparent;
+
+    background:
+        linear-gradient(
+            135deg,
+            #4f46e5,
+            #6366f1
+        );
+
+    box-shadow:
+        0 10px 25px
+        rgba(79,70,229,0.24);
+}
+
+
+.intel-filter-actions .intel-button:last-child:hover {
+    box-shadow:
+        0 15px 32px
+        rgba(79,70,229,0.30);
+}
+
+
+/* =========================================================
+   SECTION TITLES
+   ========================================================= */
+
+.intel-section-title {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-end;
+
+    gap: 20px;
+
+    margin: 38px 0 18px;
+}
+
+
+.intel-section-title h2 {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 26px;
+
+    letter-spacing: -0.04em;
+}
+
+
+.intel-section-title p {
+    margin: 6px 0 0;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   COVERAGE
+   ========================================================= */
+
+.intel-coverage-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+
+.intel-coverage-card {
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 23px;
+
+    border-radius: 20px;
+
+    border:
+        1px solid rgba(79,70,229,0.12);
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff,
+            #f8faff
+        );
+
+    box-shadow:
+        0 12px 35px
+        rgba(30,41,59,0.045);
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        border-color .25s ease;
+}
+
+
+.intel-coverage-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 100px;
+    height: 100px;
+
+    right: -50px;
+    bottom: -50px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(79,70,229,0.055);
+}
+
+
+.intel-coverage-card:hover {
+    transform:
+        translateY(-6px);
+
+    box-shadow:
+        0 22px 50px
+        rgba(79,70,229,0.11);
+
+    border-color:
+        rgba(79,70,229,0.25);
+}
+
+
+.intel-coverage-icon {
+    width: 45px;
+    height: 45px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 14px;
+
+    color: #4f46e5;
+
+    background:
+        rgba(79,70,229,0.09);
+
+    font-size: 20px;
+
+    margin-bottom: 18px;
+}
+
+
+.intel-coverage-card small {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #64748b;
+
+    font-size: 11px;
+}
+
+
+.intel-coverage-card strong {
+    display: block;
+
+    color: #111827;
+
+    font-size: 31px;
+
+    letter-spacing: -0.04em;
+}
+
+
+.intel-coverage-card span {
+    display: block;
+
+    margin-top: 5px;
+
+    color: #94a3b8;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   ANALYTICS DASHBOARD
+   ========================================================= */
+
+.analytics-dashboard {
+    margin-top: 42px;
+}
+
+
+.analytics-heading {
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 24px;
+
+    margin-bottom: 21px;
+}
+
+
+.analytics-eyebrow {
+    display: inline-block;
+
+    margin-bottom: 7px;
+
+    color: #4f46e5;
+
+    font-size: 10px;
+
+    font-weight: 850;
+
+    letter-spacing: 0.16em;
+
+    text-transform: uppercase;
+}
+
+
+.analytics-heading h2 {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 30px;
+
+    letter-spacing: -0.04em;
+}
+
+
+.analytics-heading p {
+    margin: 8px 0 0;
+
+    max-width: 720px;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    line-height: 1.65;
+}
+
+
+.analytics-latest {
+    min-width: 160px;
+
+    padding: 17px 20px;
+
+    border:
+        1px solid rgba(79,70,229,0.14);
+
+    border-radius: 18px;
+
+    text-align: right;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eef2ff,
+            #f8fafc
+        );
+
+    box-shadow:
+        0 12px 30px
+        rgba(79,70,229,0.07);
+}
+
+
+.analytics-latest span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #64748b;
+
+    font-size: 10px;
+}
+
+
+.analytics-latest strong {
+    color: #4338ca;
+
+    font-size: 26px;
+}
+
+
+.analytics-summary-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 15px;
+
+    margin-bottom: 18px;
+}
+
+
+.analytics-stat-card {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    min-width: 0;
+
+    padding: 20px;
+
+    border:
+        1px solid rgba(79,70,229,0.11);
+
+    border-radius: 19px;
+
+    background:
+        #ffffff;
+
+    box-shadow:
+        0 10px 30px
+        rgba(30,41,59,0.045);
+
+    transition:
+        transform .22s ease,
+        box-shadow .22s ease;
+}
+
+
+.analytics-stat-card:hover {
+    transform:
+        translateY(-4px);
+
+    box-shadow:
+        0 18px 42px
+        rgba(79,70,229,0.10);
+}
+
+
+.analytics-stat-icon {
+    display: grid;
+
+    place-items: center;
+
+    width: 47px;
+    height: 47px;
+
+    flex: 0 0 47px;
+
+    border-radius: 14px;
+
+    color: #4f46e5;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eef2ff,
+            #ecfeff
+        );
+
+    font-size: 20px;
+}
+
+
+.analytics-stat-card small {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #64748b;
+
+    font-size: 10px;
+}
+
+
+.analytics-stat-card strong {
+    display: block;
+
+    color: #111827;
+
+    font-size: 23px;
+
+    line-height: 1.1;
+}
+
+
+.analytics-topic-value {
+    max-width: 160px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+.analytics-chart-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+
+.analytics-card {
+    min-width: 0;
+
+    padding: 23px;
+
+    border:
+        1px solid rgba(79,70,229,0.11);
+
+    border-radius: 21px;
+
+    background:
+        #ffffff;
+
+    box-shadow:
+        0 12px 35px
+        rgba(30,41,59,0.045);
+
+    transition:
+        transform .22s ease,
+        box-shadow .22s ease;
+}
+
+
+.analytics-card:hover {
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 20px 45px
+        rgba(79,70,229,0.09);
+}
+
+
+.analytics-wide {
+    grid-column:
+        span 2;
+}
+
+
+.analytics-card-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 16px;
+}
+
+
+.analytics-label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #6366f1;
+
+    font-size: 9px;
+
+    font-weight: 850;
+
+    letter-spacing: 0.14em;
+}
+
+
+.analytics-card h3 {
+    margin: 0;
+
+    color: #1e293b;
+
+    font-size: 17px;
+}
+
+
+.analytics-chart-wrapper {
+    position: relative;
+
+    width: 100%;
+
+    height: 310px;
+}
+
+
+.analytics-wide .analytics-chart-wrapper {
+    height: 330px;
+}
+    
+
+
+.analytics-doughnut {
+    max-width: 460px;
+
+    margin: auto;
+}
+
+
+.analytics-insight {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 14px;
+
+    margin-top: 18px;
+
+    padding: 19px 21px;
+
+    border:
+        1px solid rgba(6,182,212,0.14);
+
+    border-radius: 19px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ecfeff,
+            #eef2ff
+        );
+}
+
+
+.analytics-insight-icon {
+    font-size: 23px;
+}
+
+
+.analytics-insight strong {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #1e293b;
+}
+
+
+.analytics-insight p {
+    margin: 0;
+
+    color: #64748b;
+
+    line-height: 1.65;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   PREPARE SMART
+   ========================================================= */
+
+.prepare-smart {
+    margin-top: 42px;
+}
+
+
+.prepare-smart-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-end;
+
+    gap: 20px;
+
+    margin-bottom: 18px;
+}
+
+
+.prepare-smart-header h2 {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 28px;
+
+    letter-spacing: -0.04em;
+}
+
+
+.prepare-smart-header p {
+    margin: 7px 0 0;
+
+    max-width: 700px;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    line-height: 1.65;
+}
+
+
+.prepare-smart-badge {
+    padding: 9px 14px;
+
+    border-radius: 999px;
+
+    color: #4338ca;
+
+    border:
+        1px solid rgba(79,70,229,0.14);
+
+    background:
+        #eef2ff;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+
+.prepare-smart-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+
+.prepare-smart-card {
+    padding: 21px;
+
+    border-radius: 20px;
+
+    border:
+        1px solid rgba(79,70,229,0.11);
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff,
+            #f8faff
+        );
+
+    box-shadow:
+        0 10px 30px
+        rgba(30,41,59,0.04);
+
+    transition:
+        transform .22s ease,
+        box-shadow .22s ease;
+}
+
+
+.prepare-smart-card:hover {
+    transform:
+        translateY(-4px);
+
+    box-shadow:
+        0 18px 40px
+        rgba(79,70,229,0.09);
+}
+
+
+.prepare-smart-card small {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #64748b;
+
+    font-size: 10px;
+}
+
+
+.prepare-smart-card strong {
+    display: block;
+
+    color: #4f46e5;
+
+    font-size: 29px;
+
+    letter-spacing: -0.04em;
+}
+
+
+.prepare-smart-card span {
+    display: block;
+
+    margin-top: 6px;
+
+    color: #94a3b8;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   TOP TOPICS
+   ========================================================= */
+
+.intel-topic-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+
+.intel-topic-card {
+    padding: 21px;
+
+    border:
+        1px solid rgba(79,70,229,0.11);
+
+    border-radius: 19px;
+
+    background:
+        #ffffff;
+
+    box-shadow:
+        0 10px 30px
+        rgba(30,41,59,0.04);
+
+    transition:
+        transform .22s ease,
+        box-shadow .22s ease;
+}
+
+
+.intel-topic-card:hover {
+    transform:
+        translateY(-5px);
+
+    box-shadow:
+        0 18px 42px
+        rgba(79,70,229,0.09);
+}
+
+
+.intel-topic-number {
+    width: 35px;
+    height: 35px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 11px;
+
+    color: #4338ca;
+
+    background:
+        #eef2ff;
+
+    font-size: 12px;
+
+    font-weight: 850;
+}
+
+
+.intel-topic-count {
+    color: #64748b;
+
+    font-size: 11px;
+}
+
+
+.intel-topic-name {
+    color: #1e293b;
+
+    font-size: 15px;
+
+    font-weight: 750;
+
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   REPEATED QUESTIONS
+   ========================================================= */
+
+.repeated-question-list {
+    display: grid;
+
+    gap: 15px;
+}
+
+
+.repeated-question-card {
+    padding: 22px;
+
+    border:
+        1px solid rgba(79,70,229,0.11);
+
+    border-radius: 20px;
+
+    background:
+        #ffffff;
+
+    box-shadow:
+        0 10px 30px
+        rgba(30,41,59,0.035);
+
+    transition:
+        transform .22s ease,
+        box-shadow .22s ease,
+        border-color .22s ease;
+}
+
+
+.repeated-question-card:hover {
+    transform:
+        translateY(-3px);
+
+    border-color:
+        rgba(79,70,229,0.22);
+
+    box-shadow:
+        0 18px 40px
+        rgba(79,70,229,0.08);
+}
+
+
+.repeated-question-text {
+    color: #1e293b;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    line-height: 1.6;
+}
+
+
+.repeated-question-topic {
+    display: inline-flex;
+
+    margin-top: 11px;
+
+    padding: 6px 10px;
+
+    border-radius: 999px;
+
+    color: #4338ca;
+
+    background:
+        #eef2ff;
+
+    font-size: 10px;
+
+    font-weight: 750;
+}
+
+
+.repeated-question-count {
+    flex: 0 0 auto;
+
+    min-width: 68px;
+
+    padding: 9px 10px;
+
+    border-radius: 14px;
+
+    text-align: center;
+
+    color: #4338ca;
+
+    border:
+        1px solid rgba(79,70,229,0.13);
+
+    background:
+        #eef2ff;
+}
+
+
+.repeated-question-count strong {
+    display: block;
+
+    font-size: 20px;
+}
+
+
+.repeated-question-count span {
+    font-size: 9px;
+
+    color: #64748b;
+}
+
+
+.repeated-question-years {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 7px;
+
+    margin-top: 15px;
+}
+
+
+.repeated-year {
+    padding: 5px 9px;
+
+    border-radius: 8px;
+
+    color: #475569;
+
+    background:
+        #f1f5f9;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.intel-table-wrapper {
+    overflow-x: auto;
+
+    border:
+        1px solid rgba(79,70,229,0.11);
+
+    border-radius: 20px;
+
+    background:
+        #ffffff;
+
+    box-shadow:
+        0 10px 30px
+        rgba(30,41,59,0.04);
+}
+
+
+.intel-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 760px;
+}
+
+
+.intel-table th,
+.intel-table td {
+    padding: 15px 17px;
+
+    text-align: left;
+
+    border-bottom:
+        1px solid #eef2f7;
+
+    font-size: 12px;
+}
+
+
+.intel-table th {
+    color: #64748b;
+
+    background:
+        #f8fafc;
+
+    font-size: 9px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.12em;
+}
+
+
+.intel-table tr:hover td {
+    background:
+        #f8faff;
+}
+
+
+.intel-table tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================================================
+   HOW IT WORKS
+   ========================================================= */
+
+.intel-method-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+
+.intel-method-card {
+    padding: 22px;
+
+    border:
+        1px solid rgba(79,70,229,0.11);
+
+    border-radius: 19px;
+
+    background:
+        #ffffff;
+
+    box-shadow:
+        0 10px 30px
+        rgba(30,41,59,0.035);
+}
+
+
+.intel-method-number {
+    display: inline-grid;
+
+    place-items: center;
+
+    width: 35px;
+    height: 35px;
+
+    margin-bottom: 15px;
+
+    border-radius: 11px;
+
+    color: #4338ca;
+
+    background:
+        #eef2ff;
+
+    font-size: 11px;
+
+    font-weight: 850;
+}
+
+
+.intel-method-card h3 {
+    margin: 0 0 7px;
+
+    color: #1e293b;
+
+    font-size: 14px;
+}
+
+
+.intel-method-card p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 12px;
+
+    line-height: 1.65;
+}
+
+
+/* =========================================================
+   BOTTOM CTA
+   ========================================================= */
+
+.intel-bottom-cta {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-top: 42px;
+
+    padding: 29px;
+
+    border-radius: 23px;
+
+    border:
+        1px solid rgba(79,70,229,0.14);
+
+    background:
+        linear-gradient(
+            110deg,
+            #eef2ff,
+            #ecfeff
+        );
+
+    box-shadow:
+        0 15px 40px
+        rgba(79,70,229,0.07);
+}
+
+
+.intel-bottom-cta h3 {
+    margin: 0;
+
+    color: #1e293b;
+
+    font-size: 20px;
+}
+
+
+.intel-bottom-cta p {
+    margin: 6px 0 0;
+
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   EMPTY STATES
+   ========================================================= */
+
+.intel-empty {
+    padding: 38px 20px;
+
+    text-align: center;
+
+    border:
+        1px dashed rgba(79,70,229,0.20);
+
+    border-radius: 19px;
+
+    background:
+        #f8faff;
+}
+
+
+.intel-empty-icon {
+    font-size: 31px;
+
+    margin-bottom: 10px;
+}
+
+
+.intel-empty strong {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #1e293b;
+}
+
+
+.intel-empty span {
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+    .intel-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .intel-visual {
+        min-height: 230px;
+    }
+
+    .intel-filter-grid {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+    .intel-coverage-grid,
+    .prepare-smart-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .intel-method-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .intel-topic-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .analytics-summary-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 850px) {
+
+    .intelligence-container {
+        width: 94%;
+    }
+
+    .intel-hero {
+        padding: 32px;
+    }
+
+    .intel-filter-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .analytics-chart-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .analytics-wide {
+        grid-column: span 1;
+    }
+
+    .intel-bottom-cta {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .intelligence-container {
+        padding-top: 20px;
+    }
+
+    .intel-hero {
+        padding: 26px;
+
+        border-radius: 24px;
+    }
+
+    .intel-hero h1 {
+        font-size: 42px;
+    }
+
+    .intel-hero-description {
+        font-size: 14px;
+    }
+
+    .intel-visual {
+        min-height: 210px;
+    }
+
+    .intel-orbit {
+        width: 190px;
+        height: 190px;
+    }
+
+    .intel-panel {
+        padding: 19px;
+    }
+
+    .intel-filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .intel-coverage-grid,
+    .prepare-smart-grid,
+    .analytics-summary-grid,
+    .intel-topic-grid,
+    .intel-method-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .analytics-heading,
+    .prepare-smart-header,
+    .intel-section-title {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .analytics-latest {
+        width: 100%;
+
+        text-align: left;
+    }
+
+    .analytics-chart-wrapper,
+    .analytics-wide .analytics-chart-wrapper {
+        height: 260px;
+    }
+
+    .repeated-question-top {
+        flex-direction: column;
+    }
+
+    .repeated-question-count {
+        align-self: flex-start;
+    }
+
+    .intel-bottom-cta {
+        padding: 21px;
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+
+        animation-duration:
+            0.01ms !important;
+
+        animation-iteration-count:
+            1 !important;
+
+        transition-duration:
+            0.01ms !important;
+    }
+
+}
+
+</style>
+
+<div class="intelligence-container">
+
+
+    <!-- =====================================================
+         PREMIUM HERO
+         ===================================================== -->
+
+    <section class="intel-hero">
+
+        <div class="intel-hero-content">
+
+            <span class="intel-eyebrow">
+                <span class="intel-eyebrow-dot"></span>
+                StudyHub Intelligence Engine
+            </span>
+
+            <h1>
+                PYQ
+                <span class="intel-gradient-text">
+                    Intelligence.
+                </span>
+            </h1>
+
+            <p class="intel-hero-description">
+                Turn historical question papers into structured
+                academic insights. StudyHub analyzes repeated
+                questions, topics, years and paper coverage to
+                help you understand how subjects have appeared
+                across previous examinations.
+            </p>
+
+            <div class="intel-hero-meta">
+
+                <span class="intel-meta-pill">
+                    📊 Historical Analytics
+                </span>
+
+                <span class="intel-meta-pill">
+                    🔁 Question Repetition
+                </span>
+
+                <span class="intel-meta-pill">
+                    🧠 Topic Intelligence
+                </span>
+
+                <span class="intel-meta-pill">
+                    🎯 Prepare Smart
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="intel-visual">
+
+            <div class="intel-orbit">
+
+                <div class="intel-core">
+                    🧠
+                </div>
+
+                <div class="intel-node">
+                    📄
+                </div>
+
+                <div class="intel-node">
+                    🔁
+                </div>
+
+                <div class="intel-node">
+                    📊
+                </div>
+
+                <div class="intel-node">
+                    🎯
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FILTERS
+         ===================================================== -->
+
+    <section class="intel-panel">
+
+        <div class="intel-panel-header">
+
+            <div>
+
+                <h2 class="intel-panel-title">
+                    Analyze Question Papers
+                </h2>
+
+                <p class="intel-panel-description">
+                    Select the academic scope you want StudyHub
+                    Intelligence to analyze.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form method="GET"
+              action="{{ url_for('pyq.pyq_intelligence') }}">
+
+            <div class="intel-filter-grid">
+
+
+                <div class="intel-filter-group">
+
+                    <label class="intel-filter-label">
+                        Education Level
+                    </label>
+
+                    <select name="education_level">
+
+                        <option value="">
+                            All Levels
+                        </option>
+
+                        {% for level in available_education_levels %}
+
+                        <option
+                            value="{{ level }}"
+                            {% if selected_education_level == level %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ level }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <div class="intel-filter-group">
+
+                    <label class="intel-filter-label">
+                        Course / Stream
+                    </label>
+
+                    <select name="course">
+
+                        <option value="">
+                            All Courses
+                        </option>
+
+                        {% for course in available_courses %}
+
+                        <option
+                            value="{{ course }}"
+                            {% if selected_course == course %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ course }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <div class="intel-filter-group">
+
+                    <label class="intel-filter-label">
+                        Semester / Class
+                    </label>
+
+                    <select name="semester">
+
+                        <option value="">
+                            All
+                        </option>
+
+                        {% for semester in available_semesters %}
+
+                        <option
+                            value="{{ semester }}"
+                            {% if selected_semester == semester %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ semester }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <div class="intel-filter-group">
+
+                    <label class="intel-filter-label">
+                        Subject
+                    </label>
+
+                    <select name="subject">
+
+                        <option value="">
+                            All Subjects
+                        </option>
+
+                        {% for subject in available_subjects %}
+
+                        <option
+                            value="{{ subject }}"
+                            {% if selected_subject == subject %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ subject }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <div class="intel-filter-group">
+
+                    <label class="intel-filter-label">
+                        Exam Session
+                    </label>
+
+                    <select name="exam_session">
+
+                        <option value="">
+                            All Sessions
+                        </option>
+
+                        {% for session in available_exam_sessions %}
+
+                        <option
+                            value="{{ session }}"
+                            {% if selected_exam_session == session %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ session }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="intel-filter-actions">
+
+                <a
+                    href="{{ url_for('pyq.pyq_intelligence') }}"
+                    class="intel-button"
+                >
+                    ↻ Reset
+                </a>
+
+                <button
+                    type="submit"
+                    class="intel-button"
+                >
+                    ⚡ Analyze
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- =====================================================
+         COVERAGE
+         ===================================================== -->
+
+    <div class="intel-section-title">
+
+        <div>
+
+            <h2>
+                Analysis Coverage
+            </h2>
+
+            <p>
+                Scope of the historical data currently analyzed.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <section class="intel-coverage-grid">
+
+
+        <div class="intel-coverage-card">
+
+            <div class="intel-coverage-icon">
+                📄
+            </div>
+
+            <small>
+                Papers Analyzed
+            </small>
+
+            <strong>
+                {{ coverage.papers }}
+            </strong>
+
+            <span>
+                Question papers processed
+            </span>
+
+        </div>
+
+
+        <div class="intel-coverage-card">
+
+            <div class="intel-coverage-icon">
+                ❓
+            </div>
+
+            <small>
+                Questions Extracted
+            </small>
+
+            <strong>
+                {{ coverage.questions }}
+            </strong>
+
+            <span>
+                Questions available for analysis
+            </span>
+
+        </div>
+
+
+        <div class="intel-coverage-card">
+
+            <div class="intel-coverage-icon">
+                🔁
+            </div>
+
+            <small>
+                Repeated Groups
+            </small>
+
+            <strong>
+                {{ coverage.repeated_groups }}
+            </strong>
+
+            <span>
+                Similar question groups
+            </span>
+
+        </div>
+
+
+        <div class="intel-coverage-card">
+
+            <div class="intel-coverage-icon">
+                🧠
+            </div>
+
+            <small>
+                Topics Identified
+            </small>
+
+            <strong>
+                {{ coverage.topics }}
+            </strong>
+
+            <span>
+                Topics detected from questions
+            </span>
+
+        </div>
+
+
+    </section>
+
+    <!-- =========================================================
+        VISUAL INTELLIGENCE
+        ========================================================= -->
+
+    <section class="visual-intelligence">
+
+        <div class="visual-intelligence-header">
+
+            <div>
+                <span class="visual-intelligence-eyebrow">
+                    👁 VISUAL INTELLIGENCE
+                </span>
+
+                <h2>
+                    Figures, Diagrams & Tables
+                </h2>
+
+                <p>
+                    StudyHub also examines visually rich pages in
+                    uploaded question papers and extracts useful
+                    labels and visual context.
+                </p>
+            </div>
+
+            <div class="visual-status-badge">
+                <span class="visual-status-dot"></span>
+                Visual Analysis Active
+            </div>
+
+        </div>
+
+
+        <div class="visual-intelligence-grid">
+
+            <!-- FIGURES -->
+
+            <div class="visual-stat-card">
+
+                <div class="visual-stat-icon purple">
+                    🖼️
+                </div>
+
+                <div class="visual-stat-content">
+
+                    <span>
+                        Figures & Diagrams
+                    </span>
+
+                    <strong>
+                        {{ visual_figures_count|default(0) }}
+                    </strong>
+
+                    <small>
+                        Detected across analyzed papers
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- TABLES -->
+
+            <div class="visual-stat-card">
+
+                <div class="visual-stat-icon blue">
+                    📊
+                </div>
+
+                <div class="visual-stat-content">
+
+                    <span>
+                        Tables
+                    </span>
+
+                    <strong>
+                        {{ visual_tables_count|default(0) }}
+                    </strong>
+
+                    <small>
+                        Structured visual content
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- GRAPHS -->
+
+            <div class="visual-stat-card">
+
+                <div class="visual-stat-icon cyan">
+                    📈
+                </div>
+
+                <div class="visual-stat-content">
+
+                    <span>
+                        Graphs & Charts
+                    </span>
+
+                    <strong>
+                        {{ visual_graphs_count|default(0) }}
+                    </strong>
+
+                    <small>
+                        Visual data representations
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- VISUAL PAGES -->
+
+            <div class="visual-stat-card">
+
+                <div class="visual-stat-icon green">
+                    👁️
+                </div>
+
+                <div class="visual-stat-content">
+
+                    <span>
+                        Visual Pages
+                    </span>
+
+                    <strong>
+                        {{ visual_pages_count|default(0) }}
+                    </strong>
+
+                    <small>
+                        Pages requiring visual analysis
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================================================
+     PREMIUM VISUAL INTELLIGENCE GALLERY
+     ========================================================= -->
+
+{% if visual_analysis %}
+<section class="premium-visual-section">
+    <div class="premium-visual-header">
+        <div class="premium-visual-heading">
+            <div class="premium-visual-icon">◈</div>
+            <div>
+                <span class="premium-visual-eyebrow">VISUAL INTELLIGENCE</span>
+                <h2>Related Visual Content</h2>
+                <p>Actual figures, diagrams, graphs and tables detected inside your question papers.</p>
+            </div>
+        </div>
+        <div class="premium-visual-count">
+            <strong>{{ visual_analysis[:8]|length }}</strong>
+            <span>featured visuals</span>
+        </div>
+    </div>
+
+    <div class="premium-visual-grid">
+        {% for visual in visual_analysis[:8] %}
+        <article class="premium-visual-card">
+            <div class="premium-visual-preview">
+                {% if visual.image_filename %}
+                <img src="{{ url_for('pyq.serve_pyq_visual', filename=visual.image_filename) }}"
+                     alt="Visual content from page {{ visual.page }}" loading="lazy">
+                {% else %}
+                <div class="premium-no-image"><span>◫</span><small>Preview unavailable</small></div>
+                {% endif %}
+                <div class="premium-page-badge">Page {{ visual.page }}</div>
+            </div>
+
+            <div class="premium-visual-content">
+                <div class="premium-visual-title-row">
+                    <div>
+                        <span class="premium-visual-type">{{ visual.visual_type or "Visual Content" }}</span>
+                        <h3>Visual from Question Paper</h3>
+                    </div>
+                    <div class="premium-visual-arrow">↗</div>
+                </div>
+
+                {% if visual.visual_keywords %}
+                <div class="premium-visual-tags">
+                    {% for keyword in visual.visual_keywords[:4] %}
+                    <span>{{ keyword }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if visual.ocr_text %}
+                <p class="premium-visual-description">
+                    {{ visual.ocr_text[:220] }}{% if visual.ocr_text|length > 220 %}...{% endif %}
+                </p>
+                {% else %}
+                <p class="premium-visual-description">Visual content detected on this page of the question paper.</p>
+                {% endif %}
+
+                <div class="premium-visual-footer">
+                    <span><b>PDF Page</b> {{ visual.page }}</span>
+                    {% if visual.image_count %}<span>{{ visual.image_count }} image</span>{% endif %}
+                    {% if visual.drawing_count %}<span>{{ visual.drawing_count }} elements</span>{% endif %}
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+
+    {% if visual_analysis|length > 8 %}
+    <div class="premium-visual-more">
+        <span>Showing 8 featured visual pages</span>
+        <span>More visual content is available in the analyzed papers.</span>
+    </div>
+    {% endif %}
+</section>
+{% else %}
+<section class="premium-visual-empty">
+    <div class="premium-empty-icon">◈</div>
+    <h3>No visual content detected yet</h3>
+    <p>Upload question papers containing diagrams, figures, graphs or tables and StudyHub will automatically identify them.</p>
+</section>
+{% endif %}
+
+<!-- =====================================================
+         ANALYTICS DASHBOARD
+         ===================================================== -->
+
+    <section class="analytics-dashboard">
+
+
+        <div class="analytics-heading">
+
+            <div>
+
+                <span class="analytics-eyebrow">
+                    Data Insights
+                </span>
+
+                <h2>
+                    PYQ Analytics Dashboard
+                </h2>
+
+                <p>
+                    Explore historical patterns across the
+                    analyzed papers, questions, subjects and
+                    repeated-question groups.
+                </p>
+
+            </div>
+
+
+            <div class="analytics-latest">
+
+                <span>
+                    Latest analyzed year
+                </span>
+
+                <strong>
+                    {{ analytics_summary.latest_year or "—" }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="analytics-summary-grid">
+
+
+            <div class="analytics-stat-card">
+
+                <span class="analytics-stat-icon">
+                    📄
+                </span>
+
+                <div>
+
+                    <small>
+                        Latest Year Papers
+                    </small>
+
+                    <strong>
+                        {{ analytics_summary.latest_year_papers }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="analytics-stat-card">
+
+                <span class="analytics-stat-icon">
+                    🔁
+                </span>
+
+                <div>
+
+                    <small>
+                        Repeated Groups
+                    </small>
+
+                    <strong>
+                        {{ analytics_summary.repeated_groups }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="analytics-stat-card">
+
+                <span class="analytics-stat-icon">
+                    📚
+                </span>
+
+                <div>
+
+                    <small>
+                        Recent Questions
+                    </small>
+
+                    <strong>
+                        {{ analytics_summary.recent_questions }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="analytics-stat-card">
+
+                <span class="analytics-stat-icon">
+                    🧠
+                </span>
+
+                <div>
+
+                    <small>
+                        Top Topic
+                    </small>
+
+                    <strong class="analytics-topic-value">
+                        {{ analytics_summary.top_topic or "—" }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="analytics-chart-grid">
+
+
+            <div class="analytics-card analytics-wide">
+
+                <div class="analytics-card-header">
+
+                    <div>
+
+                        <span class="analytics-label">
+                            YEAR TREND
+                        </span>
+
+                        <h3>
+                            Papers & Questions by Year
+                        </h3>
+
+                    </div>
+
+                </div>
+
+                <div class="analytics-chart-wrapper">
+
+                    <canvas id="yearTrendChart"></canvas>
+
+                </div>
+
+            </div>
+
+
+            <div class="analytics-card">
+
+                <div class="analytics-card-header">
+
+                    <div>
+
+                        <span class="analytics-label">
+                            TOPICS
+                        </span>
+
+                        <h3>
+                            Most Repeated Topics
+                        </h3>
+
+                    </div>
+
+                </div>
+
+                <div class="analytics-chart-wrapper">
+
+                    <canvas id="topicChart"></canvas>
+
+                </div>
+
+            </div>
+
+
+            <div class="analytics-card">
+
+                <div class="analytics-card-header">
+
+                    <div>
+
+                        <span class="analytics-label">
+                            SUBJECT ANALYSIS
+                        </span>
+
+                        <h3>
+                            Papers by Subject
+                        </h3>
+
+                    </div>
+
+                </div>
+
+                <div class="analytics-chart-wrapper">
+
+                    <canvas id="subjectChart"></canvas>
+
+                </div>
+
+            </div>
+
+
+            <div class="analytics-card">
+
+                <div class="analytics-card-header">
+
+                    <div>
+
+                        <span class="analytics-label">
+                            REPETITION
+                        </span>
+
+                        <h3>
+                            Question Repetition Distribution
+                        </h3>
+
+                    </div>
+
+                </div>
+
+                <div class="analytics-chart-wrapper analytics-doughnut">
+
+                    <canvas id="repetitionChart"></canvas>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="analytics-insight">
+
+            <div class="analytics-insight-icon">
+                📊
+            </div>
+
+            <div>
+
+                <strong>
+                    Historical analysis
+                </strong>
+
+                <p>
+                    {{ analytics_summary.recent_questions }}
+                    questions belong to the latest analyzed
+                    year, while
+                    {{ analytics_summary.historical_questions }}
+                    belong to earlier analyzed years.
+                    These statistics describe historical patterns
+                    and do not predict future examination questions.
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         PREPARE SMART
+         ===================================================== -->
+
+    <section class="prepare-smart">
+
+
+        <div class="prepare-smart-header">
+
+            <div>
+
+                <h2>
+                    Prepare Smart
+                </h2>
+
+                <p>
+                    Use historical repetition and recency
+                    information to organize your study priorities.
+                </p>
+
+            </div>
+
+            <span class="prepare-smart-badge">
+                Historical Analysis
+            </span>
+
+        </div>
+
+
+        <div class="prepare-smart-grid">
+
+
+            <div class="prepare-smart-card">
+
+                <small>
+                    Frequently Repeated
+                </small>
+
+                <strong>
+                    {{ prepare_summary.frequently_repeated }}
+                </strong>
+
+                <span>
+                    Questions appearing multiple times
+                </span>
+
+            </div>
+
+
+            <div class="prepare-smart-card">
+
+                <small>
+                    Not Recently Seen
+                </small>
+
+                <strong>
+                    {{ prepare_summary.not_recently_seen }}
+                </strong>
+
+                <span>
+                    Repeated questions absent from latest year
+                </span>
+
+            </div>
+
+
+            <div class="prepare-smart-card">
+
+                <small>
+                    Recently Appeared
+                </small>
+
+                <strong>
+                    {{ prepare_summary.recently_seen }}
+                </strong>
+
+                <span>
+                    Repeated questions seen in latest year
+                </span>
+
+            </div>
+
+
+            <div class="prepare-smart-card">
+
+                <small>
+                    Topics
+                </small>
+
+                <strong>
+                    {{ prepare_summary.topics }}
+                </strong>
+
+                <span>
+                    Topics represented in repeated groups
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        {% if prepare_smart %}
+
+        <div class="repeated-question-list"
+             style="margin-top:18px;">
+
+            {% for item in prepare_smart[:10] %}
+
+            <div class="repeated-question-card">
+
+                <div class="repeated-question-top">
+
+                    <div>
+
+                        <div class="repeated-question-text">
+                            {{ item.question }}
+                        </div>
+
+                        {% if item.topic %}
+
+                        <span class="repeated-question-topic">
+                            🧠 {{ item.topic }}
+                        </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="repeated-question-count">
+
+                        <strong>
+                            {{ item.count }}
+                        </strong>
+
+                        <span>
+                            appearances
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                {% if item.years %}
+
+                <div class="repeated-question-years">
+
+                    {% for year in item.years %}
+
+                    <span class="repeated-year">
+                        {{ year }}
+                    </span>
+
+                    {% endfor %}
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="intel-empty"
+             style="margin-top:18px;">
+
+            <div class="intel-empty-icon">
+                🎯
+            </div>
+
+            <strong>
+                No preparation insights yet
+            </strong>
+
+            <span>
+                Analyze more question papers to build
+                historical preparation insights.
+            </span>
+
+        </div>
+
+        {% endif %}
+
+
+    </section>
+
+
+    <!-- =====================================================
+         TOP TOPICS
+         ===================================================== -->
+
+    <section>
+
+        <div class="intel-section-title">
+
+            <div>
+
+                <h2>
+                    Most Repeated Topics
+                </h2>
+
+                <p>
+                    Topics appearing most frequently in the
+                    detected repeated-question groups.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {% if top_topics %}
+
+        <div class="intel-topic-grid">
+
+            {% for item in top_topics %}
+
+            <div class="intel-topic-card">
+
+                <div class="intel-topic-rank">
+
+                    <span class="intel-topic-number">
+                        {{ loop.index }}
+                    </span>
+
+                    <span class="intel-topic-count">
+                        {{ item.count }} groups
+                    </span>
+
+                </div>
+
+                <div class="intel-topic-name">
+                    {{ item.topic }}
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="intel-empty">
+
+            <div class="intel-empty-icon">
+                🧠
+            </div>
+
+            <strong>
+                No topics identified
+            </strong>
+
+            <span>
+                More analyzed questions are required.
+            </span>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- =====================================================
+         REPEATED QUESTIONS
+         ===================================================== -->
+
+    <section>
+
+        <div class="intel-section-title">
+
+            <div>
+
+                <h2>
+                    Repeated Questions
+                </h2>
+
+                <p>
+                    Questions grouped by similarity across
+                    different examination papers.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {% if repeated_questions %}
+
+        <div class="repeated-question-list">
+
+            {% for item in repeated_questions[:20] %}
+
+            <div class="repeated-question-card">
+
+                <div class="repeated-question-top">
+
+                    <div>
+
+                        <div class="repeated-question-text">
+                            {{ item.question }}
+                        </div>
+
+                        {% if item.topic %}
+
+                        <span class="repeated-question-topic">
+                            🧠 {{ item.topic }}
+                        </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="repeated-question-count">
+
+                        <strong>
+                            {{ item.count }}
+                        </strong>
+
+                        <span>
+                            times
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                {% if item.years %}
+
+                <div class="repeated-question-years">
+
+                    {% for year in item.years %}
+
+                    <span class="repeated-year">
+                        {{ year }}
+                    </span>
+
+                    {% endfor %}
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="intel-empty">
+
+            <div class="intel-empty-icon">
+                🔍
+            </div>
+
+            <strong>
+                No repeated questions detected
+            </strong>
+
+            <span>
+                Upload and analyze more question papers
+                to discover repetition patterns.
+            </span>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- =====================================================
+         PAPERS USED
+         ===================================================== -->
+
+    <section>
+
+        <div class="intel-section-title">
+
+            <div>
+
+                <h2>
+                    Papers Used
+                </h2>
+
+                <p>
+                    Question papers included in the current analysis.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {% if papers %}
+
+        <div class="intel-table-wrapper">
+
+            <table class="intel-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Paper
+                        </th>
+
+                        <th>
+                            Subject
+                        </th>
+
+                        <th>
+                            Course
+                        </th>
+
+                        <th>
+                            Year
+                        </th>
+
+                        <th>
+                            Session
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for paper in papers %}
+
+                    <tr>
+
+                        <td>
+                            {{ paper.title }}
+                        </td>
+
+                        <td>
+                            {{ paper.subject or "—" }}
+                        </td>
+
+                        <td>
+                            {{ paper.course or "—" }}
+                        </td>
+
+                        <td>
+                            {{ paper.exam_year or "—" }}
+                        </td>
+
+                        <td>
+                            {{ paper.exam_session or "—" }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="intel-empty">
+
+            <div class="intel-empty-icon">
+                📄
+            </div>
+
+            <strong>
+                No papers available
+            </strong>
+
+            <span>
+                Upload approved PYQs to begin analysis.
+            </span>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- =====================================================
+         HOW IT WORKS
+         ===================================================== -->
+
+    <section>
+
+        <div class="intel-section-title">
+
+            <div>
+
+                <h2>
+                    How StudyHub Intelligence Works
+                </h2>
+
+                <p>
+                    A transparent historical-analysis workflow.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="intel-method-grid">
+
+
+            <div class="intel-method-card">
+
+                <span class="intel-method-number">
+                    01
+                </span>
+
+                <h3>
+                    Collect
+                </h3>
+
+                <p>
+                    StudyHub collects approved question papers
+                    from the repository.
+                </p>
+
+            </div>
+
+
+            <div class="intel-method-card">
+
+                <span class="intel-method-number">
+                    02
+                </span>
+
+                <h3>
+                    Extract
+                </h3>
+
+                <p>
+                    Questions are extracted from uploaded
+                    question-paper documents.
+                </p>
+
+            </div>
+
+
+            <div class="intel-method-card">
+
+                <span class="intel-method-number">
+                    03
+                </span>
+
+                <h3>
+                    Compare
+                </h3>
+
+                <p>
+                    Similar questions are grouped to identify
+                    historical repetition patterns.
+                </p>
+
+            </div>
+
+
+            <div class="intel-method-card">
+
+                <span class="intel-method-number">
+                    04
+                </span>
+
+                <h3>
+                    Analyze
+                </h3>
+
+                <p>
+                    StudyHub presents historical frequencies,
+                    topics, years and preparation insights.
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         DISCLAIMER
+         ===================================================== -->
+
+    <div class="analytics-insight"
+         style="margin-top:28px;">
+
+        <div class="analytics-insight-icon">
+            ℹ️
+        </div>
+
+        <div>
+
+            <strong>
+                Important
+            </strong>
+
+            <p>
+                StudyHub Intelligence describes patterns found
+                in previously analyzed question papers. It does
+                not predict or guarantee future examination
+                questions.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         BOTTOM CTA
+         ===================================================== -->
+
+    <div class="intel-bottom-cta">
+
+        <div>
+
+            <h3>
+                Continue exploring your question-paper data.
+            </h3>
+
+            <p>
+                Add more PYQs to improve the historical coverage
+                available to StudyHub Intelligence.
+            </p>
+
+        </div>
+
+
+        <a
+            href="{{ url_for('pyq.pyq_repository') }}"
+            class="intel-button"
+        >
+            ← Back to PYQ Repository
+        </a>
+
+    </div>
+
+
+</div>
+
+
+<!-- =========================================================
+     CHART.JS
+     ========================================================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* =====================================================
+       STUDYHUB PREMIUM CHART THEME
+       ===================================================== */
+
+    const chartColors = {
+        primary: "#4f46e5",
+        secondary: "#0ea5e9",
+        cyan: "#06b6d4",
+        violet: "#8b5cf6",
+        green: "#10b981",
+        orange: "#f59e0b",
+        red: "#f43f5e",
+
+        primarySoft: "rgba(79, 70, 229, 0.16)",
+        secondarySoft: "rgba(14, 165, 233, 0.16)",
+        cyanSoft: "rgba(6, 182, 212, 0.14)",
+        violetSoft: "rgba(124, 58, 237, 0.14)",
+        greenSoft: "rgba(16, 185, 129, 0.14)",
+        orangeSoft: "rgba(245, 158, 11, 0.14)",
+        redSoft: "rgba(239, 68, 68, 0.14)"
+    };
+
+    const gridColor =
+        "rgba(79, 70, 229, 0.08)";
+
+    const textColor =
+        getComputedStyle(document.body).color || "#64748b";
+
+    /* =====================================================
+       DATA FROM FLASK
+       ===================================================== */
+
+    const yearFrequency =
+        JSON.parse('{{ year_frequency | tojson }}');
+
+    window.yearQuestionFrequency =
+        JSON.parse('{{ year_question_frequency | tojson }}');
+
+    window.topicFrequency =
+        JSON.parse('{{ top_topics | tojson }}');
+
+    window.subjectFrequency =
+        JSON.parse('{{ subject_frequency | tojson }}');
+
+    window.repetitionDistributionData =
+        JSON.parse('{{ repetition_distribution | tojson }}');
+
+
+    /* =====================================================
+       GLOBAL CHART DEFAULTS
+       ===================================================== */
+
+    Chart.defaults.font.family =
+        "Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+
+    Chart.defaults.color = "#475569";
+
+    Chart.defaults.animation.duration = 900;
+
+    Chart.defaults.animation.easing = "easeOutQuart";
+
+
+    /* =====================================================
+       YEAR TREND
+       ===================================================== */
+
+    const yearLabels =
+        yearFrequency.map(item => item.year);
+
+    const paperCounts =
+        yearFrequency.map(item => item.count);
+
+    const questionMap = {};
+
+    yearQuestionFrequency.forEach(item => {
+        questionMap[item.year] = item.count;
+    });
+
+    const questionCounts =
+        yearLabels.map(
+            year => questionMap[year] || 0
+        );
+
+
+    const yearCanvas =
+        document.getElementById("yearTrendChart");
+
+
+    if (yearCanvas && yearLabels.length) {
+
+        new Chart(yearCanvas, {
+
+            type: "line",
+
+            data: {
+                labels: yearLabels,
+
+                datasets: [
+
+                    {
+                        label: "Papers",
+
+                        data: paperCounts,
+
+                        borderColor:
+                            chartColors.primary,
+
+                        backgroundColor:
+                            chartColors.primarySoft,
+
+                        borderWidth: 3,
+
+                        pointRadius: 4,
+
+                        pointHoverRadius: 7,
+
+                        pointBackgroundColor:
+                            "#ffffff",
+
+                        pointBorderColor:
+                            chartColors.primary,
+
+                        pointBorderWidth: 3,
+
+                        tension: 0.4,
+
+                        fill: true
+                    },
+
+                    {
+                        label: "Questions",
+
+                        data: questionCounts,
+
+                        borderColor:
+                            chartColors.secondary,
+
+                        backgroundColor:
+                            chartColors.secondarySoft,
+
+                        borderWidth: 3,
+
+                        pointRadius: 4,
+
+                        pointHoverRadius: 7,
+
+                        pointBackgroundColor:
+                            "#ffffff",
+
+                        pointBorderColor:
+                            chartColors.secondary,
+
+                        pointBorderWidth: 3,
+
+                        tension: 0.4,
+
+                        fill: true
+                    }
+
+                ]
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                interaction: {
+                    mode: "index",
+                    intersect: false
+                },
+
+                plugins: {
+
+                    legend: {
+                        position: "bottom",
+
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: "circle",
+                            padding: 20
+                        }
+                    },
+
+                    tooltip: {
+                        backgroundColor:
+                            "rgba(15, 23, 42, 0.94)",
+
+                        titleColor: "#ffffff",
+
+                        bodyColor: "#e2e8f0",
+
+                        borderColor:
+                            "rgba(255,255,255,0.12)",
+
+                        borderWidth: 1,
+
+                        padding: 12,
+
+                        cornerRadius: 12
+                    }
+
+                },
+
+                scales: {
+
+                    x: {
+                        grid: {
+                            color: gridColor,
+                            drawBorder: false
+                        }
+                    },
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        ticks: {
+                            precision: 0
+                        },
+
+                        grid: {
+                            color: gridColor,
+                            drawBorder: false
+                        }
+                    }
+
+                }
+            }
+
+        });
+
+    }
+
+
+    /* =====================================================
+       TOPIC CHART
+       ===================================================== */
+
+    const topicCanvas =
+        document.getElementById("topicChart");
+
+
+    if (
+        topicCanvas &&
+        topicFrequency.length
+    ) {
+
+        new Chart(topicCanvas, {
+
+            type: "bar",
+
+            data: {
+
+                labels:
+                    topicFrequency.map(
+                        item => item.topic
+                    ),
+
+                datasets: [
+
+                    {
+                        label:
+                            "Repeated Groups",
+
+                        data:
+                            topicFrequency.map(
+                                item => item.count
+                            ),
+
+                        backgroundColor:
+                            chartColors.primarySoft,
+
+                        borderColor:
+                            chartColors.primary,
+
+                        borderWidth: 2,
+
+                        borderRadius: 8,
+
+                        borderSkipped: false
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                indexAxis: "y",
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    },
+
+                    tooltip: {
+                        backgroundColor:
+                            "rgba(15, 23, 42, 0.94)",
+
+                        padding: 12,
+
+                        cornerRadius: 12
+                    }
+
+                },
+
+                scales: {
+
+                    x: {
+
+                        beginAtZero: true,
+
+                        ticks: {
+                            precision: 0
+                        },
+
+                        grid: {
+                            color: gridColor,
+                            drawBorder: false
+                        }
+
+                    },
+
+                    y: {
+
+                        grid: {
+                            display: false
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+
+    /* =====================================================
+       SUBJECT CHART
+       ===================================================== */
+
+    const subjectCanvas =
+        document.getElementById("subjectChart");
+
+
+    if (
+        subjectCanvas &&
+        subjectFrequency.length
+    ) {
+
+        new Chart(subjectCanvas, {
+
+            type: "bar",
+
+            data: {
+
+                labels:
+                    subjectFrequency.map(
+                        item => item.subject
+                    ),
+
+                datasets: [
+
+                    {
+                        label: "Papers",
+
+                        data:
+                            subjectFrequency.map(
+                                item => item.count
+                            ),
+
+                        backgroundColor:
+                            chartColors.cyanSoft,
+
+                        borderColor:
+                            chartColors.cyan,
+
+                        borderWidth: 2,
+
+                        borderRadius: 8,
+
+                        borderSkipped: false
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    },
+
+                    tooltip: {
+                        backgroundColor:
+                            "rgba(15, 23, 42, 0.94)",
+
+                        padding: 12,
+
+                        cornerRadius: 12
+                    }
+
+                },
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        ticks: {
+                            precision: 0
+                        },
+
+                        grid: {
+                            color: gridColor,
+                            drawBorder: false
+                        }
+
+                    },
+
+                    x: {
+
+                        grid: {
+                            display: false
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+
+    /* =====================================================
+       REPETITION DONUT
+       ===================================================== */
+
+    const repetitionDistribution =
+        window.repetitionDistributionData || {};
+
+    const repetitionCanvas =
+        document.getElementById(
+            "repetitionChart"
+        );
+
+
+    if (repetitionCanvas) {
+
+        new Chart(repetitionCanvas, {
+
+            type: "doughnut",
+
+            data: {
+
+                labels: [
+                    "Appeared Once",
+                    "Appeared Twice",
+                    "Appeared 3+ Times"
+                ],
+
+                datasets: [
+
+                    {
+
+                        data: [
+
+                            repetitionDistribution.once || 0,
+
+                            repetitionDistribution.twice || 0,
+
+                            repetitionDistribution.three_plus || 0
+
+                        ],
+
+                        backgroundColor: [
+
+                            chartColors.secondarySoft,
+
+                            chartColors.primarySoft,
+
+                            chartColors.violetSoft
+
+                        ],
+
+                        borderColor: [
+
+                            chartColors.secondary,
+
+                            chartColors.primary,
+
+                            chartColors.violet
+
+                        ],
+
+                        borderWidth: 2,
+
+                        hoverOffset: 10
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                cutout: "68%",
+
+                plugins: {
+
+                    legend: {
+
+                        position: "bottom",
+
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: "circle",
+                            padding: 18
+                        }
+
+                    },
+
+                    tooltip: {
+
+                        backgroundColor:
+                            "rgba(15, 23, 42, 0.94)",
+
+                        padding: 12,
+
+                        cornerRadius: 12
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+});
+</script>
+<style>
+/* =========================================================
+   STUDYHUB PYQ INTELLIGENCE — PREMIUM COLOR THEME
+   Put this at the VERY END of pyq_intelligence.html
+   ========================================================= */
+
+:root {
+    --intel-primary: #dedcf5;
+    --intel-primary-dark: #d8d7eb;
+    --intel-blue: #2563eb;
+    --intel-cyan: #0891b2;
+    --intel-violet: #7c3aed;
+    --intel-green: #059669;
+    --intel-orange: #d97706;
+    --intel-red: #dc2626;
+
+    --intel-bg: #f5f7ff;
+    --intel-card: #ffffff;
+    --intel-text: #020610;
+    --intel-muted: #050c15;
+    --intel-border: #e2e8f0;
+
+    --intel-gradient:
+        linear-gradient(135deg, #4f46e5 0%, #2563eb 50%, #0891b2 100%);
+
+    --intel-gradient-soft:
+        linear-gradient(135deg, #eef2ff 0%, #eff6ff 50%, #ecfeff 100%);
+}
+
+
+/* =========================================================
+   MAIN PAGE BACKGROUND
+   ========================================================= */
+
+.pyq-intelligence-page,
+.intelligence-page,
+.sh-intelligence-page {
+    background:
+        radial-gradient(
+            circle at 10% 0%,
+            rgba(79, 70, 229, 0.10),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 10%,
+            rgba(8, 145, 178, 0.08),
+            transparent 30%
+        ),
+        #f5f7ff !important;
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.intel-hero,
+.pyq-intelligence-hero,
+.sh-intelligence-hero {
+    background:
+        radial-gradient(
+            circle at 15% 20%,
+            rgba(255,255,255,0.16),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 85% 70%,
+            rgba(6,182,212,0.20),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #312e81 0%,
+            #4f46e5 38%,
+            #2563eb 70%,
+            #0891b2 100%
+        ) !important;
+
+    color: white !important;
+    border: none !important;
+    box-shadow:
+        0 25px 60px rgba(37, 99, 235, 0.22) !important;
+}
+
+
+/* Hero headings */
+
+.intel-hero h1,
+.pyq-intelligence-hero h1,
+.sh-intelligence-hero h1 {
+    color: #ffffff !important;
+}
+
+.intel-hero p,
+.pyq-intelligence-hero p,
+.sh-intelligence-hero p {
+    color: rgba(255,255,255,0.82) !important;
+}
+
+
+/* =========================================================
+   HERO BADGE
+   ========================================================= */
+
+.intel-hero-badge,
+.pyq-intelligence-hero .badge,
+.sh-intelligence-hero .badge {
+    background: rgba(255,255,255,0.14) !important;
+    border: 1px solid rgba(255,255,255,0.25) !important;
+    color: #ffffff !important;
+    backdrop-filter: blur(12px);
+}
+
+
+/* =========================================================
+   FILTER SECTION
+   ========================================================= */
+
+.intel-filters,
+.intelligence-filters,
+.pyq-filters {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow:
+        0 15px 40px rgba(15,23,42,0.07) !important;
+}
+
+
+.intel-filters label,
+.intelligence-filters label,
+.pyq-filters label {
+    color: #334155 !important;
+    font-weight: 700;
+}
+
+
+/* Select boxes */
+
+.intel-filters select,
+.intelligence-filters select,
+.pyq-filters select {
+    background: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #172033 !important;
+    border-radius: 12px !important;
+}
+
+
+.intel-filters select:focus,
+.intelligence-filters select:focus,
+.pyq-filters select:focus {
+    border-color: #4f46e5 !important;
+    box-shadow: 0 0 0 4px rgba(79,70,229,0.12) !important;
+    outline: none !important;
+}
+
+
+/* =========================================================
+   PRIMARY BUTTONS
+   ========================================================= */
+
+.intel-btn-primary,
+.intelligence-btn-primary,
+button[type="submit"] {
+    background:
+        linear-gradient(
+            135deg,
+            #4f46e5,
+            #2563eb
+        ) !important;
+
+    color: #ffffff !important;
+    border: none !important;
+
+    box-shadow:
+        0 10px 22px rgba(79,70,229,0.20) !important;
+}
+
+
+.intel-btn-primary:hover,
+.intelligence-btn-primary:hover,
+button[type="submit"]:hover {
+    background:
+        linear-gradient(
+            135deg,
+            #3730a3,
+            #1d4ed8
+        ) !important;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   COVERAGE CARDS
+   ========================================================= */
+
+.intel-stat-card,
+.intelligence-stat-card,
+.coverage-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow:
+        0 12px 30px rgba(15,23,42,0.06) !important;
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        border-color .25s ease;
+}
+
+
+.intel-stat-card:hover,
+.intelligence-stat-card:hover,
+.coverage-card:hover {
+    transform: translateY(-5px);
+
+    border-color: rgba(79,70,229,0.35) !important;
+
+    box-shadow:
+        0 20px 45px rgba(79,70,229,0.13) !important;
+}
+
+
+/* =========================================================
+   STAT NUMBERS
+   ========================================================= */
+
+.intel-stat-card .stat-value,
+.intelligence-stat-card .stat-value,
+.coverage-card .stat-value {
+    color: #4f46e5 !important;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   ANALYTICS DASHBOARD
+   ========================================================= */
+
+.analytics-dashboard,
+.intelligence-analytics,
+.intel-analytics {
+    background: transparent !important;
+}
+
+
+/* Analytics cards */
+
+.analytics-card,
+.intel-chart-card,
+.chart-card {
+    background: #ffffff !important;
+
+    border: 1px solid #e2e8f0 !important;
+
+    border-radius: 20px !important;
+
+    box-shadow:
+        0 12px 35px rgba(15,23,42,0.07) !important;
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+}
+
+
+.analytics-card:hover,
+.intel-chart-card:hover,
+.chart-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 20px 45px rgba(37,99,235,0.11) !important;
+}
+
+
+/* =========================================================
+   ANALYTICS HEADINGS
+   ========================================================= */
+
+.analytics-card h3,
+.intel-chart-card h3,
+.chart-card h3 {
+    color: #172033 !important;
+}
+
+
+.analytics-card p,
+.intel-chart-card p,
+.chart-card p {
+    color: #64748b !important;
+}
+
+
+/* =========================================================
+   PREPARE SMART
+   ========================================================= */
+
+.prepare-smart,
+.prepare-smart-section {
+    background:
+        linear-gradient(
+            135deg,
+            #eef2ff 0%,
+            #eff6ff 55%,
+            #ecfeff 100%
+        ) !important;
+
+    border: 1px solid #c7d2fe !important;
+}
+
+
+/* Prepare Smart cards */
+
+.prepare-card,
+.prepare-smart-card {
+    background: #ffffff !important;
+
+    border: 1px solid #e2e8f0 !important;
+
+    box-shadow:
+        0 10px 30px rgba(15,23,42,0.06) !important;
+}
+
+
+.prepare-card:hover,
+.prepare-smart-card:hover {
+    border-color: #818cf8 !important;
+
+    box-shadow:
+        0 18px 40px rgba(79,70,229,0.12) !important;
+}
+
+
+/* =========================================================
+   REPEATED QUESTIONS
+   ========================================================= */
+
+.repeated-question-card,
+.question-card,
+.intel-question-card {
+    background: #ffffff !important;
+
+    border: 1px solid #e2e8f0 !important;
+
+    box-shadow:
+        0 10px 28px rgba(15,23,42,0.05) !important;
+}
+
+
+.repeated-question-card:hover,
+.question-card:hover,
+.intel-question-card:hover {
+    border-color: rgba(79,70,229,0.35) !important;
+}
+
+
+/* =========================================================
+   TOPIC BADGES
+   ========================================================= */
+
+.topic-badge,
+.intel-topic,
+.question-topic {
+    background: #eef2ff !important;
+    color: #4338ca !important;
+
+    border: 1px solid #c7d2fe !important;
+}
+
+
+/* =========================================================
+   FREQUENCY BADGES
+   ========================================================= */
+
+.frequency-badge,
+.repeat-count,
+.repetition-count {
+    background: #ecfeff !important;
+    color: #0e7490 !important;
+
+    border: 1px solid #a5f3fc !important;
+}
+
+
+/* =========================================================
+   PRIORITY BADGES
+   ========================================================= */
+
+.high-priority,
+.priority-high {
+    background: #fef2f2 !important;
+    color: #b91c1c !important;
+    border: 1px solid #fecaca !important;
+}
+
+
+.review-soon,
+.priority-medium {
+    background: #fffbeb !important;
+    color: #b45309 !important;
+    border: 1px solid #fde68a !important;
+}
+
+
+.recently-appeared,
+.priority-low {
+    background: #ecfdf5 !important;
+    color: #047857 !important;
+    border: 1px solid #a7f3d0 !important;
+}
+
+
+/* =========================================================
+   PAPERS TABLE
+   ========================================================= */
+
+.intel-table,
+.papers-table,
+.analytics-table {
+    background: #ffffff !important;
+
+    border: 1px solid #e2e8f0 !important;
+
+    border-radius: 18px !important;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 12px 30px rgba(15,23,42,0.06) !important;
+}
+
+
+.intel-table thead,
+.papers-table thead,
+.analytics-table thead {
+    background:
+        linear-gradient(
+            135deg,
+            #eef2ff,
+            #eff6ff
+        ) !important;
+}
+
+
+.intel-table th,
+.papers-table th,
+.analytics-table th {
+    color: #3730a3 !important;
+    font-weight: 800;
+}
+
+
+.intel-table td,
+.papers-table td,
+.analytics-table td {
+    color: #334155 !important;
+    border-color: #e2e8f0 !important;
+}
+
+
+.intel-table tbody tr:hover,
+.papers-table tbody tr:hover,
+.analytics-table tbody tr:hover {
+    background: #f8faff !important;
+}
+
+
+/* =========================================================
+   HOW IT WORKS
+   ========================================================= */
+
+.how-it-works,
+.intelligence-how-it-works {
+    background: #ffffff !important;
+
+    border: 1px solid #e2e8f0 !important;
+
+    box-shadow:
+        0 12px 35px rgba(15,23,42,0.06) !important;
+}
+
+
+.how-it-works .step-number,
+.intelligence-how-it-works .step-number {
+    background:
+        linear-gradient(
+            135deg,
+            #4f46e5,
+            #2563eb
+        ) !important;
+
+    color: #ffffff !important;
+}
+
+
+/* =========================================================
+   DISCLAIMER
+   ========================================================= */
+
+.intelligence-disclaimer,
+.intel-disclaimer,
+.disclaimer {
+    background: #fff7ed !important;
+
+    border: 1px solid #fed7aa !important;
+
+    color: #9a3412 !important;
+}
+
+
+/* =========================================================
+   FINAL CTA
+   ========================================================= */
+
+.intelligence-cta,
+.intel-cta,
+.pyq-intelligence-cta {
+    background:
+        radial-gradient(
+            circle at 15% 20%,
+            rgba(255,255,255,0.16),
+            transparent 25%
+        ),
+        linear-gradient(
+            135deg,
+            #312e81,
+            #4f46e5,
+            #2563eb,
+            #0891b2
+        ) !important;
+
+    color: #ffffff !important;
+
+    border: none !important;
+
+    box-shadow:
+        0 25px 55px rgba(37,99,235,0.20) !important;
+}
+
+
+/* =========================================================
+   CHART CANVAS
+   ========================================================= */
+
+canvas {
+    max-width: 100%;
+}
+
+
+/* =========================================================
+   SECTION HEADINGS
+   ========================================================= */
+
+.pyq-intelligence-page h2,
+.pyq-intelligence-page h3,
+.intelligence-page h2,
+.intelligence-page h3 {
+    color: #172033;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .intel-hero,
+    .pyq-intelligence-hero,
+    .sh-intelligence-hero {
+        border-radius: 20px !important;
+    }
+
+    .analytics-card,
+    .intel-chart-card,
+    .chart-card {
+        border-radius: 16px !important;
+    }
+
+}
+</style>
+
+<style>
+/* =========================================================
+   STUDYHUB PYQ INTELLIGENCE — FINAL PREMIUM COLOR OVERRIDE
+   Exact selectors, intentionally placed last so this theme wins.
+   ========================================================= */
+
+.intelligence-container {
+    --c-navy: #0f172a;
+    --c-indigo: #4f46e5;
+    --c-blue: #2563eb;
+    --c-cyan: #0891b2;
+    --c-violet: #7c3aed;
+    --c-text: #172554;
+    --c-muted: #64748b;
+    --c-border: #dbe4f0;
+    --c-page: #f3f7ff;
+    --c-card: #ffffff;
+}
+
+/* Page background */
+body:has(.intelligence-container) {
+    background:
+        radial-gradient(circle at 8% 0%, rgba(79,70,229,.10), transparent 26%),
+        radial-gradient(circle at 92% 8%, rgba(6,182,212,.09), transparent 24%),
+        #f3f7ff !important;
+}
+
+/* Main hero — strong but professional */
+.intelligence-container .intel-hero {
+    background:
+        radial-gradient(circle at 88% 18%, rgba(34,211,238,.22), transparent 24%),
+        radial-gradient(circle at 12% 88%, rgba(99,102,241,.22), transparent 30%),
+        linear-gradient(135deg, #0f172a 0%, #1e1b4b 42%, #3730a3 72%, #0369a1 100%) !important;
+    border: 1px solid rgba(129,140,248,.35) !important;
+    box-shadow: 0 24px 70px rgba(30,41,59,.20) !important;
+}
+
+.intelligence-container .intel-hero h1,
+.intelligence-container .intel-hero h1 * {
+    color: #ffffff !important;
+}
+
+.intelligence-container .intel-hero h1 .intel-gradient-text {
+    background: none !important;
+    color: #ffffff !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    -webkit-text-fill-color: #ffffff !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+
+.intelligence-container .intel-hero-description {
+    color: rgba(241,245,249,.82) !important;
+}
+
+.intelligence-container .intel-eyebrow,
+.intelligence-container .intel-meta-pill {
+    color: #e2e8f0 !important;
+    background: rgba(255,255,255,.09) !important;
+    border: 1px solid rgba(255,255,255,.16) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.08) !important;
+    backdrop-filter: blur(10px);
+}
+
+.intelligence-container .intel-eyebrow-dot {
+    background: #22d3ee !important;
+    box-shadow: 0 0 0 4px rgba(34,211,238,.14), 0 0 14px rgba(34,211,238,.65) !important;
+}
+
+/* Hero visual */
+.intelligence-container .intel-orbit {
+    border-color: rgba(165,180,252,.28) !important;
+    box-shadow: 0 0 0 28px rgba(129,140,248,.045), 0 0 0 58px rgba(34,211,238,.035) !important;
+}
+
+.intelligence-container .intel-core {
+    background: linear-gradient(145deg, #ffffff, #dbeafe) !important;
+    border: 1px solid rgba(255,255,255,.70) !important;
+    box-shadow: 0 15px 35px rgba(15,23,42,.28) !important;
+}
+
+.intelligence-container .intel-node {
+    background: rgba(255,255,255,.92) !important;
+    border: 1px solid rgba(165,180,252,.45) !important;
+    box-shadow: 0 10px 25px rgba(15,23,42,.16) !important;
+}
+
+/* Section titles */
+.intelligence-container .intel-section-title h2,
+.intelligence-container .analytics-heading h2,
+.intelligence-container .intel-panel-title {
+    color: #0f172a !important;
+}
+
+.intelligence-container .intel-section-title p,
+.intelligence-container .analytics-heading p,
+.intelligence-container .intel-panel-description {
+    color: #64748b !important;
+}
+
+/* Filter panel */
+.intelligence-container .intel-panel {
+    background: rgba(255,255,255,.96) !important;
+    border: 1px solid #dbe4f0 !important;
+    box-shadow: 0 18px 50px rgba(30,41,59,.08) !important;
+}
+
+.intelligence-container .intel-filter-label {
+    color: #334155 !important;
+}
+
+.intelligence-container .intel-filter-group select {
+    color: #172033 !important;
+    background: #f8fbff !important;
+    border: 1px solid #d6e0ec !important;
+}
+
+.intelligence-container .intel-filter-group select:hover,
+.intelligence-container .intel-filter-group select:focus {
+    border-color: #6366f1 !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 4px rgba(99,102,241,.10) !important;
+}
+
+/* Buttons */
+.intelligence-container .intel-button {
+    color: #334155 !important;
+    background: #f8fafc !important;
+    border-color: #dbe4f0 !important;
+}
+
+.intelligence-container .intel-filter-actions .intel-button:last-child {
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #4f46e5, #2563eb) !important;
+    border-color: transparent !important;
+    box-shadow: 0 10px 26px rgba(79,70,229,.28) !important;
+}
+
+/* Coverage cards */
+.intelligence-container .intel-coverage-card,
+.intelligence-container .analytics-stat-card,
+.intelligence-container .analytics-card,
+.intelligence-container .intel-topic-card,
+.intelligence-container .intel-method-card,
+.intelligence-container .repeated-question-card,
+.intelligence-container .intel-table-wrapper {
+    background: #ffffff !important;
+    border: 1px solid #dbe4f0 !important;
+    box-shadow: 0 14px 38px rgba(30,41,59,.07) !important;
+}
+
+.intelligence-container .intel-coverage-card {
+    border-top: 3px solid #4f46e5 !important;
+}
+
+.intelligence-container .intel-coverage-card:nth-child(2) {
+    border-top-color: #0ea5e9 !important;
+}
+
+.intelligence-container .intel-coverage-card:nth-child(3) {
+    border-top-color: #7c3aed !important;
+}
+
+.intelligence-container .intel-coverage-card:nth-child(4) {
+    border-top-color: #06b6d4 !important;
+}
+
+.intelligence-container .intel-coverage-icon,
+.intelligence-container .analytics-stat-icon {
+    background: #eef2ff !important;
+    border: 1px solid #e0e7ff !important;
+}
+
+.intelligence-container .intel-coverage-card:nth-child(2) .intel-coverage-icon {
+    background: #e0f2fe !important;
+}
+
+.intelligence-container .intel-coverage-card:nth-child(3) .intel-coverage-icon {
+    background: #f3e8ff !important;
+}
+
+.intelligence-container .intel-coverage-card:nth-child(4) .intel-coverage-icon {
+    background: #cffafe !important;
+}
+
+.intelligence-container .intel-coverage-card small,
+.intelligence-container .analytics-stat-card small {
+    color: #64748b !important;
+}
+
+.intelligence-container .intel-coverage-card strong,
+.intelligence-container .analytics-stat-card strong {
+    color: #0f172a !important;
+}
+
+.intelligence-container .intel-coverage-card span {
+    color: #94a3b8 !important;
+}
+
+/* Analytics dashboard */
+.intelligence-container .analytics-dashboard {
+    background: transparent !important;
+}
+
+.intelligence-container .analytics-eyebrow,
+.intelligence-container .analytics-label {
+    color: #4f46e5 !important;
+}
+
+.intelligence-container .analytics-latest {
+    background: linear-gradient(145deg, #eef2ff, #e0f2fe) !important;
+    border: 1px solid #c7d2fe !important;
+    box-shadow: 0 10px 28px rgba(79,70,229,.08) !important;
+}
+
+.intelligence-container .analytics-latest span {
+    color: #64748b !important;
+}
+
+.intelligence-container .analytics-latest strong {
+    color: #312e81 !important;
+}
+
+/* Chart cards */
+.intelligence-container .analytics-card-header h3,
+.intelligence-container .analytics-card h3 {
+    color: #0f172a !important;
+}
+
+/* Repeated question / topic accents */
+.intelligence-container .repeated-question-topic,
+.intelligence-container .repeated-year,
+.intelligence-container .intel-topic-count {
+    background: #eef2ff !important;
+    color: #4338ca !important;
+    border-color: #c7d2fe !important;
+}
+
+.intelligence-container .repeated-question-count {
+    background: linear-gradient(145deg, #eef2ff, #e0e7ff) !important;
+    color: #3730a3 !important;
+    border: 1px solid #c7d2fe !important;
+}
+
+/* Tables */
+.intelligence-container .intel-table thead {
+    background: #eef2ff !important;
+}
+
+.intelligence-container .intel-table th {
+    color: #3730a3 !important;
+}
+
+.intelligence-container .intel-table td {
+    color: #475569 !important;
+    border-color: #e2e8f0 !important;
+}
+
+/* Method / info cards */
+.intelligence-container .intel-method-number {
+    color: #4f46e5 !important;
+    background: #eef2ff !important;
+    border-color: #c7d2fe !important;
+}
+
+.intelligence-container .analytics-insight {
+    background: linear-gradient(135deg, #eef2ff, #ecfeff) !important;
+    border: 1px solid #c7d2fe !important;
+    color: #334155 !important;
+}
+
+/* Bottom CTA */
+.intelligence-container .intel-bottom-cta {
+    background: linear-gradient(135deg, #111827 0%, #312e81 55%, #075985 100%) !important;
+    border: 1px solid rgba(99,102,241,.38) !important;
+    box-shadow: 0 22px 55px rgba(15,23,42,.18) !important;
+}
+
+.intelligence-container .intel-bottom-cta h3 {
+    color: #ffffff !important;
+}
+
+.intelligence-container .intel-bottom-cta p {
+    color: rgba(226,232,240,.78) !important;
+}
+
+.intelligence-container .intel-bottom-cta .intel-button {
+    color: #1e1b4b !important;
+    background: #ffffff !important;
+    border-color: #ffffff !important;
+}
+
+/* Clean hover behavior */
+.intelligence-container .intel-coverage-card,
+.intelligence-container .analytics-stat-card,
+.intelligence-container .analytics-card,
+.intelligence-container .repeated-question-card,
+.intelligence-container .intel-topic-card,
+.intelligence-container .intel-method-card {
+    transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+
+.intelligence-container .intel-coverage-card:hover,
+.intelligence-container .analytics-stat-card:hover,
+.intelligence-container .analytics-card:hover,
+.intelligence-container .repeated-question-card:hover,
+.intelligence-container .intel-topic-card:hover,
+.intelligence-container .intel-method-card:hover {
+    transform: translateY(-3px);
+    border-color: #c7d2fe !important;
+    box-shadow: 0 20px 45px rgba(79,70,229,.11) !important;
+}
+
+/* =========================================================
+   STUDYHUB PREMIUM VISUAL INTELLIGENCE
+   ========================================================= */
+.premium-visual-section{margin:28px 0 34px;padding:26px;background:linear-gradient(145deg,#fff 0%,#f8faff 100%);border:1px solid #dbe4ff;border-radius:24px;box-shadow:0 18px 50px rgba(37,99,235,.08)}
+.premium-visual-header{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:22px}
+.premium-visual-heading{display:flex;align-items:center;gap:15px}.premium-visual-icon{width:46px;height:46px;display:grid;place-items:center;flex:0 0 46px;border-radius:14px;color:#4f46e5;background:linear-gradient(135deg,#eef2ff,#e0f2fe);border:1px solid #c7d2fe;font-size:21px;font-weight:800}
+.premium-visual-eyebrow{display:block;margin-bottom:4px;color:#6366f1;font-size:10px;font-weight:800;letter-spacing:.16em}.premium-visual-heading h2{margin:0;color:#172033;font-size:24px;line-height:1.2}.premium-visual-heading p{margin:6px 0 0;color:#64748b;font-size:13px}
+.premium-visual-count{min-width:125px;padding:12px 16px;text-align:center;background:#fff;border:1px solid #dbe4ff;border-radius:14px}.premium-visual-count strong{display:block;color:#4f46e5;font-size:22px;line-height:1}.premium-visual-count span{display:block;margin-top:5px;color:#64748b;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.premium-visual-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.premium-visual-card{overflow:hidden;background:#fff;border:1px solid #dbe4ff;border-radius:20px;box-shadow:0 10px 30px rgba(15,23,42,.06);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}.premium-visual-card:hover{transform:translateY(-3px);border-color:#a5b4fc;box-shadow:0 18px 40px rgba(37,99,235,.12)}
+.premium-visual-preview{position:relative;height:310px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#f1f5f9;border-bottom:1px solid #e2e8f0}.premium-visual-preview img{width:100%;height:100%;display:block;object-fit:contain;background:#f8fafc}.premium-page-badge{position:absolute;top:12px;right:12px;padding:7px 11px;color:#fff;background:rgba(15,23,42,.82);border:1px solid rgba(255,255,255,.22);border-radius:999px;font-size:11px;font-weight:800;backdrop-filter:blur(8px)}
+.premium-no-image{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#94a3b8}.premium-no-image span{font-size:36px}.premium-no-image small{font-size:12px}.premium-visual-content{padding:18px}.premium-visual-title-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.premium-visual-type{display:inline-block;margin-bottom:5px;color:#4f46e5;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}.premium-visual-title-row h3{margin:0;color:#172033;font-size:16px}.premium-visual-arrow{width:34px;height:34px;display:grid;place-items:center;flex:0 0 34px;color:#4f46e5;background:#eef2ff;border-radius:10px;font-weight:800}
+.premium-visual-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:13px}.premium-visual-tags span{padding:5px 8px;color:#475569;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:999px;font-size:10px;font-weight:700}.premium-visual-description{min-height:42px;margin:13px 0;color:#64748b;font-size:12px;line-height:1.6}.premium-visual-footer{display:flex;flex-wrap:wrap;gap:8px;padding-top:12px;border-top:1px solid #eef2f7}.premium-visual-footer span{padding:5px 8px;color:#64748b;background:#f8fafc;border-radius:7px;font-size:10px}.premium-visual-footer b{color:#334155}.premium-visual-more{display:flex;justify-content:space-between;gap:15px;margin-top:18px;padding:12px 15px;color:#64748b;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;font-size:11px}.premium-visual-empty{margin:28px 0;padding:42px 25px;text-align:center;background:#fff;border:1px dashed #c7d2fe;border-radius:22px}.premium-empty-icon{margin-bottom:10px;color:#6366f1;font-size:34px}.premium-visual-empty h3{margin:0;color:#172033}.premium-visual-empty p{max-width:600px;margin:8px auto 0;color:#64748b;font-size:13px;line-height:1.6}
+@media(max-width:900px){.premium-visual-grid{grid-template-columns:1fr}.premium-visual-preview{height:340px}}@media(max-width:600px){.premium-visual-section{padding:17px;border-radius:18px}.premium-visual-header{align-items:flex-start;flex-direction:column}.premium-visual-count{width:100%}.premium-visual-preview{height:260px}.premium-visual-more{flex-direction:column}}
+</style>
+
+{% endblock %}

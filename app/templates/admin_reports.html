@@ -1,0 +1,1951 @@
+{% extends "base.html" %}
+
+{% block title %}Reports & Moderation - StudyHub{% endblock %}
+
+{% block content %}
+
+<div class="moderation-page">
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="moderation-hero">
+
+        <div class="hero-left">
+
+            <div class="hero-eyebrow">
+                🛡️ ADMIN MODERATION CENTER
+            </div>
+
+            <h1>
+                Reports & Moderation
+            </h1>
+
+            <p>
+                Review user-submitted reports and manage
+                reported StudyHub resources.
+            </p>
+
+        </div>
+
+        <div class="hero-pending">
+
+            <span class="pending-label">
+                PENDING REPORTS
+            </span>
+
+            <strong>
+                {{ pending_count }}
+            </strong>
+
+            <span class="pending-text">
+                awaiting review
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         QUICK STATS
+    ====================================================== -->
+
+    <section class="moderation-stats">
+
+        <div class="moderation-stat">
+            <span class="stat-icon">📋</span>
+
+            <div>
+                <small>Total Reports</small>
+                <strong id="totalReports">0</strong>
+            </div>
+        </div>
+
+
+        <div class="moderation-stat pending-stat">
+            <span class="stat-icon">🟠</span>
+
+            <div>
+                <small>Pending</small>
+                <strong id="pendingReports">0</strong>
+            </div>
+        </div>
+
+
+        <div class="moderation-stat reviewed-stat">
+            <span class="stat-icon">🔵</span>
+
+            <div>
+                <small>Reviewed</small>
+                <strong id="reviewedReports">0</strong>
+            </div>
+        </div>
+
+
+        <div class="moderation-stat resolved-stat">
+            <span class="stat-icon">🟢</span>
+
+            <div>
+                <small>Resolved</small>
+                <strong id="resolvedReports">0</strong>
+            </div>
+        </div>
+
+
+        <div class="moderation-stat dismissed-stat">
+            <span class="stat-icon">⚪</span>
+
+            <div>
+                <small>Dismissed</small>
+                <strong id="dismissedReports">0</strong>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         SEARCH & FILTERS
+    ====================================================== -->
+
+    <section class="moderation-toolbar">
+
+        <div class="search-wrapper">
+
+            <span class="search-icon">
+                🔎
+            </span>
+
+            <input
+                type="text"
+                id="reportSearch"
+                placeholder="Search by reason, description, resource ID..."
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <div class="filter-group">
+
+            <button
+                type="button"
+                class="filter-btn active"
+                data-type="all"
+            >
+                All
+            </button>
+
+            <button
+                type="button"
+                class="filter-btn"
+                data-type="note"
+            >
+                📘 Notes
+            </button>
+
+            <button
+                type="button"
+                class="filter-btn"
+                data-type="pyq"
+            >
+                📄 PYQs
+            </button>
+
+        </div>
+
+
+        <div class="status-filter">
+
+            <select id="statusFilter">
+
+                <option value="all">
+                    All Statuses
+                </option>
+
+                <option value="pending">
+                    🟠 Pending
+                </option>
+
+                <option value="reviewed">
+                    🔵 Reviewed
+                </option>
+
+                <option value="resolved">
+                    🟢 Resolved
+                </option>
+
+                <option value="dismissed">
+                    ⚪ Dismissed
+                </option>
+
+            </select>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         RESULTS COUNT
+    ====================================================== -->
+
+    <div class="results-header">
+
+        <div>
+            <strong id="visibleCount">
+                0
+            </strong>
+
+            reports shown
+        </div>
+
+        <button
+            type="button"
+            class="clear-filters"
+            id="clearFilters"
+        >
+            Clear Filters
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         REPORT LIST
+    ====================================================== -->
+
+    <section
+        class="reports-list"
+        id="reportsList"
+    >
+
+        {% for report in reports %}
+
+        <article
+            class="report-card"
+            data-type="{{ report.resource_type|lower }}"
+            data-status="{{ report.status|lower }}"
+            data-search="
+                {{ report.reason|lower }}
+                {{ report.description|default('', true)|lower }}
+                {{ report.resource_type|lower }}
+                {{ report.resource_id }}
+                {{ report.user_id }}
+            "
+        >
+
+            <!-- CARD HEADER -->
+
+            <div class="report-card-header">
+
+                <div class="report-number">
+                    #{{ report.id }}
+                </div>
+
+
+                <div class="resource-badge
+                    {% if report.resource_type|lower == 'note' %}
+                        note-badge
+                    {% else %}
+                        pyq-badge
+                    {% endif %}
+                ">
+
+                    {% if report.resource_type|lower == 'note' %}
+                        📘 NOTE
+                    {% else %}
+                        📄 PYQ
+                    {% endif %}
+
+                </div>
+
+
+                <div class="report-status
+                    status-{{ report.status|lower }}
+                ">
+
+                    {% if report.status|lower == 'pending' %}
+                        🟠 Pending
+
+                    {% elif report.status|lower == 'reviewed' %}
+                        🔵 Reviewed
+
+                    {% elif report.status|lower == 'resolved' %}
+                        🟢 Resolved
+
+                    {% elif report.status|lower == 'dismissed' %}
+                        ⚪ Dismissed
+
+                    {% else %}
+                        {{ report.status|title }}
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- REPORT CONTENT -->
+
+            <div class="report-card-body">
+
+                <div class="report-main">
+
+                    <div class="reason-label">
+                        REPORTED REASON
+                    </div>
+
+                    <h2>
+                        {{ report.reason }}
+                    </h2>
+
+
+                    {% if report.description %}
+
+                    <div class="description-box">
+
+                        <span>
+                            💬
+                        </span>
+
+                        <p>
+                            {{ report.description }}
+                        </p>
+
+                    </div>
+
+                    {% else %}
+
+                    <p class="no-description">
+                        No additional description provided.
+                    </p>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- RESOURCE INFORMATION -->
+
+                <div class="resource-info">
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            RESOURCE
+                        </span>
+
+                        <strong>
+                            {{ report.resource_type|upper }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            RESOURCE ID
+                        </span>
+
+                        <strong>
+                            #{{ report.resource_id }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            REPORTED BY
+                        </span>
+
+                        <strong>
+                            User #{{ report.user_id }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            REPORT ID
+                        </span>
+
+                        <strong>
+                            #{{ report.id }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTION AREA -->
+
+            <div class="report-card-footer">
+
+                <div class="footer-meta">
+
+                    <span>
+                        🛡️ Moderation
+                    </span>
+
+                    <span>
+                        Resource #{{ report.resource_id }}
+                    </span>
+
+                </div>
+
+
+                <div class="moderation-actions">
+
+                    <!-- OPEN RESOURCE -->
+
+                    {% if report.resource_type|lower == 'note' %}
+
+                    <a
+                        href="{{ url_for(
+                            'notes.view_note',
+                            note_id=report.resource_id
+                        ) }}"
+                        class="open-resource-btn"
+                        target="_blank"
+                    >
+                        Open Note ↗
+                    </a>
+
+                    {% elif report.resource_type|lower == 'pyq' %}
+
+                    <a
+                        href="{{ url_for(
+                            'pyq.preview_pyq',
+                            pyq_id=report.resource_id
+                        ) }}"
+                        class="open-resource-btn"
+                        target="_blank"
+                    >
+                        Open PYQ ↗
+                    </a>
+
+                    {% endif %}
+
+
+                    <!-- STATUS -->
+
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'enhancements.admin_update_report_status',
+                            report_id=report.id
+                        ) }}"
+                        class="status-form"
+                    >
+
+                        <select
+                            name="status"
+                            class="report-status-select"
+                        >
+
+                            <option
+                                value="pending"
+                                {% if report.status == "pending" %}
+                                selected
+                                {% endif %}
+                            >
+                                Pending
+                            </option>
+
+                            <option
+                                value="reviewed"
+                                {% if report.status == "reviewed" %}
+                                selected
+                                {% endif %}
+                            >
+                                Reviewed
+                            </option>
+
+                            <option
+                                value="resolved"
+                                {% if report.status == "resolved" %}
+                                selected
+                                {% endif %}
+                            >
+                                Resolved
+                            </option>
+
+                            <option
+                                value="dismissed"
+                                {% if report.status == "dismissed" %}
+                                selected
+                                {% endif %}
+                            >
+                                Dismissed
+                            </option>
+
+                        </select>
+
+
+                        <button
+                            type="submit"
+                            class="update-status-btn"
+                        >
+                            Update Status
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </article>
+
+        {% else %}
+
+        <!-- EMPTY STATE -->
+
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                🛡️
+            </div>
+
+            <h2>
+                No Reports Yet
+            </h2>
+
+            <p>
+                User-submitted reports will appear here
+                when they are created.
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+    </section>
+
+
+    <!-- FILTER EMPTY STATE -->
+
+    <div
+        class="filtered-empty"
+        id="filteredEmpty"
+        style="display:none;"
+    >
+
+        <div>
+            🔎
+        </div>
+
+        <h3>
+            No matching reports
+        </h3>
+
+        <p>
+            Try changing your search or filters.
+        </p>
+
+    </div>
+
+</div>
+
+
+<style>
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.moderation-page{
+    width:min(1380px,92%);
+    margin:45px auto 90px;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.moderation-hero{
+
+    display:flex;
+
+    align-items:center;
+    justify-content:space-between;
+
+    gap:30px;
+
+    padding:36px;
+
+    border-radius:28px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff 0%,
+            #f8faff 55%,
+            #eef2ff 100%
+        );
+
+    border:1px solid #dbe4f0;
+
+    box-shadow:
+        0 20px 55px rgba(15,23,42,.08);
+
+    position:relative;
+
+    overflow:hidden;
+}
+
+.moderation-hero::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:260px;
+    height:260px;
+
+    right:-100px;
+    top:-130px;
+
+    border-radius:50%;
+
+    background:rgba(79,70,229,.08);
+}
+
+.hero-left{
+    position:relative;
+    z-index:1;
+}
+
+.hero-eyebrow{
+
+    display:inline-flex;
+
+    padding:7px 12px;
+
+    border-radius:999px;
+
+    background:#eef2ff;
+
+    color:#4f46e5;
+
+    font-size:11px;
+
+    font-weight:850;
+
+    letter-spacing:.13em;
+}
+
+.moderation-hero h1{
+
+    margin:12px 0 8px;
+
+    color:#0f172a;
+
+    font-size:42px;
+
+    font-weight:900;
+
+    letter-spacing:-1.3px;
+}
+
+.moderation-hero p{
+
+    margin:0;
+
+    color:#64748b;
+
+    font-size:15px;
+
+    line-height:1.6;
+}
+
+
+/* =========================================================
+   PENDING HERO
+========================================================= */
+
+.hero-pending{
+
+    min-width:190px;
+
+    padding:22px;
+
+    border-radius:20px;
+
+    background:#ffffff;
+
+    border:1px solid #fed7aa;
+
+    box-shadow:
+        0 10px 30px rgba(15,23,42,.06);
+
+    position:relative;
+
+    z-index:1;
+}
+
+.pending-label{
+
+    display:block;
+
+    color:#c2410c;
+
+    font-size:10px;
+
+    font-weight:850;
+
+    letter-spacing:.13em;
+}
+
+.hero-pending strong{
+
+    display:block;
+
+    margin-top:5px;
+
+    color:#0f172a;
+
+    font-size:38px;
+
+    line-height:1;
+
+    font-weight:900;
+}
+
+.pending-text{
+
+    display:block;
+
+    margin-top:7px;
+
+    color:#64748b;
+
+    font-size:13px;
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.moderation-stats{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(5,minmax(0,1fr));
+
+    gap:15px;
+
+    margin:22px 0;
+}
+
+.moderation-stat{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:20px;
+
+    background:#ffffff;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:18px;
+
+    box-shadow:
+        0 10px 28px rgba(15,23,42,.045);
+}
+
+.stat-icon{
+
+    width:44px;
+    height:44px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    flex:none;
+
+    border-radius:13px;
+
+    background:#f1f5f9;
+
+    font-size:20px;
+}
+
+.moderation-stat small{
+
+    display:block;
+
+    color:#64748b;
+
+    font-size:12px;
+
+    font-weight:650;
+}
+
+.moderation-stat strong{
+
+    display:block;
+
+    margin-top:3px;
+
+    color:#0f172a;
+
+    font-size:25px;
+
+    font-weight:900;
+}
+
+.pending-stat .stat-icon{
+    background:#fff7ed;
+}
+
+.reviewed-stat .stat-icon{
+    background:#eff6ff;
+}
+
+.resolved-stat .stat-icon{
+    background:#ecfdf5;
+}
+
+.dismissed-stat .stat-icon{
+    background:#f8fafc;
+}
+
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.moderation-toolbar{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+
+    padding:16px;
+
+    margin-bottom:14px;
+
+    background:#ffffff;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:18px;
+
+    box-shadow:
+        0 8px 25px rgba(15,23,42,.04);
+}
+
+.search-wrapper{
+
+    position:relative;
+
+    flex:1;
+
+    min-width:260px;
+}
+
+.search-icon{
+
+    position:absolute;
+
+    left:14px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    font-size:15px;
+}
+
+.search-wrapper input{
+
+    width:100%;
+
+    height:45px;
+
+    box-sizing:border-box;
+
+    padding:0 15px 0 42px;
+
+    border:1px solid #dbe4f0;
+
+    border-radius:12px;
+
+    outline:none;
+
+    color:#0f172a;
+
+    background:#f8fafc;
+
+    font-size:14px;
+}
+
+.search-wrapper input:focus{
+
+    border-color:#818cf8;
+
+    background:#ffffff;
+
+    box-shadow:
+        0 0 0 3px rgba(99,102,241,.10);
+}
+
+
+/* =========================================================
+   TYPE FILTER
+========================================================= */
+
+.filter-group{
+
+    display:flex;
+
+    gap:6px;
+
+    padding:4px;
+
+    background:#f1f5f9;
+
+    border-radius:12px;
+}
+
+.filter-btn{
+
+    height:37px;
+
+    padding:0 13px;
+
+    border:0;
+
+    border-radius:9px;
+
+    background:transparent;
+
+    color:#64748b;
+
+    cursor:pointer;
+
+    font-size:13px;
+
+    font-weight:750;
+}
+
+.filter-btn.active{
+
+    background:#ffffff;
+
+    color:#4f46e5;
+
+    box-shadow:
+        0 2px 7px rgba(15,23,42,.08);
+}
+
+
+/* =========================================================
+   STATUS FILTER
+========================================================= */
+
+.status-filter select{
+
+    height:45px;
+
+    padding:0 13px;
+
+    border:1px solid #dbe4f0;
+
+    border-radius:12px;
+
+    background:#ffffff;
+
+    color:#334155;
+
+    outline:none;
+
+    font-size:13px;
+
+    font-weight:650;
+}
+
+
+/* =========================================================
+   RESULTS HEADER
+========================================================= */
+
+.results-header{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    margin:18px 2px;
+
+    color:#64748b;
+
+    font-size:13px;
+}
+
+.results-header strong{
+
+    color:#0f172a;
+
+    font-size:16px;
+}
+
+.clear-filters{
+
+    border:0;
+
+    background:none;
+
+    color:#4f46e5;
+
+    cursor:pointer;
+
+    font-size:13px;
+
+    font-weight:750;
+}
+
+
+/* =========================================================
+   REPORT CARD
+========================================================= */
+
+.reports-list{
+
+    display:grid;
+
+    gap:18px;
+}
+
+.report-card{
+
+    background:#ffffff;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:22px;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 12px 35px rgba(15,23,42,.055);
+}
+
+.report-card-header{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:16px 20px;
+
+    border-bottom:1px solid #eef2f7;
+
+    background:#fbfdff;
+}
+
+.report-number{
+
+    color:#64748b;
+
+    font-size:12px;
+
+    font-weight:800;
+}
+
+.resource-badge{
+
+    padding:6px 9px;
+
+    border-radius:8px;
+
+    font-size:10px;
+
+    font-weight:850;
+
+    letter-spacing:.05em;
+}
+
+.note-badge{
+
+    color:#4338ca;
+
+    background:#eef2ff;
+}
+
+.pyq-badge{
+
+    color:#0369a1;
+
+    background:#e0f2fe;
+}
+
+.report-status{
+
+    margin-left:auto;
+
+    padding:6px 10px;
+
+    border-radius:999px;
+
+    font-size:11px;
+
+    font-weight:800;
+}
+
+.status-pending{
+
+    color:#c2410c;
+
+    background:#fff7ed;
+}
+
+.status-reviewed{
+
+    color:#1d4ed8;
+
+    background:#eff6ff;
+}
+
+.status-resolved{
+
+    color:#047857;
+
+    background:#ecfdf5;
+}
+
+.status-dismissed{
+
+    color:#64748b;
+
+    background:#f1f5f9;
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+.report-card-body{
+
+    display:grid;
+
+    grid-template-columns:
+        minmax(0,1.6fr)
+        minmax(240px,.8fr);
+
+    gap:28px;
+
+    padding:24px;
+}
+
+.reason-label{
+
+    color:#94a3b8;
+
+    font-size:10px;
+
+    font-weight:850;
+
+    letter-spacing:.13em;
+}
+
+.report-main h2{
+
+    margin:7px 0 16px;
+
+    color:#0f172a;
+
+    font-size:21px;
+
+    font-weight:850;
+}
+
+.description-box{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:10px;
+
+    padding:14px;
+
+    border-radius:13px;
+
+    background:#f8fafc;
+
+    border:1px solid #eef2f7;
+}
+
+.description-box span{
+
+    flex:none;
+
+    font-size:16px;
+}
+
+.description-box p{
+
+    margin:0;
+
+    color:#475569;
+
+    line-height:1.6;
+
+    font-size:14px;
+}
+
+.no-description{
+
+    color:#94a3b8;
+
+    font-size:13px;
+
+    font-style:italic;
+}
+
+
+/* =========================================================
+   RESOURCE INFO
+========================================================= */
+
+.resource-info{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:10px;
+
+    align-content:start;
+}
+
+.info-item{
+
+    padding:13px;
+
+    border-radius:13px;
+
+    background:#f8fafc;
+
+    border:1px solid #eef2f7;
+}
+
+.info-label{
+
+    display:block;
+
+    margin-bottom:4px;
+
+    color:#94a3b8;
+
+    font-size:9px;
+
+    font-weight:850;
+
+    letter-spacing:.1em;
+}
+
+.info-item strong{
+
+    color:#334155;
+
+    font-size:13px;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.report-card-footer{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:15px;
+
+    padding:16px 20px;
+
+    border-top:1px solid #eef2f7;
+
+    background:#fbfdff;
+}
+
+.footer-meta{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:4px;
+
+    color:#94a3b8;
+
+    font-size:11px;
+}
+
+.moderation-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:9px;
+
+    flex-wrap:wrap;
+
+    justify-content:flex-end;
+}
+
+.open-resource-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    min-height:40px;
+
+    padding:0 13px;
+
+    border-radius:10px;
+
+    background:#eef2ff;
+
+    color:#4338ca;
+
+    text-decoration:none;
+
+    font-size:12px;
+
+    font-weight:800;
+}
+
+.open-resource-btn:hover{
+
+    background:#e0e7ff;
+
+    color:#3730a3;
+}
+
+.status-form{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:7px;
+}
+
+.report-status-select{
+
+    height:40px;
+
+    padding:0 10px;
+
+    border:1px solid #dbe4f0;
+
+    border-radius:10px;
+
+    background:#ffffff;
+
+    color:#334155;
+
+    outline:none;
+
+    font-size:12px;
+
+    font-weight:700;
+}
+
+.update-status-btn{
+
+    height:40px;
+
+    padding:0 14px;
+
+    border:0;
+
+    border-radius:10px;
+
+    background:#4f46e5;
+
+    color:#ffffff;
+
+    cursor:pointer;
+
+    font-size:12px;
+
+    font-weight:800;
+}
+
+.update-status-btn:hover{
+
+    background:#4338ca;
+}
+
+
+/* =========================================================
+   EMPTY STATES
+========================================================= */
+
+.empty-state,
+.filtered-empty{
+
+    text-align:center;
+
+    padding:70px 25px;
+
+    background:#ffffff;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:22px;
+
+    box-shadow:
+        0 10px 30px rgba(15,23,42,.04);
+}
+
+.empty-icon,
+.filtered-empty > div{
+
+    font-size:40px;
+
+    margin-bottom:12px;
+}
+
+.empty-state h2,
+.filtered-empty h3{
+
+    margin:0 0 7px;
+
+    color:#0f172a;
+
+    font-size:20px;
+}
+
+.empty-state p,
+.filtered-empty p{
+
+    margin:0;
+
+    color:#64748b;
+
+    font-size:14px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1100px){
+
+    .moderation-stats{
+
+        grid-template-columns:
+            repeat(3,1fr);
+    }
+
+}
+
+@media(max-width:850px){
+
+    .moderation-hero{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+    }
+
+    .hero-pending{
+
+        width:100%;
+
+        box-sizing:border-box;
+    }
+
+    .report-card-body{
+
+        grid-template-columns:1fr;
+    }
+
+    .report-card-footer{
+
+        align-items:flex-start;
+
+        flex-direction:column;
+    }
+
+    .moderation-actions{
+
+        width:100%;
+
+        justify-content:flex-start;
+    }
+
+}
+
+@media(max-width:650px){
+
+    .moderation-page{
+
+        width:92%;
+
+        margin-top:25px;
+    }
+
+    .moderation-hero{
+
+        padding:25px;
+
+        border-radius:22px;
+    }
+
+    .moderation-hero h1{
+
+        font-size:31px;
+    }
+
+    .moderation-stats{
+
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .moderation-stat{
+
+        padding:15px;
+
+        gap:9px;
+    }
+
+    .stat-icon{
+
+        width:38px;
+        height:38px;
+
+        font-size:17px;
+    }
+
+    .moderation-toolbar{
+
+        align-items:stretch;
+
+        flex-direction:column;
+    }
+
+    .search-wrapper{
+
+        width:100%;
+
+        min-width:0;
+    }
+
+    .filter-group{
+
+        width:100%;
+    }
+
+    .filter-btn{
+
+        flex:1;
+    }
+
+    .status-filter select{
+
+        width:100%;
+    }
+
+    .report-card-header{
+
+        flex-wrap:wrap;
+    }
+
+    .report-status{
+
+        margin-left:0;
+    }
+
+    .report-card-body{
+
+        padding:19px;
+    }
+
+    .resource-info{
+
+        grid-template-columns:1fr 1fr;
+    }
+
+    .moderation-actions{
+
+        flex-direction:column;
+
+        align-items:stretch;
+    }
+
+    .open-resource-btn,
+    .status-form{
+
+        width:100%;
+    }
+
+    .status-form{
+
+        display:grid;
+
+        grid-template-columns:1fr;
+    }
+
+    .report-status-select,
+    .update-status-btn{
+
+        width:100%;
+    }
+
+}
+
+@media(max-width:420px){
+
+    .moderation-stats{
+
+        grid-template-columns:1fr;
+    }
+
+    .resource-info{
+
+        grid-template-columns:1fr;
+    }
+
+}
+
+
+/* =========================================================
+   STABLE UI
+========================================================= */
+
+.report-card,
+.moderation-stat,
+.moderation-hero,
+.open-resource-btn,
+.update-status-btn,
+.filter-btn{
+
+    transition:none !important;
+
+    transform:none !important;
+}
+
+</style>
+
+
+<script>
+
+/* =========================================================
+   REPORT FILTER / SEARCH SYSTEM
+========================================================= */
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const cards = Array.from(
+        document.querySelectorAll(".report-card")
+    );
+
+    const searchInput =
+        document.getElementById("reportSearch");
+
+    const statusFilter =
+        document.getElementById("statusFilter");
+
+    const visibleCount =
+        document.getElementById("visibleCount");
+
+    const filteredEmpty =
+        document.getElementById("filteredEmpty");
+
+    const clearFilters =
+        document.getElementById("clearFilters");
+
+    const typeButtons =
+        Array.from(
+            document.querySelectorAll(".filter-btn")
+        );
+
+
+    let selectedType = "all";
+
+
+    /* =====================================================
+       COUNT REPORTS
+    ====================================================== */
+
+    let total = cards.length;
+    let pending = 0;
+    let reviewed = 0;
+    let resolved = 0;
+    let dismissed = 0;
+
+
+    cards.forEach(card => {
+
+        const status =
+            card.dataset.status;
+
+        if(status === "pending"){
+            pending++;
+        }
+
+        if(status === "reviewed"){
+            reviewed++;
+        }
+
+        if(status === "resolved"){
+            resolved++;
+        }
+
+        if(status === "dismissed"){
+            dismissed++;
+        }
+
+    });
+
+
+    document.getElementById(
+        "totalReports"
+    ).textContent = total;
+
+    document.getElementById(
+        "pendingReports"
+    ).textContent = pending;
+
+    document.getElementById(
+        "reviewedReports"
+    ).textContent = reviewed;
+
+    document.getElementById(
+        "resolvedReports"
+    ).textContent = resolved;
+
+    document.getElementById(
+        "dismissedReports"
+    ).textContent = dismissed;
+
+
+    /* =====================================================
+       APPLY FILTERS
+    ====================================================== */
+
+    function applyFilters(){
+
+        const search =
+            searchInput.value
+                .trim()
+                .toLowerCase();
+
+        const status =
+            statusFilter.value;
+
+        let visible = 0;
+
+
+        cards.forEach(card => {
+
+            const cardType =
+                card.dataset.type;
+
+            const cardStatus =
+                card.dataset.status;
+
+            const searchText =
+                card.dataset.search
+                    .toLowerCase();
+
+
+            const matchesType =
+                selectedType === "all" ||
+                cardType === selectedType;
+
+
+            const matchesStatus =
+                status === "all" ||
+                cardStatus === status;
+
+
+            const matchesSearch =
+                !search ||
+                searchText.includes(search);
+
+
+            const show =
+                matchesType &&
+                matchesStatus &&
+                matchesSearch;
+
+
+            card.style.display =
+                show ? "" : "none";
+
+
+            if(show){
+                visible++;
+            }
+
+        });
+
+
+        visibleCount.textContent =
+            visible;
+
+
+        if(
+            visible === 0 &&
+            cards.length > 0
+        ){
+
+            filteredEmpty.style.display =
+                "block";
+
+        }else{
+
+            filteredEmpty.style.display =
+                "none";
+        }
+
+    }
+
+
+    /* =====================================================
+       TYPE BUTTONS
+    ====================================================== */
+
+    typeButtons.forEach(button => {
+
+        button.addEventListener(
+            "click",
+            function(){
+
+                typeButtons.forEach(btn => {
+                    btn.classList.remove("active");
+                });
+
+                this.classList.add("active");
+
+                selectedType =
+                    this.dataset.type;
+
+                applyFilters();
+
+            }
+        );
+
+    });
+
+
+    /* =====================================================
+       SEARCH
+    ====================================================== */
+
+    searchInput.addEventListener(
+        "input",
+        applyFilters
+    );
+
+
+    /* =====================================================
+       STATUS
+    ====================================================== */
+
+    statusFilter.addEventListener(
+        "change",
+        applyFilters
+    );
+
+
+    /* =====================================================
+       CLEAR
+    ====================================================== */
+
+    clearFilters.addEventListener(
+        "click",
+        function(){
+
+            searchInput.value = "";
+
+            statusFilter.value =
+                "all";
+
+            selectedType = "all";
+
+
+            typeButtons.forEach(btn => {
+
+                btn.classList.remove(
+                    "active"
+                );
+
+            });
+
+
+            const allButton =
+                document.querySelector(
+                    '.filter-btn[data-type="all"]'
+                );
+
+            if(allButton){
+                allButton.classList.add(
+                    "active"
+                );
+            }
+
+
+            applyFilters();
+
+        }
+    );
+
+
+    /* INITIAL */
+
+    applyFilters();
+
+});
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found - StudyHub{% endblock %}
+
+{% block content %}
+
+<section class="sh-error-page">
+
+    <div class="sh-error-card">
+
+        <div class="sh-error-code">
+            404
+        </div>
+
+        <h1>
+            Page not found
+        </h1>
+
+        <p>
+            The page you're looking for doesn't exist
+            or may have been moved.
+        </p>
+
+        <a
+            href="{{ url_for('home') }}"
+            class="sh-btn sh-btn-primary"
+        >
+            Go to StudyHub
+            <span>→</span>
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}

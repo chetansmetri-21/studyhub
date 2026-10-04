@@ -1,0 +1,2335 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — StudyHub{% endblock %}
+
+{% block content %}
+
+<style>
+/* =========================================================
+   STUDYHUB PREMIUM DASHBOARD
+========================================================= */
+
+.sh-dashboard {
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 45px 28px 70px;
+    color: #0b1735;
+}
+
+
+/* =========================================================
+   COMMON
+========================================================= */
+
+.sh-section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #4262dc;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+}
+
+.sh-section-label::before {
+    content: "";
+    width: 20px;
+    height: 2px;
+    border-radius: 5px;
+    background: #4262dc;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.sh-dashboard-hero {
+    position: relative;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 35px;
+
+    padding: 48px 50px;
+
+    border-radius: 28px;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 85% 10%,
+            rgba(105, 137, 255, .20),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #f5f8ff,
+            #ffffff
+        );
+
+    border: 1px solid #e4e9f5;
+
+    box-shadow:
+        0 20px 55px rgba(35,55,120,.08);
+}
+
+.sh-dashboard-hero::after {
+    content: "";
+
+    position: absolute;
+
+    width: 260px;
+    height: 260px;
+
+    border-radius: 50%;
+
+    background: rgba(70,100,230,.045);
+
+    right: -100px;
+    bottom: -130px;
+}
+
+
+.sh-dashboard-welcome {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+}
+
+.sh-dashboard-welcome h1 {
+    margin: 13px 0 0;
+
+    font-size: 43px;
+    line-height: 1.1;
+
+    letter-spacing: -1.6px;
+
+    font-weight: 800;
+
+    color: #091735;
+}
+
+.sh-dashboard-welcome h1 span {
+    color: #3d5fe0;
+}
+
+.sh-dashboard-welcome p {
+    max-width: 620px;
+
+    margin: 17px 0 0;
+
+    color: #6c7890;
+
+    font-size: 15px;
+    line-height: 1.75;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.sh-dashboard-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.sh-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    min-height: 48px;
+
+    padding: 0 20px;
+
+    border-radius: 12px;
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    transition: .25s ease;
+
+    box-sizing: border-box;
+}
+
+.sh-btn-primary {
+    color: #fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #315be7,
+            #5145e8
+        );
+
+    box-shadow:
+        0 10px 22px rgba(60,85,220,.20);
+}
+
+.sh-btn-primary:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 15px 28px rgba(60,85,220,.28);
+}
+
+.sh-btn-secondary {
+    color: #30446e;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe5f1;
+}
+
+.sh-btn-secondary:hover {
+    border-color: #bdc9e3;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(35,55,120,.08);
+}
+
+
+/* =========================================================
+   PROFILE MINI
+========================================================= */
+
+.sh-profile-mini {
+    position: relative;
+    z-index: 3;
+
+    min-width: 280px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 15px 17px;
+
+    background: rgba(255,255,255,.88);
+
+    border: 1px solid #e2e7f2;
+
+    border-radius: 17px;
+
+    box-shadow:
+        0 12px 30px rgba(35,55,120,.07);
+
+    backdrop-filter: blur(12px);
+}
+
+.sh-profile-avatar {
+    width: 48px;
+    height: 48px;
+
+    flex: 0 0 48px;
+
+    border-radius: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+
+    font-size: 18px;
+    font-weight: 800;
+
+    background:
+        linear-gradient(
+            135deg,
+            #315be7,
+            #5145e8
+        );
+}
+
+.sh-profile-info {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.sh-profile-info strong {
+    color: #182746;
+
+    font-size: 13px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sh-profile-info span {
+    margin-top: 3px;
+
+    color: #7c879b;
+
+    font-size: 11px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sh-profile-info small {
+    margin-top: 4px;
+
+    color: #4262dc;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.sh-profile-arrow {
+    margin-left: auto;
+
+    width: 32px;
+    height: 32px;
+
+    flex: 0 0 32px;
+
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #4262dc;
+
+    background: #f0f3ff;
+
+    text-decoration: none;
+
+    transition: .2s;
+}
+
+.sh-profile-arrow:hover {
+    transform: translateX(3px);
+
+    background: #e6ebff;
+}
+
+
+/* =========================================================
+   SECTIONS
+========================================================= */
+
+.sh-dashboard-section {
+    margin-top: 65px;
+}
+
+.sh-dashboard-section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+
+    gap: 30px;
+
+    margin-bottom: 25px;
+}
+
+.sh-dashboard-section-heading h2 {
+    margin: 8px 0 0;
+
+    font-size: 29px;
+
+    letter-spacing: -.8px;
+}
+
+.sh-dashboard-section-heading h2 span {
+    color: #4262dc;
+}
+
+.sh-dashboard-section-heading p {
+    max-width: 360px;
+
+    margin: 0;
+
+    color: #7a8599;
+
+    font-size: 12px;
+    line-height: 1.6;
+
+    text-align: right;
+}
+
+
+/* =========================================================
+   DASHBOARD GRID
+========================================================= */
+
+.sh-dashboard-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 17px;
+}
+
+
+/* =========================================================
+   DASHBOARD CARDS
+========================================================= */
+
+.sh-dashboard-card {
+    position: relative;
+
+    min-height: 285px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    padding: 24px;
+
+    border-radius: 20px;
+
+    text-decoration: none;
+
+    overflow: hidden;
+
+    border: 1px solid #e3e8f3;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 10px 30px rgba(35,55,120,.055);
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        border-color .25s ease;
+}
+
+.sh-dashboard-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 130px;
+    height: 130px;
+
+    border-radius: 50%;
+
+    right: -55px;
+    bottom: -65px;
+
+    background: rgba(70,100,230,.035);
+}
+
+.sh-dashboard-card:hover {
+    transform: translateY(-6px);
+
+    box-shadow:
+        0 20px 40px rgba(35,55,120,.11);
+
+    border-color: #d2daf0;
+}
+
+.sh-dashboard-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sh-dashboard-icon {
+    width: 50px;
+    height: 50px;
+
+    border-radius: 15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+
+    background: #f1f4ff;
+}
+
+.sh-card-arrow {
+    width: 32px;
+    height: 32px;
+
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #7b879d;
+
+    background: #f7f8fc;
+
+    font-size: 16px;
+
+    transition: .2s;
+}
+
+.sh-dashboard-card:hover .sh-card-arrow {
+    color: #315be7;
+
+    transform: translate(2px,-2px);
+}
+
+.sh-card-number {
+    display: block;
+
+    margin-top: 25px;
+
+    color: #a4adbf;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+}
+
+.sh-dashboard-card h3 {
+    margin: 7px 0 0;
+
+    color: #14223f;
+
+    font-size: 18px;
+
+    letter-spacing: -.3px;
+}
+
+.sh-dashboard-card p {
+    margin: 9px 0 0;
+
+    color: #78849a;
+
+    font-size: 12px;
+
+    line-height: 1.65;
+}
+
+.sh-card-link {
+    color: #4262dc;
+
+    font-size: 11px;
+
+    font-weight: 800;
+}
+
+
+/* CARD ACCENTS */
+
+.sh-dashboard-blue .sh-dashboard-icon {
+    background: #edf3ff;
+}
+
+.sh-dashboard-purple .sh-dashboard-icon {
+    background: #f1edff;
+}
+
+.sh-dashboard-green .sh-dashboard-icon {
+    background: #ebfaf3;
+}
+
+.sh-dashboard-orange .sh-dashboard-icon {
+    background: #fff4e9;
+}
+
+
+/* =========================================================
+   INTELLIGENCE BANNER
+========================================================= */
+
+.sh-dashboard-intelligence {
+    position: relative;
+
+    min-height: 300px;
+
+    margin-top: 65px;
+
+    padding: 42px 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 40px;
+
+    overflow: hidden;
+
+    border-radius: 25px;
+
+    background:
+        radial-gradient(
+            circle at 85% 45%,
+            rgba(105,137,255,.20),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #111f4d,
+            #263eae
+        );
+
+    box-shadow:
+        0 22px 55px rgba(30,50,120,.18);
+}
+
+.sh-dashboard-intelligence .sh-section-label {
+    color: #a9c5ff;
+}
+
+.sh-dashboard-intelligence .sh-section-label::before {
+    background: #a9c5ff;
+}
+
+.sh-dashboard-intelligence-content {
+    position: relative;
+    z-index: 3;
+
+    max-width: 590px;
+}
+
+.sh-dashboard-intelligence h2 {
+    margin: 10px 0 0;
+
+    color: #ffffff;
+
+    font-size: 34px;
+
+    letter-spacing: -1px;
+}
+
+.sh-dashboard-intelligence h2 span {
+    color: #91baff;
+}
+
+.sh-dashboard-intelligence p {
+    max-width: 520px;
+
+    margin: 14px 0 25px;
+
+    color: rgba(255,255,255,.70);
+
+    font-size: 13px;
+
+    line-height: 1.75;
+}
+
+
+/* =========================================================
+   ANALYSIS VISUAL
+========================================================= */
+
+.sh-dashboard-analysis {
+    position: relative;
+
+    width: 390px;
+    height: 220px;
+
+    flex: 0 0 390px;
+}
+
+.sh-analysis-circle {
+    position: absolute;
+
+    width: 110px;
+    height: 110px;
+
+    top: 52px;
+    left: 130px;
+
+    border-radius: 50%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            circle,
+            #536eea,
+            #263eae
+        );
+
+    border: 1px solid rgba(255,255,255,.20);
+
+    box-shadow:
+        0 0 0 14px rgba(255,255,255,.035),
+        0 0 0 30px rgba(255,255,255,.025);
+}
+
+.sh-analysis-circle span {
+    color: #a9c5ff;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 2px;
+}
+
+.sh-analysis-circle strong {
+    margin-top: 4px;
+
+    color: white;
+
+    font-size: 15px;
+}
+
+
+.sh-analysis-line {
+    position: absolute;
+
+    height: 1px;
+
+    background: rgba(160,180,255,.35);
+
+    transform-origin: left center;
+}
+
+.sh-analysis-line span {
+    position: absolute;
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #9ab6ff;
+
+    top: -3px;
+}
+
+.line-one {
+    width: 105px;
+
+    top: 75px;
+    left: 18px;
+
+    transform: rotate(-13deg);
+}
+
+.line-two {
+    width: 105px;
+
+    top: 140px;
+    left: 18px;
+
+    transform: rotate(13deg);
+}
+
+.line-three {
+    width: 105px;
+
+    top: 105px;
+    right: 20px;
+
+    transform: rotate(-3deg);
+}
+
+
+.sh-analysis-pill {
+    position: absolute;
+
+    top: 35px;
+    left: 0;
+
+    padding: 9px 13px;
+
+    border-radius: 20px;
+
+    color: #c8d6ff;
+
+    background: rgba(255,255,255,.08);
+
+    border: 1px solid rgba(255,255,255,.10);
+
+    font-size: 10px;
+
+    white-space: nowrap;
+}
+
+.pill-two {
+    top: 163px;
+    right: 0;
+    left: auto;
+}
+
+
+/* =========================================================
+   BOTTOM PROFILE CARD
+========================================================= */
+
+.sh-dashboard-bottom {
+    margin-top: 55px;
+}
+
+.sh-dashboard-bottom-card {
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    padding: 24px 27px;
+
+    border-radius: 19px;
+
+    background: #ffffff;
+
+    border: 1px solid #e3e8f2;
+
+    box-shadow:
+        0 10px 30px rgba(35,55,120,.05);
+}
+
+.sh-bottom-icon {
+    width: 52px;
+    height: 52px;
+
+    flex: 0 0 52px;
+
+    border-radius: 15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #eef3ff;
+
+    font-size: 22px;
+}
+
+.sh-dashboard-bottom-card > div:nth-child(2) {
+    flex: 1;
+}
+
+.sh-dashboard-bottom-card h3 {
+    margin: 5px 0 0;
+
+    font-size: 17px;
+
+    color: #14223f;
+}
+
+.sh-dashboard-bottom-card p {
+    margin: 5px 0 0;
+
+    color: #7b879b;
+
+    font-size: 12px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1050px) {
+
+    .sh-dashboard-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .sh-dashboard-hero {
+        align-items: flex-start;
+    }
+
+    .sh-profile-mini {
+        min-width: 250px;
+    }
+
+    .sh-dashboard-analysis {
+        transform: scale(.85);
+        transform-origin: center right;
+    }
+}
+
+
+@media (max-width: 800px) {
+
+    .sh-dashboard {
+        padding: 30px 18px 55px;
+    }
+
+    .sh-dashboard-hero {
+        flex-direction: column;
+
+        padding: 35px 28px;
+    }
+
+    .sh-profile-mini {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .sh-dashboard-section-heading {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .sh-dashboard-section-heading p {
+        text-align: left;
+    }
+
+    .sh-dashboard-intelligence {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        padding: 35px 28px;
+    }
+
+    .sh-dashboard-analysis {
+        align-self: center;
+        transform: none;
+    }
+
+    .sh-dashboard-bottom-card {
+        flex-wrap: wrap;
+    }
+}
+
+
+@media (max-width: 550px) {
+
+    .sh-dashboard {
+        padding: 22px 13px 45px;
+    }
+
+    .sh-dashboard-hero {
+        padding: 30px 22px;
+        border-radius: 22px;
+    }
+
+    .sh-dashboard-welcome h1 {
+        font-size: 32px;
+    }
+
+    .sh-dashboard-actions {
+        flex-direction: column;
+    }
+
+    .sh-btn {
+        width: 100%;
+    }
+
+    .sh-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sh-dashboard-card {
+        min-height: 245px;
+    }
+
+    .sh-dashboard-intelligence {
+        border-radius: 21px;
+    }
+
+    .sh-dashboard-intelligence h2 {
+        font-size: 28px;
+    }
+
+    .sh-dashboard-analysis {
+        width: 100%;
+        transform: scale(.82);
+        transform-origin: center;
+        margin-left: -5%;
+    }
+
+    .sh-dashboard-bottom-card {
+        align-items: flex-start;
+    }
+
+    .sh-dashboard-bottom-card .sh-btn {
+        width: 100%;
+    }
+}
+/* =========================================================
+   PREMIUM STUDY ANALYTICS
+========================================================= */
+
+.sh-dashboard-analytics {
+    margin-top: 80px;
+    margin-bottom: 80px;
+}
+
+.sh-dashboard-analytics-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+    margin-bottom: 28px;
+}
+
+.sh-dashboard-analytics-header h2 {
+    margin: 8px 0 10px;
+    font-size: 34px;
+    line-height: 1.15;
+    letter-spacing: -0.8px;
+}
+
+.sh-dashboard-analytics-header h2 span {
+    opacity: .58;
+}
+
+.sh-dashboard-analytics-header p {
+    margin: 0;
+    max-width: 650px;
+    color: #64748b;
+    line-height: 1.7;
+}
+
+.sh-analytics-history-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 18px;
+    border-radius: 14px;
+    text-decoration: none;
+    font-weight: 700;
+    color: inherit;
+    background: rgba(255,255,255,.75);
+    border: 1px solid rgba(100,116,139,.15);
+    box-shadow: 0 8px 24px rgba(15,23,42,.05);
+    transition: .25s ease;
+}
+
+.sh-analytics-history-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(15,23,42,.09);
+}
+
+
+/* ANALYTICS GRID */
+
+.sh-analytics-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.sh-analytics-card {
+    position: relative;
+    min-height: 150px;
+    padding: 24px;
+    border-radius: 22px;
+    overflow: hidden;
+    border: 1px solid rgba(100,116,139,.12);
+    background: rgba(255,255,255,.78);
+    box-shadow:
+        0 12px 30px rgba(15,23,42,.055);
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+}
+
+.sh-analytics-card:hover {
+    transform: translateY(-4px);
+    box-shadow:
+        0 20px 40px rgba(15,23,42,.09);
+}
+
+.sh-analytics-card::after {
+    content: "";
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    right: -55px;
+    bottom: -65px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: .035;
+}
+
+.sh-analytics-icon {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    font-size: 22px;
+    background: rgba(70,100,230,.08);
+}
+
+.sh-analytics-content {
+    min-width: 0;
+}
+
+.sh-analytics-content span {
+    display: block;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    color: #64748b;
+}
+
+.sh-analytics-content strong {
+    display: block;
+    margin-top: 7px;
+    font-size: 32px;
+    line-height: 1;
+    letter-spacing: -1px;
+}
+
+.sh-analytics-content small {
+    display: block;
+    margin-top: 8px;
+    color: #94a3b8;
+}
+
+
+/* OVERVIEW */
+
+.sh-analytics-overview {
+    margin-top: 22px;
+    padding: 28px;
+    border-radius: 24px;
+    background: rgba(255,255,255,.78);
+    border: 1px solid rgba(100,116,139,.12);
+    box-shadow: 0 12px 30px rgba(15,23,42,.045);
+}
+
+.sh-analytics-overview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.sh-analytics-overview-header h3 {
+    margin: 7px 0 0;
+    font-size: 21px;
+}
+
+.sh-analytics-live {
+    padding: 7px 11px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .9px;
+    background: rgba(34,197,94,.08);
+    color: #16a34a;
+}
+
+.sh-resource-overview-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.sh-resource-overview-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 18px;
+    border-radius: 17px;
+    background: rgba(248,250,252,.8);
+}
+
+.sh-resource-overview-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 13px;
+    background: white;
+    font-size: 20px;
+}
+
+.sh-resource-overview-item strong {
+    display: block;
+    font-size: 24px;
+}
+
+.sh-resource-overview-item span {
+    display: block;
+    margin-top: 3px;
+    color: #64748b;
+    font-size: 13px;
+}
+
+
+/* RECENT ACTIVITY */
+
+.sh-recent-activity {
+    margin-top: 22px;
+    padding: 28px;
+    border-radius: 24px;
+    background: rgba(255,255,255,.78);
+    border: 1px solid rgba(100,116,139,.12);
+    box-shadow: 0 12px 30px rgba(15,23,42,.045);
+}
+
+.sh-recent-activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.sh-recent-activity-header h3 {
+    margin: 7px 0 0;
+    font-size: 21px;
+}
+
+.sh-recent-activity-header a {
+    color: inherit;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.sh-recent-activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sh-activity-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 17px;
+    border-radius: 16px;
+    background: rgba(248,250,252,.78);
+    text-decoration: none;
+    color: inherit;
+    transition: .2s ease;
+}
+
+.sh-activity-item:hover {
+    transform: translateX(3px);
+    background: rgba(241,245,249,.95);
+}
+
+.sh-activity-item-icon {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: white;
+}
+
+.sh-activity-item-main {
+    min-width: 0;
+    flex: 1;
+}
+
+.sh-activity-item-title {
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sh-activity-item-meta {
+    margin-top: 4px;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.sh-activity-item-arrow {
+    color: #94a3b8;
+}
+
+.sh-activity-loading,
+.sh-activity-empty {
+    padding: 25px;
+    text-align: center;
+    color: #94a3b8;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 1100px) {
+
+    .sh-analytics-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+@media (max-width: 760px) {
+
+    .sh-dashboard-analytics {
+        margin-top: 55px;
+        margin-bottom: 55px;
+    }
+
+    .sh-dashboard-analytics-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .sh-dashboard-analytics-header h2 {
+        font-size: 28px;
+    }
+
+    .sh-analytics-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sh-resource-overview-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sh-analytics-overview,
+    .sh-recent-activity {
+        padding: 20px;
+    }
+
+}
+
+</style>
+
+<main class="sh-dashboard">
+
+    <!-- =====================================================
+         DASHBOARD HERO
+    ====================================================== -->
+
+    <section class="sh-dashboard-hero">
+
+        <div class="sh-dashboard-welcome">
+
+            <span class="sh-section-label">
+                STUDENT DASHBOARD
+            </span>
+
+            <h1>
+                Welcome back,
+                <span>{{ user.name }}</span> 👋
+            </h1>
+
+            <p>
+                Your academic resources, previous-year papers
+                and learning tools are all in one place.
+            </p>
+
+            <div class="sh-dashboard-actions">
+
+                <a
+                    href="{{ url_for('notes.notes_list') }}"
+                    class="sh-btn sh-btn-primary"
+                >
+                    Explore Notes
+                    <span>→</span>
+                </a>
+
+                <a
+                    href="{{ url_for('pyq.pyq_repository') }}"
+                    class="sh-btn sh-btn-secondary"
+                >
+                    Explore PYQs
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- PROFILE MINI CARD -->
+
+        <div class="sh-profile-mini">
+
+            <div class="sh-profile-avatar">
+                {{ user.name[0]|upper }}
+            </div>
+
+            <div class="sh-profile-info">
+
+                <strong>{{ user.name }}</strong>
+
+                <span>{{ user.email }}</span>
+
+                {% if user.course %}
+                    <small>
+                        {{ user.course }}
+                        {% if user.semester %}
+                            · {{ user.semester }}
+                        {% endif %}
+                    </small>
+                {% else %}
+                    <small>
+                        Complete your academic profile
+                    </small>
+                {% endif %}
+
+            </div>
+
+            <a
+                href="{{ url_for('student.profile') }}"
+                class="sh-profile-arrow"
+            >
+                →
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         QUICK ACCESS
+    ====================================================== -->
+
+    <section class="sh-dashboard-section">
+
+        <div class="sh-dashboard-section-heading">
+
+            <div>
+                <span class="sh-section-label">
+                    QUICK ACCESS
+                </span>
+
+                <h2>
+                    Your study <span>workspace.</span>
+                </h2>
+            </div>
+
+            <p>
+                Quickly access the resources you use for
+                your preparation.
+            </p>
+
+        </div>
+
+
+        <div class="sh-dashboard-grid">
+
+            <!-- NOTES -->
+
+            <a
+                href="{{ url_for('notes.notes_list') }}"
+                class="sh-dashboard-card sh-dashboard-blue"
+            >
+
+                <div class="sh-dashboard-card-top">
+
+                    <div class="sh-dashboard-icon">
+                        📚
+                    </div>
+
+                    <span class="sh-card-arrow">
+                        ↗
+                    </span>
+
+                </div>
+
+                <div>
+
+                    <span class="sh-card-number">
+                        01
+                    </span>
+
+                    <h3>
+                        Notes Repository
+                    </h3>
+
+                    <p>
+                        Find organized study notes by
+                        course, semester and subject.
+                    </p>
+
+                </div>
+
+                <span class="sh-card-link">
+                    Explore notes →
+                </span>
+
+            </a>
+
+
+            <!-- PYQ -->
+
+            <a
+                href="{{ url_for('pyq.pyq_repository') }}"
+                class="sh-dashboard-card sh-dashboard-purple"
+            >
+
+                <div class="sh-dashboard-card-top">
+
+                    <div class="sh-dashboard-icon">
+                        📄
+                    </div>
+
+                    <span class="sh-card-arrow">
+                        ↗
+                    </span>
+
+                </div>
+
+                <div>
+
+                    <span class="sh-card-number">
+                        02
+                    </span>
+
+                    <h3>
+                        PYQ Repository
+                    </h3>
+
+                    <p>
+                        Explore previous-year question
+                        papers for your preparation.
+                    </p>
+
+                </div>
+
+                <span class="sh-card-link">
+                    Explore PYQs →
+                </span>
+
+            </a>
+
+
+            <!-- INTELLIGENCE -->
+
+            <a
+                href="{{ url_for('pyq.pyq_intelligence') }}"
+                class="sh-dashboard-card sh-dashboard-green"
+            >
+
+                <div class="sh-dashboard-card-top">
+
+                    <div class="sh-dashboard-icon">
+                        🧠
+                    </div>
+
+                    <span class="sh-card-arrow">
+                        ↗
+                    </span>
+
+                </div>
+
+                <div>
+
+                    <span class="sh-card-number">
+                        03
+                    </span>
+
+                    <h3>
+                        PYQ Intelligence
+                    </h3>
+
+                    <p>
+                        Explore repeated questions,
+                        topics and historical patterns.
+                    </p>
+
+                </div>
+
+                <span class="sh-card-link">
+                    View insights →
+                </span>
+
+            </a>
+
+            <!-- RECOMMENDATIONS -->
+
+            <a
+                href="{{ url_for('recommendations.home') }}"
+                class="sh-dashboard-card sh-dashboard-purple"
+            >
+
+                <div class="sh-dashboard-card-top">
+
+                    <div class="sh-dashboard-icon">
+                        ✨
+                    </div>
+
+                    <span class="sh-card-arrow">
+                        ↗
+                    </span>
+
+                </div>
+
+
+                <div>
+
+                    <span class="sh-card-number">
+                        05
+                    </span>
+
+                    <h3>
+                        Recommendations
+                    </h3>
+
+                    <p>
+                        Discover study resources selected
+                        for your academic profile.
+                    </p>
+
+                </div>
+
+
+                <span class="sh-card-link">
+                    View recommendations →
+                </span>
+
+            </a>
+
+
+            <!-- PROFILE -->
+
+            <a
+                href="{{ url_for('student.profile') }}"
+                class="sh-dashboard-card sh-dashboard-orange"
+            >
+
+                <div class="sh-dashboard-card-top">
+
+                    <div class="sh-dashboard-icon">
+                        👤
+                    </div>
+
+                    <span class="sh-card-arrow">
+                        ↗
+                    </span>
+
+                </div>
+
+                <div>
+
+                    <span class="sh-card-number">
+                        04
+                    </span>
+
+                    <h3>
+                        My Profile
+                    </h3>
+
+                    <p>
+                        Manage your education level,
+                        course and semester information.
+                    </p>
+
+                </div>
+
+                <span class="sh-card-link">
+                    Manage profile →
+                </span>
+
+            </a>
+
+            <!-- ACTIVITY -->
+
+            <a
+                href="{{ url_for('enhancements.activity') }}"
+                class="sh-dashboard-card sh-dashboard-blue"
+            >
+
+                <div class="sh-dashboard-card-top">
+
+                    <div class="sh-dashboard-icon">
+                        🕒
+                    </div>
+
+                    <span class="sh-card-arrow">
+                        ↗
+                    </span>
+
+                </div>
+
+                <div>
+
+                    <span class="sh-card-number">
+                        06
+                    </span>
+
+                    <h3>
+                        Activity & History
+                    </h3>
+
+                    <p>
+                        View your recent notes, PYQs,
+                        downloads and study activity.
+                    </p>
+
+                </div>
+
+                <span class="sh-card-link">
+                    View activity →
+                </span>
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+        PREMIUM STUDY ANALYTICS
+    ====================================================== -->
+
+    <section class="sh-dashboard-analytics">
+
+        <div class="sh-dashboard-analytics-header">
+
+            <div>
+                <span class="sh-section-label">
+                    YOUR STUDY ANALYTICS
+                </span>
+
+                <h2>
+                    Your learning
+                    <span>at a glance.</span>
+                </h2>
+
+                <p>
+                    Track your resource usage, saved materials
+                    and study activity across StudyHub.
+                </p>
+            </div>
+
+            <a
+                href="{{ url_for('enhancements.activity') }}"
+                class="sh-analytics-history-btn"
+            >
+                View full history
+                <span>→</span>
+            </a>
+
+        </div>
+
+
+        <div class="sh-analytics-grid">
+
+            <!-- VIEWS -->
+
+            <div class="sh-analytics-card sh-analytics-blue">
+
+                <div class="sh-analytics-icon">
+                    👁
+                </div>
+
+                <div class="sh-analytics-content">
+
+                    <span>
+                        RESOURCES VIEWED
+                    </span>
+
+                    <strong
+                        id="shAnalyticsViewed"
+                    >
+                        —
+                    </strong>
+
+                    <small>
+                        Notes & PYQs
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- DOWNLOADS -->
+
+            <div class="sh-analytics-card sh-analytics-purple">
+
+                <div class="sh-analytics-icon">
+                    ↓
+                </div>
+
+                <div class="sh-analytics-content">
+
+                    <span>
+                        DOWNLOADS
+                    </span>
+
+                    <strong
+                        id="shAnalyticsDownloads"
+                    >
+                        —
+                    </strong>
+
+                    <small>
+                        Study resources
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- BOOKMARKS -->
+
+            <div class="sh-analytics-card sh-analytics-green">
+
+                <div class="sh-analytics-icon">
+                    🔖
+                </div>
+
+                <div class="sh-analytics-content">
+
+                    <span>
+                        SAVED RESOURCES
+                    </span>
+
+                    <strong
+                        id="shAnalyticsBookmarks"
+                    >
+                        —
+                    </strong>
+
+                    <small>
+                        Your bookmarks
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIVITY -->
+
+            <div class="sh-analytics-card sh-analytics-orange">
+
+                <div class="sh-analytics-icon">
+                    ⚡
+                </div>
+
+                <div class="sh-analytics-content">
+
+                    <span>
+                        STUDY ACTIVITY
+                    </span>
+
+                    <strong
+                        id="shAnalyticsActivity"
+                    >
+                        —
+                    </strong>
+
+                    <small>
+                        Recorded actions
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RESOURCE OVERVIEW -->
+
+        <div class="sh-analytics-overview">
+
+            <div class="sh-analytics-overview-header">
+
+                <div>
+
+                    <span class="sh-section-label">
+                        RESOURCE OVERVIEW
+                    </span>
+
+                    <h3>
+                        Your StudyHub contribution
+                    </h3>
+
+                </div>
+
+                <span class="sh-analytics-live">
+                    ● LIVE
+                </span>
+
+            </div>
+
+
+            <div class="sh-resource-overview-grid">
+
+                <div class="sh-resource-overview-item">
+
+                    <div class="sh-resource-overview-icon">
+                        📚
+                    </div>
+
+                    <div>
+                        <strong
+                            id="shAnalyticsNotes"
+                        >
+                            —
+                        </strong>
+
+                        <span>
+                            Notes uploaded
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div class="sh-resource-overview-item">
+
+                    <div class="sh-resource-overview-icon">
+                        📝
+                    </div>
+
+                    <div>
+                        <strong
+                            id="shAnalyticsPyqs"
+                        >
+                            —
+                        </strong>
+
+                        <span>
+                            PYQs uploaded
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="sh-resource-overview-item">
+
+                    <div class="sh-resource-overview-icon">
+                        🎯
+                    </div>
+
+                    <div>
+
+                        <strong
+                            id="shAnalyticsTotal"
+                        >
+                            —
+                        </strong>
+
+                        <span>
+                            Total tracked activity
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RECENT ACTIVITY -->
+
+        <div class="sh-recent-activity">
+
+            <div class="sh-recent-activity-header">
+
+                <div>
+
+                    <span class="sh-section-label">
+                        RECENT ACTIVITY
+                    </span>
+
+                    <h3>
+                        Continue where you left off
+                    </h3>
+
+                </div>
+
+                <a
+                    href="{{ url_for('enhancements.activity') }}"
+                >
+                    See all →
+                </a>
+
+            </div>
+
+
+            <div
+                id="shRecentActivity"
+                class="sh-recent-activity-list"
+            >
+
+                <div class="sh-activity-loading">
+                    Loading your activity...
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- =====================================================
+         STUDYHUB INTELLIGENCE BANNER
+    ====================================================== -->
+
+    <section class="sh-dashboard-intelligence">
+
+        <div class="sh-dashboard-intelligence-content">
+
+            <span class="sh-section-label">
+                STUDYHUB INTELLIGENCE
+            </span>
+
+            <h2>
+                Prepare with
+                <span>historical insights.</span>
+            </h2>
+
+            <p>
+                Explore available previous-year papers to
+                discover frequently repeated questions,
+                related topics and year-wise patterns.
+            </p>
+
+            <a
+                href="{{ url_for('pyq.pyq_intelligence') }}"
+                class="sh-btn sh-btn-primary"
+            >
+                Explore PYQ Intelligence
+                <span>→</span>
+            </a>
+
+        </div>
+
+
+        <div class="sh-dashboard-analysis">
+
+            <div class="sh-analysis-circle">
+                <span>PYQ</span>
+                <strong>Insights</strong>
+            </div>
+
+            <div class="sh-analysis-line line-one">
+                <span></span>
+            </div>
+
+            <div class="sh-analysis-line line-two">
+                <span></span>
+            </div>
+
+            <div class="sh-analysis-line line-three">
+                <span></span>
+            </div>
+
+            <div class="sh-analysis-pill">
+                ↻ Repeated questions
+            </div>
+
+            <div class="sh-analysis-pill pill-two">
+                ◉ Topic analysis
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         PROFILE COMPLETION
+    ====================================================== -->
+
+    <section class="sh-dashboard-bottom">
+
+        <div class="sh-dashboard-bottom-card">
+
+            <div class="sh-bottom-icon">
+                🎓
+            </div>
+
+            <div>
+
+                <span class="sh-section-label">
+                    KEEP YOUR PROFILE UPDATED
+                </span>
+
+                <h3>
+                    Make StudyHub more useful for you.
+                </h3>
+
+                <p>
+                    Add your education level, course and
+                    semester to keep your academic profile organized.
+                </p>
+
+            </div>
+
+            <a
+                href="{{ url_for('student.profile') }}"
+                class="sh-btn sh-btn-secondary"
+            >
+                View Profile →
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+(function () {
+
+    "use strict";
+
+    const endpoint =
+        "{{ url_for('enhancements.dashboard_analytics') }}";
+
+
+    function setValue(id, value) {
+
+        const element =
+            document.getElementById(id);
+
+        if (!element) return;
+
+        element.textContent =
+            Number(value || 0).toLocaleString();
+    }
+
+
+    function escapeHTML(value) {
+
+        return String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    function actionLabel(action) {
+
+        if (action === "viewed") {
+            return "Viewed";
+        }
+
+        if (action === "downloaded") {
+            return "Downloaded";
+        }
+
+        return "Activity";
+    }
+
+
+    function actionIcon(action) {
+
+        if (action === "viewed") {
+            return "👁";
+        }
+
+        if (action === "downloaded") {
+            return "↓";
+        }
+
+        return "⚡";
+    }
+
+
+    function renderActivity(items) {
+
+        const container =
+            document.getElementById(
+                "shRecentActivity"
+            );
+
+        if (!container) return;
+
+
+        if (!items || !items.length) {
+
+            container.innerHTML = `
+                <div class="sh-activity-empty">
+                    No recent activity yet.
+                    Start exploring notes and PYQs.
+                </div>
+            `;
+
+            return;
+        }
+
+
+        container.innerHTML =
+            items.map(function (item) {
+
+                const title =
+                    escapeHTML(item.title);
+
+                const action =
+                    escapeHTML(
+                        actionLabel(item.action)
+                    );
+
+                const icon =
+                    actionIcon(item.action);
+
+                const url =
+                    item.url || "#";
+
+                return `
+                    <a
+                        href="${escapeHTML(url)}"
+                        class="sh-activity-item"
+                    >
+
+                        <div class="sh-activity-item-icon">
+                            ${icon}
+                        </div>
+
+                        <div class="sh-activity-item-main">
+
+                            <div class="sh-activity-item-title">
+                                ${title}
+                            </div>
+
+                            <div class="sh-activity-item-meta">
+                                ${action}
+                                ·
+                                ${escapeHTML(
+                                    item.resource_type
+                                        .toUpperCase()
+                                )}
+                            </div>
+
+                        </div>
+
+                        <span class="sh-activity-item-arrow">
+                            →
+                        </span>
+
+                    </a>
+                `;
+
+            }).join("");
+    }
+
+
+    function loadAnalytics() {
+
+        fetch(
+            endpoint,
+            {
+                method: "GET",
+                credentials: "same-origin",
+                headers: {
+                    "X-Requested-With":
+                        "XMLHttpRequest"
+                }
+            }
+        )
+        .then(function (response) {
+
+            if (!response.ok) {
+                throw new Error(
+                    "Analytics request failed."
+                );
+            }
+
+            return response.json();
+
+        })
+        .then(function (data) {
+
+            if (!data || !data.ok) {
+                return;
+            }
+
+            const analytics =
+                data.analytics || {};
+
+            setValue(
+                "shAnalyticsViewed",
+                analytics.viewed
+            );
+
+            setValue(
+                "shAnalyticsDownloads",
+                analytics.downloads
+            );
+
+            setValue(
+                "shAnalyticsBookmarks",
+                analytics.bookmarks
+            );
+
+            setValue(
+                "shAnalyticsActivity",
+                analytics.activity_total
+            );
+
+            setValue(
+                "shAnalyticsNotes",
+                analytics.uploaded_notes
+            );
+
+            setValue(
+                "shAnalyticsPyqs",
+                analytics.uploaded_pyqs
+            );
+
+            setValue(
+                "shAnalyticsTotal",
+                analytics.activity_total
+            );
+
+            renderActivity(
+                data.recent_activity || []
+            );
+
+        })
+        .catch(function () {
+
+            const container =
+                document.getElementById(
+                    "shRecentActivity"
+                );
+
+            if (container) {
+
+                container.innerHTML = `
+                    <div class="sh-activity-empty">
+                        Analytics will appear
+                        as you use StudyHub.
+                    </div>
+                `;
+
+            }
+
+        });
+
+    }
+
+
+    loadAnalytics();
+
+})();
+</script>
+
+{% endblock %}

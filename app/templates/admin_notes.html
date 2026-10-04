@@ -1,0 +1,1957 @@
+{% extends "base.html" %}
+
+{% block title %}Notes Management - StudyHub{% endblock %}
+
+{% block content %}
+
+<div class="admin-notes-page">
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="notes-admin-hero">
+
+        <div>
+
+            <span class="notes-admin-kicker">
+                STUDYHUB · CONTENT MANAGEMENT
+            </span>
+
+            <h1>
+                Notes Management
+            </h1>
+
+            <p>
+                Review, verify and manage academic notes
+                shared by the StudyHub community.
+            </p>
+
+        </div>
+
+
+        <div class="notes-admin-hero-icon">
+            📚
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FLASH
+    ====================================================== -->
+
+    {% with messages =
+        get_flashed_messages(
+            with_categories=true
+        )
+    %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div class="notes-admin-flash">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- =====================================================
+         STATISTICS
+    ====================================================== -->
+
+    <section class="notes-admin-stats">
+
+        <div class="notes-stat-card">
+
+            <div class="notes-stat-icon">
+                📚
+            </div>
+
+            <div>
+
+                <small>
+                    Total Notes
+                </small>
+
+                <strong>
+                    {{ total_notes }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="notes-stat-card approved">
+
+            <div class="notes-stat-icon">
+                ✓
+            </div>
+
+            <div>
+
+                <small>
+                    Approved
+                </small>
+
+                <strong>
+                    {{ approved_count }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="notes-stat-card pending">
+
+            <div class="notes-stat-icon">
+                🟠
+            </div>
+
+            <div>
+
+                <small>
+                    Pending
+                </small>
+
+                <strong>
+                    {{ pending_count }}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="notes-stat-card rejected">
+
+            <div class="notes-stat-icon">
+                ✕
+            </div>
+
+            <div>
+
+                <small>
+                    Rejected
+                </small>
+
+                <strong>
+                    {{ rejected_count }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         SEARCH / FILTER
+    ====================================================== -->
+
+    <section class="notes-admin-toolbar">
+
+        <div class="notes-admin-search">
+
+            <span>
+                🔎
+            </span>
+
+            <input
+                type="text"
+                id="notesSearch"
+                placeholder="Search notes, subjects, courses, uploaders..."
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <div class="notes-admin-filters">
+
+            <button
+                type="button"
+                class="notes-filter active"
+                data-filter="all"
+            >
+                All
+            </button>
+
+            <button
+                type="button"
+                class="notes-filter"
+                data-filter="approved"
+            >
+                ✓ Approved
+            </button>
+
+            <button
+                type="button"
+                class="notes-filter"
+                data-filter="pending"
+            >
+                🟠 Pending
+            </button>
+
+            <button
+                type="button"
+                class="notes-filter"
+                data-filter="rejected"
+            >
+                ✕ Rejected
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         RESULTS
+    ====================================================== -->
+
+    <div class="notes-admin-results">
+
+        <span>
+
+            Showing
+
+            <strong id="visibleNotes">
+                {{ total_notes }}
+            </strong>
+
+            notes
+
+        </span>
+
+
+        <button
+            type="button"
+            id="clearNotesFilters"
+        >
+            Clear Filters
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         NOTES LIST
+    ====================================================== -->
+
+    <section
+        class="admin-notes-list"
+        id="adminNotesList"
+    >
+
+        {% for note in notes %}
+
+        {% set uploader = uploader_map.get(note.uploaded_by) %}
+
+        <article
+            class="admin-note-card"
+            data-status="{{ note.verification_status|lower }}"
+            data-search="
+                {{ note.title|lower }}
+                {{ note.subject|lower }}
+                {{ note.course|default('', true)|lower }}
+                {{ note.semester|default('', true)|lower }}
+                {{ note.education_level|default('', true)|lower }}
+                {{ uploader.name|lower if uploader else '' }}
+                {{ uploader.email|lower if uploader else '' }}
+                {{ note.id }}
+            "
+        >
+
+            <!-- TOP -->
+
+            <div class="admin-note-top">
+
+                <div class="admin-note-resource">
+
+                    <div class="admin-note-icon">
+                        📄
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            {{ note.title }}
+                        </h2>
+
+                        <span>
+                            Note #{{ note.id }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <span
+                    class="admin-note-status
+                    status-{{ note.verification_status|lower }}"
+                >
+
+                    {% if note.verification_status == "approved" %}
+                        ✓ Approved
+
+                    {% elif note.verification_status == "pending" %}
+                        🟠 Pending
+
+                    {% elif note.verification_status == "rejected" %}
+                        ✕ Rejected
+
+                    {% else %}
+                        {{ note.verification_status|title }}
+
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+
+            <!-- CONTENT -->
+
+            <div class="admin-note-body">
+
+                <div class="admin-note-main">
+
+                    <span class="admin-note-label">
+                        SUBJECT
+                    </span>
+
+                    <strong class="admin-note-subject">
+                        {{ note.subject }}
+                    </strong>
+
+
+                    <div class="admin-note-tags">
+
+                        {% if note.course %}
+
+                        <span>
+                            💻 {{ note.course }}
+                        </span>
+
+                        {% endif %}
+
+
+                        {% if note.semester %}
+
+                        <span>
+                            📚 Semester {{ note.semester }}
+                        </span>
+
+                        {% endif %}
+
+
+                        {% if note.education_level %}
+
+                        <span>
+                            🎓 {{ note.education_level }}
+                        </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- STATS -->
+
+                <div class="admin-note-metrics">
+
+                    <div>
+
+                        <small>
+                            VIEWS
+                        </small>
+
+                        <strong>
+                            {{ note.views or 0 }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <small>
+                            DOWNLOADS
+                        </small>
+
+                        <strong>
+                            {{ note.downloads or 0 }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <small>
+                            RATING
+                        </small>
+
+                        <strong>
+                            ⭐ {{ note.rating or 0 }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- UPLOADER -->
+
+            <div class="admin-note-uploader">
+
+                <div class="uploader-avatar">
+
+                    {% if uploader %}
+                        {{ uploader.name[:1]|upper }}
+                    {% else %}
+                        ?
+                    {% endif %}
+
+                </div>
+
+
+                <div>
+
+                    <small>
+                        UPLOADED BY
+                    </small>
+
+                    <strong>
+
+                        {% if uploader %}
+                            {{ uploader.name }}
+                        {% else %}
+                            User #{{ note.uploaded_by }}
+                        {% endif %}
+
+                    </strong>
+
+                    {% if uploader %}
+
+                    <span>
+                        {{ uploader.email }}
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="uploaded-date">
+
+                    <small>
+                        SHARED
+                    </small>
+
+                    <strong>
+
+                        {% if note.uploaded_at %}
+                            {{ note.uploaded_at.strftime('%d %b %Y') }}
+                        {% else %}
+                            Recently
+                        {% endif %}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="admin-note-actions">
+
+                <a
+                    href="{{ url_for(
+                        'notes.view_note',
+                        note_id=note.id
+                    ) }}"
+                    target="_blank"
+                    class="note-open-btn"
+                >
+                    Open Note ↗
+                </a>
+
+
+                <a
+                    href="{{ url_for(
+                        'notes.download_note',
+                        note_id=note.id
+                    ) }}"
+                    class="note-download-btn"
+                >
+                    Download ↓
+                </a>
+
+
+                {% if note.verification_status != "approved" %}
+
+                <form
+                    method="POST"
+                    action="{{ url_for(
+                        'enhancements.admin_approve_note',
+                        note_id=note.id
+                    ) }}"
+                >
+
+                    <button
+                        type="submit"
+                        class="note-approve-btn"
+                    >
+                        ✓ Approve
+                    </button>
+
+                </form>
+
+                {% endif %}
+
+
+                {% if note.verification_status != "rejected" %}
+
+                <form
+                    method="POST"
+                    action="{{ url_for(
+                        'enhancements.admin_reject_note',
+                        note_id=note.id
+                    ) }}"
+                    onsubmit="
+                        return confirm(
+                            'Reject this note?'
+                        );
+                    "
+                >
+
+                    <button
+                        type="submit"
+                        class="note-reject-btn"
+                    >
+                        ✕ Reject
+                    </button>
+
+                </form>
+
+                {% endif %}
+
+
+                <form
+                    method="POST"
+                    action="{{ url_for(
+                        'enhancements.admin_delete_note',
+                        note_id=note.id
+                    ) }}"
+                    onsubmit="
+                        return confirm(
+                            'Permanently delete this note?'
+                        );
+                    "
+                >
+
+                    <button
+                        type="submit"
+                        class="note-delete-btn"
+                    >
+                        🗑 Delete
+                    </button>
+
+                </form>
+
+            </div>
+
+        </article>
+
+        {% else %}
+
+        <div class="admin-notes-empty">
+
+            <div>
+                📚
+            </div>
+
+            <h2>
+                No Notes Found
+            </h2>
+
+            <p>
+                Uploaded notes will appear here.
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+    </section>
+
+
+    <!-- FILTER EMPTY -->
+
+    <div
+        id="notesFilterEmpty"
+        class="admin-notes-empty"
+        style="display:none;"
+    >
+
+        <div>
+            🔎
+        </div>
+
+        <h2>
+            No Matching Notes
+        </h2>
+
+        <p>
+            Try another search or status filter.
+        </p>
+
+    </div>
+
+</div>
+
+
+<style>
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.admin-notes-page{
+
+    width:min(1380px,92%);
+
+    margin:45px auto 90px;
+
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.notes-admin-hero{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:30px;
+
+    padding:38px;
+
+    border-radius:28px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #f8faff 55%,
+            #eef2ff
+        );
+
+    border:1px solid #dbe4f0;
+
+    box-shadow:
+        0 20px 55px rgba(15,23,42,.08);
+
+}
+
+
+.notes-admin-kicker{
+
+    display:inline-flex;
+
+    padding:7px 12px;
+
+    border-radius:999px;
+
+    background:#eef2ff;
+
+    color:#4f46e5;
+
+    font-size:10px;
+
+    font-weight:850;
+
+    letter-spacing:.14em;
+
+}
+
+
+.notes-admin-hero h1{
+
+    margin:13px 0 8px;
+
+    color:#0f172a;
+
+    font-size:42px;
+
+    font-weight:900;
+
+    letter-spacing:-1.4px;
+
+}
+
+
+.notes-admin-hero p{
+
+    margin:0;
+
+    max-width:650px;
+
+    color:#64748b;
+
+    font-size:15px;
+
+    line-height:1.6;
+
+}
+
+
+.notes-admin-hero-icon{
+
+    width:90px;
+    height:90px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    flex:none;
+
+    border-radius:25px;
+
+    background:#ffffff;
+
+    border:1px solid #dbe4f0;
+
+    font-size:42px;
+
+    box-shadow:
+        0 12px 30px rgba(15,23,42,.07);
+
+}
+
+
+/* =========================================================
+   FLASH
+========================================================= */
+
+.notes-admin-flash{
+
+    margin-top:15px;
+
+    padding:13px 16px;
+
+    border-radius:13px;
+
+    background:#eef2ff;
+
+    border:1px solid #c7d2fe;
+
+    color:#3730a3;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.notes-admin-stats{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,minmax(0,1fr));
+
+    gap:15px;
+
+    margin:22px 0;
+
+}
+
+
+.notes-stat-card{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:20px;
+
+    background:#ffffff;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:18px;
+
+    box-shadow:
+        0 10px 28px rgba(15,23,42,.045);
+
+}
+
+
+.notes-stat-icon{
+
+    width:45px;
+    height:45px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:13px;
+
+    background:#eef2ff;
+
+    font-size:20px;
+
+}
+
+
+.notes-stat-card.approved
+.notes-stat-icon{
+
+    background:#ecfdf5;
+
+}
+
+
+.notes-stat-card.pending
+.notes-stat-icon{
+
+    background:#fff7ed;
+
+}
+
+
+.notes-stat-card.rejected
+.notes-stat-icon{
+
+    background:#fef2f2;
+
+}
+
+
+.notes-stat-card small{
+
+    display:block;
+
+    color:#64748b;
+
+    font-size:12px;
+
+}
+
+
+.notes-stat-card strong{
+
+    display:block;
+
+    margin-top:3px;
+
+    color:#0f172a;
+
+    font-size:26px;
+
+    font-weight:900;
+
+}
+
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.notes-admin-toolbar{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+
+    padding:15px;
+
+    background:#ffffff;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:18px;
+
+    box-shadow:
+        0 8px 25px rgba(15,23,42,.04);
+
+}
+
+
+.notes-admin-search{
+
+    position:relative;
+
+    flex:1;
+
+    min-width:260px;
+
+}
+
+
+.notes-admin-search span{
+
+    position:absolute;
+
+    left:14px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+}
+
+
+.notes-admin-search input{
+
+    width:100%;
+
+    height:45px;
+
+    box-sizing:border-box;
+
+    padding:0 15px 0 42px;
+
+    border:1px solid #dbe4f0;
+
+    border-radius:12px;
+
+    background:#f8fafc;
+
+    outline:none;
+
+    font-size:13px;
+
+}
+
+
+.notes-admin-search input:focus{
+
+    background:#ffffff;
+
+    border-color:#818cf8;
+
+    box-shadow:
+        0 0 0 3px rgba(99,102,241,.10);
+
+}
+
+
+.notes-admin-filters{
+
+    display:flex;
+
+    gap:5px;
+
+    padding:4px;
+
+    background:#f1f5f9;
+
+    border-radius:12px;
+
+}
+
+
+.notes-filter{
+
+    height:37px;
+
+    padding:0 13px;
+
+    border:0;
+
+    border-radius:9px;
+
+    background:transparent;
+
+    color:#64748b;
+
+    cursor:pointer;
+
+    font-size:12px;
+
+    font-weight:750;
+
+}
+
+
+.notes-filter.active{
+
+    background:#ffffff;
+
+    color:#4f46e5;
+
+    box-shadow:
+        0 2px 7px rgba(15,23,42,.08);
+
+}
+
+
+/* =========================================================
+   RESULT
+========================================================= */
+
+.notes-admin-results{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin:18px 2px;
+
+    color:#64748b;
+
+    font-size:13px;
+
+}
+
+
+.notes-admin-results strong{
+
+    color:#0f172a;
+
+    font-size:16px;
+
+}
+
+
+.notes-admin-results button{
+
+    border:0;
+
+    background:none;
+
+    color:#4f46e5;
+
+    cursor:pointer;
+
+    font-size:12px;
+
+    font-weight:750;
+
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.admin-notes-list{
+
+    display:grid;
+
+    gap:16px;
+
+}
+
+
+.admin-note-card{
+
+    background:#ffffff;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:21px;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 11px 32px rgba(15,23,42,.05);
+
+}
+
+
+.admin-note-top{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:15px;
+
+    padding:19px 21px;
+
+    border-bottom:1px solid #eef2f7;
+
+    background:#fbfdff;
+
+}
+
+
+.admin-note-resource{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:13px;
+
+}
+
+
+.admin-note-icon{
+
+    width:44px;
+    height:44px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:13px;
+
+    background:#eef2ff;
+
+    font-size:20px;
+
+}
+
+
+.admin-note-resource h2{
+
+    margin:0;
+
+    color:#0f172a;
+
+    font-size:17px;
+
+    font-weight:850;
+
+}
+
+
+.admin-note-resource span{
+
+    display:block;
+
+    margin-top:3px;
+
+    color:#94a3b8;
+
+    font-size:11px;
+
+}
+
+
+.admin-note-status{
+
+    padding:7px 10px;
+
+    border-radius:999px;
+
+    font-size:11px;
+
+    font-weight:800;
+
+}
+
+
+.status-approved{
+
+    color:#047857;
+
+    background:#ecfdf5;
+
+}
+
+
+.status-pending{
+
+    color:#c2410c;
+
+    background:#fff7ed;
+
+}
+
+
+.status-rejected{
+
+    color:#b91c1c;
+
+    background:#fef2f2;
+
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+.admin-note-body{
+
+    display:grid;
+
+    grid-template-columns:
+        1fr 360px;
+
+    gap:25px;
+
+    padding:22px;
+
+}
+
+
+.admin-note-label{
+
+    display:block;
+
+    margin-bottom:7px;
+
+    color:#94a3b8;
+
+    font-size:9px;
+
+    font-weight:850;
+
+    letter-spacing:.13em;
+
+}
+
+
+.admin-note-subject{
+
+    display:block;
+
+    color:#334155;
+
+    font-size:17px;
+
+}
+
+
+.admin-note-tags{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:7px;
+
+    margin-top:13px;
+
+}
+
+
+.admin-note-tags span{
+
+    padding:6px 9px;
+
+    border-radius:8px;
+
+    background:#f8fafc;
+
+    color:#64748b;
+
+    font-size:10px;
+
+    font-weight:650;
+
+}
+
+
+/* =========================================================
+   METRICS
+========================================================= */
+
+.admin-note-metrics{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:8px;
+
+}
+
+
+.admin-note-metrics div{
+
+    padding:13px;
+
+    border-radius:12px;
+
+    background:#f8fafc;
+
+    border:1px solid #eef2f7;
+
+}
+
+
+.admin-note-metrics small{
+
+    display:block;
+
+    color:#94a3b8;
+
+    font-size:9px;
+
+    font-weight:800;
+
+}
+
+
+.admin-note-metrics strong{
+
+    display:block;
+
+    margin-top:4px;
+
+    color:#334155;
+
+    font-size:14px;
+
+}
+
+
+/* =========================================================
+   UPLOADER
+========================================================= */
+
+.admin-note-uploader{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:11px;
+
+    padding:15px 21px;
+
+    border-top:1px solid #eef2f7;
+
+    border-bottom:1px solid #eef2f7;
+
+}
+
+
+.uploader-avatar{
+
+    width:37px;
+    height:37px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    flex:none;
+
+    border-radius:11px;
+
+    background:#eef2ff;
+
+    color:#4338ca;
+
+    font-size:14px;
+
+    font-weight:900;
+
+}
+
+
+.admin-note-uploader small{
+
+    display:block;
+
+    color:#94a3b8;
+
+    font-size:8px;
+
+    font-weight:850;
+
+    letter-spacing:.1em;
+
+}
+
+
+.admin-note-uploader strong{
+
+    display:block;
+
+    color:#334155;
+
+    font-size:12px;
+
+}
+
+
+.admin-note-uploader span{
+
+    display:block;
+
+    margin-top:2px;
+
+    color:#94a3b8;
+
+    font-size:10px;
+
+}
+
+
+.uploaded-date{
+
+    margin-left:auto;
+
+    text-align:right;
+
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.admin-note-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:flex-end;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+    padding:15px 21px;
+
+    background:#fbfdff;
+
+}
+
+
+.admin-note-actions a,
+.admin-note-actions button{
+
+    min-height:38px;
+
+    padding:0 12px;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    box-sizing:border-box;
+
+    border-radius:9px;
+
+    font-size:11px;
+
+    font-weight:800;
+
+    text-decoration:none;
+
+    cursor:pointer;
+
+}
+
+
+.note-open-btn{
+
+    background:#eef2ff;
+
+    color:#4338ca;
+
+}
+
+
+.note-download-btn{
+
+    background:#f1f5f9;
+
+    color:#475569;
+
+}
+
+
+.note-approve-btn{
+
+    border:1px solid #a7f3d0;
+
+    background:#ecfdf5;
+
+    color:#047857;
+
+}
+
+
+.note-reject-btn{
+
+    border:1px solid #fed7aa;
+
+    background:#fff7ed;
+
+    color:#c2410c;
+
+}
+
+
+.note-delete-btn{
+
+    border:1px solid #fecaca;
+
+    background:#fef2f2;
+
+    color:#b91c1c;
+
+}
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.admin-notes-empty{
+
+    padding:70px 25px;
+
+    text-align:center;
+
+    background:#ffffff;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:21px;
+
+}
+
+
+.admin-notes-empty div{
+
+    margin-bottom:12px;
+
+    font-size:40px;
+
+}
+
+
+.admin-notes-empty h2{
+
+    margin:0 0 7px;
+
+    color:#0f172a;
+
+    font-size:20px;
+
+}
+
+
+.admin-notes-empty p{
+
+    margin:0;
+
+    color:#64748b;
+
+    font-size:13px;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:950px){
+
+    .notes-admin-stats{
+
+        grid-template-columns:
+            repeat(2,1fr);
+
+    }
+
+
+    .admin-note-body{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+
+@media(max-width:700px){
+
+    .admin-notes-page{
+
+        width:94%;
+
+        margin-top:25px;
+
+    }
+
+
+    .notes-admin-hero{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        padding:27px;
+
+        border-radius:22px;
+
+    }
+
+
+    .notes-admin-hero h1{
+
+        font-size:33px;
+
+    }
+
+
+    .notes-admin-toolbar{
+
+        flex-direction:column;
+
+        align-items:stretch;
+
+    }
+
+
+    .notes-admin-search{
+
+        min-width:0;
+
+    }
+
+
+    .notes-admin-filters{
+
+        width:100%;
+
+    }
+
+
+    .notes-filter{
+
+        flex:1;
+
+    }
+
+
+    .admin-note-top{
+
+        align-items:flex-start;
+
+        flex-direction:column;
+
+    }
+
+
+    .admin-note-metrics{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .admin-note-uploader{
+
+        align-items:flex-start;
+
+        flex-wrap:wrap;
+
+    }
+
+
+    .uploaded-date{
+
+        width:100%;
+
+        margin-left:48px;
+
+        text-align:left;
+
+    }
+
+
+    .admin-note-actions{
+
+        align-items:stretch;
+
+        flex-direction:column;
+
+    }
+
+
+    .admin-note-actions a,
+    .admin-note-actions form,
+    .admin-note-actions button{
+
+        width:100%;
+
+    }
+
+}
+
+
+@media(max-width:480px){
+
+    .notes-admin-stats{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+
+/* =========================================================
+   STABLE UI
+========================================================= */
+
+.admin-note-card,
+.notes-stat-card,
+.notes-admin-hero,
+.notes-filter,
+.admin-note-actions a,
+.admin-note-actions button{
+
+    transition:none !important;
+
+    transform:none !important;
+
+}
+
+</style>
+
+
+<script>
+
+/* =========================================================
+   NOTES SEARCH + FILTER
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        const cards =
+            Array.from(
+                document.querySelectorAll(
+                    ".admin-note-card"
+                )
+            );
+
+        const search =
+            document.getElementById(
+                "notesSearch"
+            );
+
+        const visible =
+            document.getElementById(
+                "visibleNotes"
+            );
+
+        const empty =
+            document.getElementById(
+                "notesFilterEmpty"
+            );
+
+        const clear =
+            document.getElementById(
+                "clearNotesFilters"
+            );
+
+        const buttons =
+            Array.from(
+                document.querySelectorAll(
+                    ".notes-filter"
+                )
+            );
+
+
+        let selectedFilter = "all";
+
+
+        function applyFilters(){
+
+            const query =
+                search.value
+                    .trim()
+                    .toLowerCase();
+
+
+            let count = 0;
+
+
+            cards.forEach(card => {
+
+                const status =
+                    card.dataset.status;
+
+                const text =
+                    card.dataset.search
+                        .toLowerCase();
+
+
+                const statusMatch =
+                    selectedFilter === "all" ||
+                    status === selectedFilter;
+
+
+                const searchMatch =
+                    !query ||
+                    text.includes(query);
+
+
+                const show =
+                    statusMatch &&
+                    searchMatch;
+
+
+                card.style.display =
+                    show ? "" : "none";
+
+
+                if(show){
+                    count++;
+                }
+
+            });
+
+
+            visible.textContent =
+                count;
+
+
+            empty.style.display =
+                (
+                    cards.length > 0 &&
+                    count === 0
+                )
+                ? "block"
+                : "none";
+
+        }
+
+
+        buttons.forEach(button => {
+
+            button.addEventListener(
+                "click",
+                function(){
+
+                    buttons.forEach(btn => {
+
+                        btn.classList.remove(
+                            "active"
+                        );
+
+                    });
+
+
+                    this.classList.add(
+                        "active"
+                    );
+
+
+                    selectedFilter =
+                        this.dataset.filter;
+
+
+                    applyFilters();
+
+                }
+            );
+
+        });
+
+
+        search.addEventListener(
+            "input",
+            applyFilters
+        );
+
+
+        clear.addEventListener(
+            "click",
+            function(){
+
+                search.value = "";
+
+                selectedFilter = "all";
+
+
+                buttons.forEach(btn => {
+
+                    btn.classList.remove(
+                        "active"
+                    );
+
+                });
+
+
+                document
+                    .querySelector(
+                        '.notes-filter[data-filter="all"]'
+                    )
+                    .classList.add("active");
+
+
+                applyFilters();
+
+            }
+        );
+
+
+        applyFilters();
+
+    }
+);
+
+</script>
+
+{% endblock %}

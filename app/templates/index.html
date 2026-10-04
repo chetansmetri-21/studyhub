@@ -1,0 +1,2427 @@
+{% extends "base.html" %}
+
+{% block title %}StudyHub - Study Smarter{% endblock %}
+
+{% block content %}
+
+<main class="sh-home">
+
+<style>
+
+/* =========================================================
+   STUDYHUB ADVANCED HOMEPAGE
+========================================================= */
+
+.sh-home {
+    --sh-primary: #315bea;
+    --sh-primary-dark: #2448c9;
+    --sh-purple: #7257e8;
+    --sh-text: #101936;
+    --sh-muted: #6f7d9c;
+    --sh-border: #e6eaf3;
+    --sh-bg: #f7f9fe;
+    --sh-card: #ffffff;
+
+    background:
+        radial-gradient(circle at 10% 5%, rgba(49,91,234,.08), transparent 25%),
+        radial-gradient(circle at 90% 15%, rgba(114,87,232,.08), transparent 25%),
+        #fff;
+    color: var(--sh-text);
+    overflow:hidden;
+}
+
+.sh-home * {
+    box-sizing:border-box;
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.sh-hero {
+    position:relative;
+    padding:70px 6% 75px;
+    background:
+        radial-gradient(circle at 15% 15%, rgba(49,91,234,.10), transparent 30%),
+        radial-gradient(circle at 85% 20%, rgba(114,87,232,.10), transparent 28%),
+        linear-gradient(180deg,#fbfcff 0%,#f7f9ff 100%);
+    border-bottom:1px solid #edf0f7;
+}
+
+.sh-hero::before {
+    content:"";
+    position:absolute;
+    width:420px;
+    height:420px;
+    border-radius:50%;
+    background:rgba(49,91,234,.05);
+    filter:blur(60px);
+    top:-160px;
+    left:-120px;
+}
+
+.sh-hero-inner {
+    position:relative;
+    z-index:2;
+    max-width:1450px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:1.1fr .8fr .72fr;
+    gap:45px;
+    align-items:center;
+}
+
+/* =========================================================
+   HERO CONTENT
+========================================================= */
+
+.sh-eyebrow {
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    padding:8px 13px;
+    border:1px solid #dce4fb;
+    background:#fff;
+    border-radius:999px;
+    color:#53658e;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.7px;
+    text-transform:uppercase;
+    box-shadow:0 6px 20px rgba(31,51,102,.05);
+}
+
+.sh-eyebrow-dot {
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#3b63ed;
+    box-shadow:0 0 0 5px rgba(59,99,237,.10);
+}
+
+.sh-hero h1 {
+    margin:22px 0 20px;
+    font-size:clamp(46px,5vw,76px);
+    line-height:.98;
+    letter-spacing:-3px;
+    font-weight:900;
+}
+
+.sh-hero h1 span {
+    background:linear-gradient(90deg,#315bea,#7656e8);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+}
+
+.sh-hero-text {
+    max-width:650px;
+    color:#697796;
+    font-size:17px;
+    line-height:1.75;
+    margin-bottom:28px;
+}
+
+.sh-hero-actions {
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.sh-btn {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    min-height:48px;
+    padding:0 20px;
+    border-radius:13px;
+    text-decoration:none;
+    font-weight:800;
+    font-size:14px;
+    transition:.25s ease;
+    border:1px solid transparent;
+}
+
+.sh-btn-primary {
+    color:#fff;
+    background:linear-gradient(135deg,#315bea,#5b55e9);
+    box-shadow:0 12px 25px rgba(49,91,234,.22);
+}
+
+.sh-btn-primary:hover {
+    transform:translateY(-2px);
+    box-shadow:0 17px 30px rgba(49,91,234,.28);
+}
+
+.sh-btn-secondary {
+    background:#fff;
+    color:#34446b;
+    border-color:#dfe5f1;
+}
+
+.sh-btn-secondary:hover {
+    transform:translateY(-2px);
+    border-color:#bfcbea;
+}
+
+/* =========================================================
+   QUICK RESOURCE STRIP
+========================================================= */
+
+.sh-resource-strip {
+    margin-top:32px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    max-width:650px;
+}
+
+.sh-resource-item {
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:13px;
+    background:#fff;
+    border:1px solid #e5e9f2;
+    border-radius:14px;
+    text-decoration:none;
+    color:var(--sh-text);
+    transition:.25s ease;
+}
+
+.sh-resource-item:hover {
+    transform:translateY(-3px);
+    border-color:#cbd6f4;
+    box-shadow:0 12px 25px rgba(34,55,105,.08);
+}
+
+.sh-resource-icon {
+    width:39px;
+    height:39px;
+    display:grid;
+    place-items:center;
+    border-radius:11px;
+    font-size:19px;
+}
+
+.notes-icon {
+    background:#eef4ff;
+}
+
+.pyq-icon {
+    background:#f2efff;
+}
+
+.insight-icon {
+    background:#ecfaf4;
+}
+
+.sh-resource-item strong {
+    display:block;
+    font-size:13px;
+}
+
+.sh-resource-item small {
+    display:block;
+    color:#8a96ae;
+    font-size:11px;
+    margin-top:3px;
+}
+
+/* =========================================================
+   HERO VISUAL
+========================================================= */
+
+.sh-hero-visual {
+    position:relative;
+    min-height:440px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.sh-visual-glow {
+    position:absolute;
+    width:300px;
+    height:300px;
+    border-radius:50%;
+    background:linear-gradient(
+        135deg,
+        rgba(49,91,234,.16),
+        rgba(114,87,232,.12)
+    );
+    filter:blur(5px);
+}
+
+.sh-books {
+    position:absolute;
+    left:5%;
+    bottom:85px;
+    transform:rotate(-8deg);
+    z-index:2;
+}
+
+.sh-book {
+    width:125px;
+    height:27px;
+    margin-top:-5px;
+    border-radius:5px 8px 8px 5px;
+    box-shadow:0 8px 14px rgba(20,34,75,.16);
+    display:flex;
+    align-items:center;
+    padding-left:12px;
+    color:#fff;
+    font-size:9px;
+    font-weight:900;
+    letter-spacing:1px;
+}
+
+.sh-book-1 { background:#315bea; }
+.sh-book-2 { background:#7b5be7; margin-left:10px; }
+.sh-book-3 { background:#2eaa7b; margin-left:2px; }
+.sh-book-4 { background:#ef9b42; margin-left:12px; }
+
+.sh-laptop {
+    position:relative;
+    width:270px;
+    z-index:3;
+    transform:translateY(10px);
+}
+
+.sh-laptop-screen {
+    height:180px;
+    border:8px solid #1d2742;
+    border-radius:15px 15px 8px 8px;
+    background:
+        linear-gradient(135deg,#17223e,#263c70);
+    padding:22px;
+    box-shadow:0 25px 45px rgba(23,38,77,.22);
+}
+
+.sh-code-line {
+    height:6px;
+    border-radius:5px;
+    background:rgba(255,255,255,.18);
+    margin-bottom:12px;
+}
+
+.sh-code-line.long { width:78%; }
+.sh-code-line.medium { width:55%; }
+.sh-code-line.short { width:35%; }
+
+.sh-screen-card {
+    margin-top:22px;
+    padding:11px;
+    border-radius:10px;
+    background:rgba(255,255,255,.10);
+    display:flex;
+    align-items:center;
+    gap:9px;
+    color:#fff;
+}
+
+.sh-screen-card span {
+    width:26px;
+    height:26px;
+    display:grid;
+    place-items:center;
+    border-radius:8px;
+    background:#4cda9c;
+    color:#173d31;
+    font-weight:900;
+}
+
+.sh-screen-card strong,
+.sh-screen-card small {
+    display:block;
+}
+
+.sh-screen-card strong {
+    font-size:11px;
+}
+
+.sh-screen-card small {
+    font-size:9px;
+    opacity:.65;
+    margin-top:2px;
+}
+
+.sh-laptop-base {
+    width:310px;
+    height:12px;
+    margin-left:-20px;
+    background:#b9c3d5;
+    border-radius:0 0 18px 18px;
+}
+
+.sh-cap {
+    position:absolute;
+    right:3%;
+    top:55px;
+    transform:rotate(-10deg);
+}
+
+.sh-cap-top {
+    width:100px;
+    height:30px;
+    background:#2f3e71;
+    transform:skew(-25deg) rotate(-8deg);
+    border-radius:4px;
+}
+
+.sh-cap-middle {
+    width:55px;
+    height:17px;
+    background:#44558e;
+    margin:0 auto;
+    border-radius:3px;
+}
+
+.sh-cap-tassel {
+    width:4px;
+    height:55px;
+    background:#efb84c;
+    margin-left:82px;
+    transform:rotate(-4deg);
+}
+
+.sh-plant {
+    position:absolute;
+    right:2%;
+    bottom:65px;
+}
+
+.sh-leaf {
+    position:absolute;
+    width:32px;
+    height:50px;
+    border-radius:100% 0 100% 0;
+    background:#4aa979;
+}
+
+.leaf-1 {
+    transform:rotate(-35deg);
+    left:-22px;
+}
+
+.leaf-2 {
+    transform:rotate(30deg);
+    left:13px;
+    top:-8px;
+}
+
+.leaf-3 {
+    transform:rotate(75deg);
+    left:23px;
+    top:13px;
+}
+
+.sh-pot {
+    width:55px;
+    height:45px;
+    background:#e69563;
+    border-radius:4px 4px 16px 16px;
+    margin-top:30px;
+}
+
+.sh-float {
+    position:absolute;
+    width:35px;
+    height:35px;
+    display:grid;
+    place-items:center;
+    border-radius:11px;
+    background:#fff;
+    box-shadow:0 12px 30px rgba(33,52,97,.12);
+    color:#315bea;
+    font-weight:900;
+    z-index:5;
+}
+
+.sh-float-1 { top:40px; left:16%; }
+.sh-float-2 { top:170px; right:8%; }
+.sh-float-3 { bottom:120px; left:7%; }
+.sh-float-4 { bottom:35px; right:25%; }
+
+/* =========================================================
+   AI CARD
+========================================================= */
+
+.sh-ai-card {
+    position:relative;
+    background:#fff;
+    border:1px solid #e1e6f0;
+    border-radius:24px;
+    box-shadow:0 25px 65px rgba(37,57,103,.12);
+    overflow:hidden;
+}
+
+.sh-ai-header {
+    padding:19px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:
+        linear-gradient(135deg,#f7f9ff,#ffffff);
+    border-bottom:1px solid #edf0f6;
+}
+
+.sh-ai-avatar {
+    width:43px;
+    height:43px;
+    display:grid;
+    place-items:center;
+    border-radius:14px;
+    color:#fff;
+    background:linear-gradient(135deg,#315bea,#7656e8);
+    box-shadow:0 9px 20px rgba(49,91,234,.25);
+}
+
+.sh-ai-header strong {
+    font-size:14px;
+}
+
+.sh-ai-status {
+    color:#6f7d9a;
+    font-size:11px;
+    margin-top:4px;
+}
+
+.sh-ai-status span {
+    display:inline-block;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#37c987;
+    margin-right:5px;
+}
+
+.sh-ai-body {
+    padding:17px;
+}
+
+.sh-ai-message {
+    padding:14px;
+    background:#f7f9ff;
+    border:1px solid #e9edf7;
+    border-radius:15px;
+}
+
+.sh-ai-message strong {
+    font-size:13px;
+}
+
+.sh-ai-message p {
+    margin:7px 0 0;
+    font-size:12px;
+    color:#71809e;
+    line-height:1.6;
+}
+
+.sh-ai-checklist {
+    margin:15px 0;
+}
+
+.sh-ai-checklist div {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:11px;
+    color:#61708e;
+    margin:9px 0;
+}
+
+.sh-ai-checklist span {
+    width:19px;
+    height:19px;
+    display:grid;
+    place-items:center;
+    border-radius:6px;
+    background:#ebf9f2;
+    color:#26a66e;
+    font-weight:900;
+}
+
+.sh-ai-suggestions {
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-bottom:13px;
+}
+
+.sh-ai-suggestions button {
+    border:1px solid #e0e6f1;
+    background:#fff;
+    color:#52617f;
+    padding:7px 9px;
+    border-radius:9px;
+    cursor:pointer;
+    font-size:10px;
+    font-weight:700;
+}
+
+.sh-ai-suggestions button:hover {
+    background:#f4f6ff;
+    border-color:#cbd5f3;
+}
+
+.sh-ai-input {
+    display:flex;
+    gap:7px;
+    padding:6px;
+    border:1px solid #dfe5f0;
+    border-radius:12px;
+    background:#fafbfe;
+}
+
+.sh-ai-input input {
+    flex:1;
+    min-width:0;
+    border:0;
+    outline:0;
+    background:transparent;
+    padding:7px;
+    font-size:12px;
+}
+
+.sh-ai-input button {
+    width:35px;
+    height:35px;
+    border:0;
+    border-radius:9px;
+    background:#315bea;
+    color:#fff;
+    cursor:pointer;
+}
+
+/* =========================================================
+   SECTION COMMON
+========================================================= */
+
+.sh-section {
+    max-width:1250px;
+    margin:auto;
+    padding:90px 6%;
+}
+
+.sh-section-heading {
+    max-width:720px;
+    margin-bottom:42px;
+}
+
+.sh-section-label {
+    color:#4966d6;
+    font-size:11px;
+    font-weight:900;
+    letter-spacing:1.8px;
+}
+
+.sh-section-heading h2 {
+    margin:11px 0 12px;
+    font-size:40px;
+    line-height:1.1;
+    letter-spacing:-1.5px;
+}
+
+.sh-section-heading h2 span {
+    color:#315bea;
+}
+
+.sh-section-heading p {
+    color:#74819d;
+    line-height:1.7;
+}
+
+/* =========================================================
+   QUICK ACCESS
+========================================================= */
+
+.sh-quick-section {
+    background:#fff;
+}
+
+.sh-quick-grid {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+}
+
+.sh-quick-card {
+    position:relative;
+    padding:23px;
+    border:1px solid #e5e9f1;
+    border-radius:20px;
+    background:#fff;
+    text-decoration:none;
+    color:var(--sh-text);
+    transition:.25s ease;
+    overflow:hidden;
+}
+
+.sh-quick-card::after {
+    content:"→";
+    position:absolute;
+    right:18px;
+    bottom:17px;
+    color:#a3afc8;
+    transition:.25s ease;
+}
+
+.sh-quick-card:hover {
+    transform:translateY(-5px);
+    border-color:#cbd6f3;
+    box-shadow:0 18px 35px rgba(32,52,96,.09);
+}
+
+.sh-quick-card:hover::after {
+    color:#315bea;
+    transform:translateX(4px);
+}
+
+.sh-quick-icon {
+    width:45px;
+    height:45px;
+    display:grid;
+    place-items:center;
+    border-radius:14px;
+    font-size:21px;
+    margin-bottom:17px;
+}
+
+.q-blue { background:#edf3ff; }
+.q-purple { background:#f2efff; }
+.q-green { background:#eaf9f3; }
+.q-orange { background:#fff3e8; }
+
+.sh-quick-card h3 {
+    margin:0 0 6px;
+    font-size:16px;
+}
+
+.sh-quick-card p {
+    margin:0;
+    color:#7b87a1;
+    font-size:12px;
+    line-height:1.6;
+}
+
+/* =========================================================
+   FEATURES
+========================================================= */
+
+.sh-features {
+    background:#f7f9fe;
+}
+
+.sh-feature-grid {
+    max-width:1250px;
+    margin:auto;
+    padding:0 6%;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:16px;
+}
+
+.sh-feature-card {
+    padding:25px;
+    border-radius:20px;
+    background:#fff;
+    border:1px solid #e5e9f2;
+    transition:.25s ease;
+}
+
+.sh-feature-card:hover {
+    transform:translateY(-5px);
+    box-shadow:0 18px 35px rgba(30,51,100,.08);
+}
+
+.sh-feature-icon {
+    width:46px;
+    height:46px;
+    display:grid;
+    place-items:center;
+    border-radius:14px;
+    margin-bottom:20px;
+    font-size:21px;
+}
+
+.sh-feature-blue .sh-feature-icon { background:#edf3ff; }
+.sh-feature-purple .sh-feature-icon { background:#f1edff; }
+.sh-feature-green .sh-feature-icon { background:#eaf9f3; }
+.sh-feature-orange .sh-feature-icon { background:#fff2e7; }
+
+.sh-feature-card h3 {
+    font-size:17px;
+    margin:0 0 9px;
+}
+
+.sh-feature-card p {
+    font-size:12px;
+    line-height:1.7;
+    color:#74819c;
+    min-height:62px;
+}
+
+.sh-feature-card a {
+    display:inline-block;
+    margin-top:12px;
+    color:#315bea;
+    font-size:12px;
+    font-weight:800;
+    text-decoration:none;
+}
+
+/* =========================================================
+   INTELLIGENCE
+========================================================= */
+
+.sh-intelligence {
+    padding:95px 6%;
+    background:
+        linear-gradient(135deg,#101a38 0%,#182654 60%,#273a79 100%);
+    color:#fff;
+}
+
+.sh-intelligence-inner {
+    max-width:1250px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:70px;
+    align-items:center;
+}
+
+.sh-intelligence .sh-section-label {
+    color:#91a9ff;
+}
+
+.sh-intelligence h2 {
+    margin:12px 0 18px;
+    font-size:43px;
+    line-height:1.1;
+    letter-spacing:-1.5px;
+}
+
+.sh-intelligence h2 span {
+    color:#93aaff;
+}
+
+.sh-intelligence-content > p {
+    color:#aeb9d4;
+    line-height:1.8;
+    max-width:560px;
+}
+
+.sh-intelligence-list {
+    margin:25px 0 30px;
+}
+
+.sh-intelligence-list div {
+    display:flex;
+    gap:10px;
+    align-items:center;
+    margin:13px 0;
+    color:#d8def0;
+    font-size:13px;
+}
+
+.sh-intelligence-list span {
+    width:22px;
+    height:22px;
+    display:grid;
+    place-items:center;
+    border-radius:7px;
+    background:rgba(117,146,255,.18);
+    color:#9eb3ff;
+    font-size:11px;
+}
+
+.sh-analytics-visual {
+    position:relative;
+    min-height:390px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.sh-chart-card {
+    width:100%;
+    max-width:480px;
+    padding:25px;
+    border-radius:22px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.12);
+    backdrop-filter:blur(15px);
+}
+
+.sh-chart-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.sh-chart-header small,
+.sh-chart-header strong {
+    display:block;
+}
+
+.sh-chart-header small {
+    color:#9daac9;
+    font-size:10px;
+}
+
+.sh-chart-header strong {
+    margin-top:5px;
+    font-size:16px;
+}
+
+.sh-chart-header > span {
+    width:34px;
+    height:34px;
+    display:grid;
+    place-items:center;
+    border-radius:10px;
+    background:rgba(255,255,255,.1);
+}
+
+.sh-chart {
+    height:230px;
+    margin-top:25px;
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-around;
+    gap:15px;
+    border-bottom:1px solid rgba(255,255,255,.12);
+}
+
+.sh-bar {
+    width:42px;
+    min-height:50px;
+    border-radius:9px 9px 0 0;
+    background:linear-gradient(180deg,#8ca4ff,#496de9);
+    position:relative;
+    animation:shGrow 1s ease forwards;
+    transform-origin:bottom;
+}
+
+.bar-1 { height:170px; }
+.bar-2 { height:125px; }
+.bar-3 { height:195px; }
+.bar-4 { height:105px; }
+.bar-5 { height:150px; }
+
+.sh-bar span {
+    position:absolute;
+    bottom:-27px;
+    width:100%;
+    text-align:center;
+    color:#9eabcd;
+    font-size:10px;
+}
+
+@keyframes shGrow {
+    from { transform:scaleY(0); }
+    to { transform:scaleY(1); }
+}
+
+.sh-repeat-card {
+    position:absolute;
+    right:-10px;
+    bottom:15px;
+    max-width:270px;
+    display:flex;
+    gap:12px;
+    align-items:center;
+    padding:14px;
+    border-radius:16px;
+    background:#fff;
+    color:#15203e;
+    box-shadow:0 18px 40px rgba(0,0,0,.22);
+}
+
+.sh-repeat-icon {
+    width:39px;
+    height:39px;
+    display:grid;
+    place-items:center;
+    border-radius:12px;
+    background:#edf3ff;
+    color:#315bea;
+    font-size:20px;
+}
+
+.sh-repeat-card small,
+.sh-repeat-card strong {
+    display:block;
+}
+
+.sh-repeat-card small {
+    color:#7d89a4;
+    font-size:9px;
+}
+
+.sh-repeat-card strong {
+    margin-top:4px;
+    font-size:11px;
+}
+
+/* =========================================================
+   STUDY WORKFLOW
+========================================================= */
+
+.sh-workflow {
+    padding:90px 6%;
+    background:#fff;
+}
+
+.sh-workflow-inner {
+    max-width:1250px;
+    margin:auto;
+}
+
+.sh-workflow-grid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+}
+
+.sh-work-card {
+    padding:27px;
+    border:1px solid #e5e9f2;
+    border-radius:20px;
+    background:#fff;
+    position:relative;
+}
+
+.sh-work-number {
+    font-size:11px;
+    font-weight:900;
+    color:#315bea;
+    letter-spacing:1px;
+}
+
+.sh-work-card h3 {
+    margin:14px 0 9px;
+    font-size:18px;
+}
+
+.sh-work-card p {
+    margin:0;
+    color:#77839c;
+    font-size:12px;
+    line-height:1.7;
+}
+
+/* =========================================================
+   FINAL CTA
+========================================================= */
+
+.sh-final-cta {
+    margin:20px 6% 80px;
+    padding:65px;
+    max-width:1250px;
+    margin-left:auto;
+    margin-right:auto;
+    border-radius:28px;
+    background:
+        radial-gradient(circle at 80% 20%,rgba(126,145,255,.25),transparent 30%),
+        linear-gradient(135deg,#101a38,#263c78);
+    color:#fff;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+}
+
+.sh-final-cta h2 {
+    font-size:42px;
+    line-height:1.1;
+    letter-spacing:-1.5px;
+    margin:12px 0;
+}
+
+.sh-final-cta h2 span {
+    color:#9bb0ff;
+}
+
+.sh-final-cta p {
+    color:#aeb9d5;
+    max-width:600px;
+    margin:0 auto 27px;
+    line-height:1.7;
+    font-size:14px;
+}
+
+.sh-final-actions {
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.sh-final-cta .sh-btn-secondary {
+    background:rgba(255,255,255,.08);
+    color:#fff;
+    border-color:rgba(255,255,255,.18);
+}
+
+/* =========================================================
+   AI RESPONSE
+========================================================= */
+
+.sh-ai-user-message {
+    padding:9px 11px;
+    border-radius:10px;
+    background:#edf3ff;
+    color:#34446c;
+    font-size:11px;
+    margin-bottom:8px;
+}
+
+.sh-ai-loading {
+    padding:10px;
+    color:#7785a2;
+    font-size:11px;
+}
+
+.sh-ai-answer {
+    padding:11px;
+    background:#f7f9ff;
+    border-radius:11px;
+    color:#5d6c89;
+    font-size:11px;
+    line-height:1.6;
+}
+
+.sh-ai-results {
+    margin-top:10px;
+    display:grid;
+    gap:7px;
+}
+
+.sh-ai-result {
+    display:block;
+    padding:10px;
+    border:1px solid #e3e8f2;
+    border-radius:10px;
+    text-decoration:none;
+    color:#182441;
+    background:#fff;
+}
+
+.sh-ai-result:hover {
+    border-color:#c8d3f0;
+}
+
+.sh-ai-result strong,
+.sh-ai-result small {
+    display:block;
+}
+
+.sh-ai-result strong {
+    font-size:11px;
+}
+
+.sh-ai-result small {
+    margin-top:3px;
+    color:#8792aa;
+    font-size:9px;
+}
+
+.sh-ai-action {
+    margin-top:10px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width:1150px) {
+
+    .sh-hero-inner {
+        grid-template-columns:1fr 1fr;
+    }
+
+    .sh-ai-card {
+        grid-column:1 / -1;
+        max-width:650px;
+        width:100%;
+        margin:auto;
+    }
+
+    .sh-feature-grid,
+    .sh-quick-grid {
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media (max-width:850px) {
+
+    .sh-hero {
+        padding:50px 5%;
+    }
+
+    .sh-hero-inner,
+    .sh-intelligence-inner {
+        grid-template-columns:1fr;
+    }
+
+    .sh-hero-visual {
+        min-height:360px;
+        order:2;
+    }
+
+    .sh-ai-card {
+        order:3;
+    }
+
+    .sh-hero h1 {
+        font-size:48px;
+    }
+
+    .sh-intelligence {
+        padding:70px 5%;
+    }
+
+    .sh-workflow-grid {
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media (max-width:600px) {
+
+    .sh-resource-strip,
+    .sh-feature-grid,
+    .sh-quick-grid {
+        grid-template-columns:1fr;
+    }
+
+    .sh-hero h1 {
+        font-size:42px;
+        letter-spacing:-2px;
+    }
+
+    .sh-hero-text {
+        font-size:14px;
+    }
+
+    .sh-hero-visual {
+        transform:scale(.82);
+        margin:-30px 0;
+    }
+
+    .sh-section {
+        padding:65px 5%;
+    }
+
+    .sh-section-heading h2,
+    .sh-intelligence h2,
+    .sh-final-cta h2 {
+        font-size:32px;
+    }
+
+    .sh-final-cta {
+        margin:10px 5% 50px;
+        padding:40px 22px;
+        border-radius:22px;
+    }
+
+}
+
+</style>
+
+
+<!-- =========================================================
+     HERO
+========================================================= -->
+
+<section class="sh-hero">
+
+    <div class="sh-hero-inner">
+
+        <div class="sh-hero-content">
+
+            <div class="sh-eyebrow">
+                <span class="sh-eyebrow-dot"></span>
+                Your academic resource platform
+            </div>
+
+            <h1>
+                Study smarter.<br>
+                <span>Find what matters.</span>
+            </h1>
+
+            <p class="sh-hero-text">
+                Find notes, previous-year question papers and
+                repeated-question insights in one organized
+                academic platform.
+            </p>
+
+            <div class="sh-hero-actions">
+
+                <a href="/pyq" class="sh-btn sh-btn-primary">
+                    Explore Resources
+                    <span>→</span>
+                </a>
+
+                <a href="#features" class="sh-btn sh-btn-secondary">
+                    Explore Features
+                </a>
+
+            </div>
+
+            <div class="sh-resource-strip">
+
+                <a href="/notes" class="sh-resource-item">
+
+                    <div class="sh-resource-icon notes-icon">
+                        📚
+                    </div>
+
+                    <div>
+                        <strong>Notes</strong>
+                        <small>Study material</small>
+                    </div>
+
+                </a>
+
+                <a href="/pyq" class="sh-resource-item">
+
+                    <div class="sh-resource-icon pyq-icon">
+                        📄
+                    </div>
+
+                    <div>
+                        <strong>PYQs</strong>
+                        <small>Past papers</small>
+                    </div>
+
+                </a>
+
+                <a href="/pyq/intelligence"
+                   class="sh-resource-item">
+
+                    <div class="sh-resource-icon insight-icon">
+                        📊
+                    </div>
+
+                    <div>
+                        <strong>Insights</strong>
+                        <small>Question analysis</small>
+                    </div>
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             CENTER VISUAL
+        ================================================== -->
+
+        <div class="sh-hero-visual">
+
+            <div class="sh-visual-glow"></div>
+
+            <div class="sh-float sh-float-1">✦</div>
+            <div class="sh-float sh-float-2">☁</div>
+            <div class="sh-float sh-float-3">✎</div>
+            <div class="sh-float sh-float-4">✦</div>
+
+            <div class="sh-books">
+
+                <div class="sh-book sh-book-1">
+                    <span>COMPUTER</span>
+                </div>
+
+                <div class="sh-book sh-book-2">
+                    <span>DATA</span>
+                </div>
+
+                <div class="sh-book sh-book-3">
+                    <span>CODE</span>
+                </div>
+
+                <div class="sh-book sh-book-4">
+                    <span>LEARN</span>
+                </div>
+
+            </div>
+
+            <div class="sh-laptop">
+
+                <div class="sh-laptop-screen">
+
+                    <div class="sh-code-line long"></div>
+                    <div class="sh-code-line medium"></div>
+                    <div class="sh-code-line short"></div>
+
+                    <div class="sh-screen-card">
+
+                        <span>✓</span>
+
+                        <div>
+                            <strong>StudyHub</strong>
+                            <small>Keep learning</small>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="sh-laptop-base"></div>
+
+            </div>
+
+            <div class="sh-cap">
+                <div class="sh-cap-top"></div>
+                <div class="sh-cap-middle"></div>
+                <div class="sh-cap-tassel"></div>
+            </div>
+
+            <div class="sh-plant">
+
+                <div class="sh-leaf leaf-1"></div>
+                <div class="sh-leaf leaf-2"></div>
+                <div class="sh-leaf leaf-3"></div>
+
+                <div class="sh-pot"></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             STUDYHUB AI
+        ================================================== -->
+
+        <aside class="sh-ai-card">
+
+            <div class="sh-ai-header">
+
+                <div class="sh-ai-avatar">
+                    ✦
+                </div>
+
+                <div>
+
+                    <strong>
+                        StudyHub AI
+                    </strong>
+
+                    <div class="sh-ai-status">
+                        <span></span>
+                        Online
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="sh-ai-body">
+
+                <div
+                    class="sh-ai-message"
+                    id="sh-ai-messages"
+                >
+
+                    <strong>
+                        Hi! 👋
+                    </strong>
+
+                    <p>
+                        I can help you find study resources,
+                        explore PYQs and understand historical
+                        question patterns.
+                    </p>
+
+                </div>
+
+
+                <div class="sh-ai-checklist">
+
+                    <div>
+                        <span>✓</span>
+                        Find previous-year papers
+                    </div>
+
+                    <div>
+                        <span>✓</span>
+                        Explore repeated questions
+                    </div>
+
+                    <div>
+                        <span>✓</span>
+                        Discover useful notes
+                    </div>
+
+                </div>
+
+
+                <div class="sh-ai-suggestions">
+
+                    <button
+                        type="button"
+                        onclick="askStudyHub('Find PYQs')"
+                    >
+                        Find PYQs
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="askStudyHub('Show repeated questions')"
+                    >
+                        Repeated questions
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="askStudyHub('Find study notes')"
+                    >
+                        Study notes
+                    </button>
+
+                </div>
+
+
+                <form
+                    class="sh-ai-input"
+                    id="sh-ai-form"
+                >
+
+                    <input
+                        type="text"
+                        id="sh-ai-input"
+                        placeholder="Ask StudyHub..."
+                        aria-label="Ask StudyHub"
+                        autocomplete="off"
+                    >
+
+                    <button
+                        type="submit"
+                        aria-label="Send"
+                    >
+                        ↑
+                    </button>
+
+                </form>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     QUICK ACCESS
+========================================================= -->
+
+<section class="sh-section sh-quick-section">
+
+    <div class="sh-section-heading">
+
+        <span class="sh-section-label">
+            QUICK ACCESS
+        </span>
+
+        <h2>
+            Everything you need,
+            <span>one click away.</span>
+        </h2>
+
+        <p>
+            Jump directly into the resources and tools
+            you use most during your preparation.
+        </p>
+
+    </div>
+
+
+    <div class="sh-quick-grid">
+
+        <a href="/notes" class="sh-quick-card">
+
+            <div class="sh-quick-icon q-blue">
+                📚
+            </div>
+
+            <h3>Study Notes</h3>
+
+            <p>
+                Browse organized notes by course,
+                semester and subject.
+            </p>
+
+        </a>
+
+
+        <a href="/pyq" class="sh-quick-card">
+
+            <div class="sh-quick-icon q-purple">
+                📝
+            </div>
+
+            <h3>Previous Papers</h3>
+
+            <p>
+                Explore previous-year question papers
+                for exam preparation.
+            </p>
+
+        </a>
+
+
+        <a href="/pyq/intelligence"
+           class="sh-quick-card">
+
+            <div class="sh-quick-icon q-green">
+                🧠
+            </div>
+
+            <h3>PYQ Intelligence</h3>
+
+            <p>
+                Discover repeated questions and
+                historical patterns.
+            </p>
+
+        </a>
+
+
+        <a href="/pyq"
+           class="sh-quick-card">
+
+            <div class="sh-quick-icon q-orange">
+                🔎
+            </div>
+
+            <h3>Smart Search</h3>
+
+            <p>
+                Find resources using subjects,
+                semesters and years.
+            </p>
+
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     FEATURES
+========================================================= -->
+
+<section
+    class="sh-features"
+    id="features"
+>
+
+    <div class="sh-section-heading"
+         style="max-width:1250px;margin:0 auto 42px;padding:90px 6% 0;">
+
+        <span class="sh-section-label">
+            EVERYTHING IN ONE PLACE
+        </span>
+
+        <h2>
+            Built around the way
+            <span>students study.</span>
+        </h2>
+
+        <p>
+            StudyHub brings your academic resources and
+            exam preparation tools together.
+        </p>
+
+    </div>
+
+
+    <div class="sh-feature-grid">
+
+        <article class="sh-feature-card sh-feature-blue">
+
+            <div class="sh-feature-icon">
+                📚
+            </div>
+
+            <h3>
+                Notes Repository
+            </h3>
+
+            <p>
+                Find organized study notes by education level,
+                course, semester and subject.
+            </p>
+
+            <a href="/notes">
+                Explore notes →
+            </a>
+
+        </article>
+
+
+        <article class="sh-feature-card sh-feature-purple">
+
+            <div class="sh-feature-icon">
+                📄
+            </div>
+
+            <h3>
+                PYQ Repository
+            </h3>
+
+            <p>
+                Access previous-year question papers and
+                build a useful exam preparation collection.
+            </p>
+
+            <a href="/pyq">
+                Explore PYQs →
+            </a>
+
+        </article>
+
+
+        <article class="sh-feature-card sh-feature-green">
+
+            <div class="sh-feature-icon">
+                🧠
+            </div>
+
+            <h3>
+                PYQ Intelligence
+            </h3>
+
+            <p>
+                Analyze recurring questions, topics and
+                historical patterns across available papers.
+            </p>
+
+            <a href="/pyq/intelligence">
+                View insights →
+            </a>
+
+        </article>
+
+
+        <article class="sh-feature-card sh-feature-orange">
+
+            <div class="sh-feature-icon">
+                🔎
+            </div>
+
+            <h3>
+                Smart Search
+            </h3>
+
+            <p>
+                Quickly discover resources using subjects,
+                semesters, years and other filters.
+            </p>
+
+            <a href="/pyq">
+                Search resources →
+            </a>
+
+        </article>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     PYQ INTELLIGENCE
+========================================================= -->
+
+<section class="sh-intelligence">
+
+    <div class="sh-intelligence-inner">
+
+        <div class="sh-intelligence-content">
+
+            <span class="sh-section-label">
+                PYQ INTELLIGENCE
+            </span>
+
+            <h2>
+                Understand what has
+                <span>appeared before.</span>
+            </h2>
+
+            <p>
+                StudyHub analyzes available previous-year
+                papers to help you discover recurring
+                questions, frequently appearing topics and
+                historical question patterns.
+            </p>
+
+
+            <div class="sh-intelligence-list">
+
+                <div>
+                    <span>✓</span>
+                    Frequently repeated questions
+                </div>
+
+                <div>
+                    <span>✓</span>
+                    Similar questions grouped by topic
+                </div>
+
+                <div>
+                    <span>✓</span>
+                    Year-wise question analysis
+                </div>
+
+                <div>
+                    <span>✓</span>
+                    Unit and topic distribution
+                </div>
+
+            </div>
+
+
+            <a
+                href="/pyq/intelligence"
+                class="sh-btn sh-btn-primary"
+            >
+                Explore PYQ Intelligence
+                <span>→</span>
+            </a>
+
+        </div>
+
+
+        <div class="sh-analytics-visual">
+
+            <div class="sh-chart-card">
+
+                <div class="sh-chart-header">
+
+                    <div>
+
+                        <small>
+                            Question frequency
+                        </small>
+
+                        <strong>
+                            Topic Analysis
+                        </strong>
+
+                    </div>
+
+                    <span>
+                        ↗
+                    </span>
+
+                </div>
+
+
+                <div class="sh-chart">
+
+                    <div class="sh-bar bar-1">
+                        <span>DBMS</span>
+                    </div>
+
+                    <div class="sh-bar bar-2">
+                        <span>OS</span>
+                    </div>
+
+                    <div class="sh-bar bar-3">
+                        <span>CN</span>
+                    </div>
+
+                    <div class="sh-bar bar-4">
+                        <span>DS</span>
+                    </div>
+
+                    <div class="sh-bar bar-5">
+                        <span>AI</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="sh-repeat-card">
+
+                <div class="sh-repeat-icon">
+                    ↻
+                </div>
+
+                <div>
+
+                    <small>
+                        Repeated question
+                    </small>
+
+                    <strong>
+                        Appeared across multiple years
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     STUDY WORKFLOW
+========================================================= -->
+
+<section class="sh-workflow">
+
+    <div class="sh-workflow-inner">
+
+        <div class="sh-section-heading">
+
+            <span class="sh-section-label">
+                HOW STUDYHUB WORKS
+            </span>
+
+            <h2>
+                From searching to
+                <span>studying.</span>
+            </h2>
+
+            <p>
+                A simple workflow for finding the right
+                academic resources faster.
+            </p>
+
+        </div>
+
+
+        <div class="sh-workflow-grid">
+
+            <article class="sh-work-card">
+
+                <div class="sh-work-number">
+                    STEP 01
+                </div>
+
+                <h3>
+                    Find
+                </h3>
+
+                <p>
+                    Search notes, PYQs and other academic
+                    resources using the available filters.
+                </p>
+
+            </article>
+
+
+            <article class="sh-work-card">
+
+                <div class="sh-work-number">
+                    STEP 02
+                </div>
+
+                <h3>
+                    Understand
+                </h3>
+
+                <p>
+                    Use PYQ Intelligence to explore repeated
+                    questions and historical patterns.
+                </p>
+
+            </article>
+
+
+            <article class="sh-work-card">
+
+                <div class="sh-work-number">
+                    STEP 03
+                </div>
+
+                <h3>
+                    Prepare
+                </h3>
+
+                <p>
+                    Organize your preparation around the
+                    resources that matter to your subjects.
+                </p>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     FINAL CTA
+========================================================= -->
+
+<section class="sh-final-cta">
+
+    <span class="sh-section-label">
+        START EXPLORING
+    </span>
+
+    <h2>
+        Your study resources,
+        <span>organized.</span>
+    </h2>
+
+    <p>
+        Find the resources you need and make your
+        preparation more structured.
+    </p>
+
+
+    <div class="sh-final-actions">
+
+        <a
+            href="/pyq"
+            class="sh-btn sh-btn-primary"
+        >
+            Explore PYQs
+            <span>→</span>
+        </a>
+
+        <a
+            href="/notes"
+            class="sh-btn sh-btn-secondary"
+        >
+            Browse Notes
+        </a>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- =========================================================
+     STUDYHUB AI JAVASCRIPT
+========================================================= -->
+
+<script>
+
+async function askStudyHub(message) {
+
+    const messages =
+        document.getElementById("sh-ai-messages");
+
+    if (!messages) {
+        return;
+    }
+
+    messages.innerHTML = `
+        <div class="sh-ai-user-message">
+            ${escapeHtml(message)}
+        </div>
+
+        <div class="sh-ai-loading">
+            StudyHub AI is searching...
+        </div>
+    `;
+
+    try {
+
+        const response = await fetch(
+            "/ai/ask",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    message: message
+                })
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                "AI request failed: " + response.status
+            );
+        }
+
+        const data =
+            await response.json();
+
+        renderStudyHubResponse(
+            data,
+            messages,
+            message
+        );
+
+    } catch (error) {
+
+        console.error(
+            "StudyHub AI error:",
+            error
+        );
+
+        messages.innerHTML = `
+            <div class="sh-ai-answer">
+
+                <strong>StudyHub AI</strong>
+
+                <p>
+                    Sorry, I couldn't process that request
+                    right now. Please try again.
+                </p>
+
+            </div>
+        `;
+    }
+}
+
+
+/* =========================================================
+   RENDER AI RESPONSE
+========================================================= */
+
+function renderStudyHubResponse(
+    data,
+    container,
+    userMessage
+) {
+
+    let html = "";
+
+    html += `
+        <div class="sh-ai-user-message">
+            ${escapeHtml(userMessage)}
+        </div>
+    `;
+
+
+    const aiText =
+        data.message ||
+        data.answer ||
+        data.response ||
+        "";
+
+
+    if (aiText) {
+
+        html += `
+            <div class="sh-ai-answer">
+                ${formatAIText(aiText)}
+            </div>
+        `;
+    }
+
+
+    if (
+        Array.isArray(data.results) &&
+        data.results.length > 0
+    ) {
+
+        html += `
+            <div class="sh-ai-results">
+        `;
+
+
+        data.results.forEach(function(item) {
+
+
+            if (data.type === "pyqs") {
+
+                html += `
+                    <a
+                        href="${safeUrl(item.url)}"
+                        class="sh-ai-result"
+                    >
+
+                        <strong>
+                            ${escapeHtml(
+                                item.title || "PYQ"
+                            )}
+                        </strong>
+
+                        <small>
+                            ${escapeHtml(
+                                item.subject || ""
+                            )}
+
+                            ${
+                                item.year
+                                ? " • " +
+                                  escapeHtml(
+                                      String(item.year)
+                                  )
+                                : ""
+                            }
+
+                        </small>
+
+                    </a>
+                `;
+            }
+
+
+            else if (data.type === "notes") {
+
+                html += `
+                    <a
+                        href="${safeUrl(item.url)}"
+                        class="sh-ai-result"
+                    >
+
+                        <strong>
+                            ${escapeHtml(
+                                item.title || "Study Note"
+                            )}
+                        </strong>
+
+                        <small>
+                            ${escapeHtml(
+                                item.subject || ""
+                            )}
+                        </small>
+
+                    </a>
+                `;
+            }
+
+
+            else if (data.type === "repeated") {
+
+                html += `
+                    <div class="sh-ai-result">
+
+                        <strong>
+                            ${escapeHtml(
+                                item.question ||
+                                item.title ||
+                                "Repeated question"
+                            )}
+                        </strong>
+
+                        <small>
+                            ${escapeHtml(
+                                item.subject || ""
+                            )}
+
+                            ${
+                                item.year
+                                ? " • " +
+                                  escapeHtml(
+                                      String(item.year)
+                                  )
+                                : ""
+                            }
+
+                        </small>
+
+                    </div>
+                `;
+            }
+
+
+            else {
+
+                html += `
+                    <a
+                        href="${safeUrl(item.url)}"
+                        class="sh-ai-result"
+                    >
+
+                        <strong>
+                            ${escapeHtml(
+                                item.title ||
+                                item.name ||
+                                "StudyHub resource"
+                            )}
+                        </strong>
+
+                        <small>
+                            ${escapeHtml(
+                                item.resource_type ||
+                                item.subject ||
+                                ""
+                            )}
+                        </small>
+
+                    </a>
+                `;
+            }
+
+        });
+
+
+        html += `
+            </div>
+        `;
+    }
+
+
+    if (
+        data.url &&
+        typeof data.url === "string"
+    ) {
+
+        html += `
+            <div class="sh-ai-action">
+
+                <a
+                    href="${safeUrl(data.url)}"
+                    class="sh-btn sh-btn-primary"
+                >
+                    Open StudyHub
+                    <span>→</span>
+                </a>
+
+            </div>
+        `;
+    }
+
+
+    if (
+        !aiText &&
+        (!data.results ||
+         data.results.length === 0) &&
+        !data.url
+    ) {
+
+        html += `
+            <div class="sh-ai-answer">
+
+                <p>
+                    I couldn't find a matching resource.
+                    Try asking about a subject, PYQs,
+                    notes, repeated questions, or
+                    recommendations.
+                </p>
+
+            </div>
+        `;
+    }
+
+
+    container.innerHTML = html;
+}
+
+
+/* =========================================================
+   FORMAT AI TEXT
+========================================================= */
+
+function formatAIText(text) {
+
+    return escapeHtml(
+        String(text || "")
+    ).replace(
+        /\*\*(.*?)\*\*/g,
+        "<strong>$1</strong>"
+    );
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        text || "";
+
+    return div.innerHTML;
+}
+
+
+/* =========================================================
+   SAFE INTERNAL URL
+========================================================= */
+
+function safeUrl(url) {
+
+    if (!url) {
+        return "#";
+    }
+
+    if (
+        typeof url === "string" &&
+        url.startsWith("/")
+    ) {
+        return url;
+    }
+
+    return "#";
+}
+
+
+/* =========================================================
+   FORM SUBMISSION
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        const form =
+            document.getElementById(
+                "sh-ai-form"
+            );
+
+        const input =
+            document.getElementById(
+                "sh-ai-input"
+            );
+
+        if (!form || !input) {
+            return;
+        }
+
+
+        form.addEventListener(
+            "submit",
+            function(event) {
+
+                event.preventDefault();
+
+                const message =
+                    input.value.trim();
+
+                if (!message) {
+                    return;
+                }
+
+                askStudyHub(message);
+
+                input.value = "";
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+{% endblock %}

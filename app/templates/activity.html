@@ -1,0 +1,800 @@
+{% extends "base.html" %}
+
+{% block title %}
+Activity & History - StudyHub
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   STUDYHUB ACTIVITY
+========================================================= */
+
+.sh-activity-page {
+    width: min(1280px, 92%);
+    margin: 45px auto 90px;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.sh-activity-hero {
+    position: relative;
+    overflow: hidden;
+
+    padding: 42px;
+
+    border-radius: 30px;
+
+    background:
+        radial-gradient(
+            circle at 90% 15%,
+            rgba(99,102,241,.22),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #111a38,
+            #263b91
+        );
+
+    color: white;
+
+    box-shadow:
+        0 25px 70px rgba(30,41,90,.20);
+}
+
+
+.sh-activity-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 13px;
+
+    border-radius: 999px;
+
+    background: rgba(255,255,255,.12);
+
+    border: 1px solid rgba(255,255,255,.15);
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: .13em;
+}
+
+
+.sh-activity-hero h1 {
+    margin: 18px 0 10px;
+
+    font-size: clamp(32px, 5vw, 52px);
+
+    letter-spacing: -.04em;
+}
+
+
+.sh-activity-hero p {
+    max-width: 650px;
+
+    margin: 0;
+
+    color: rgba(255,255,255,.72);
+
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.sh-activity-stats {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 16px;
+
+    margin-top: 28px;
+}
+
+
+.sh-activity-stat {
+    padding: 22px;
+
+    border-radius: 20px;
+
+    background: rgba(255,255,255,.10);
+
+    border: 1px solid rgba(255,255,255,.12);
+
+    backdrop-filter: blur(12px);
+}
+
+
+.sh-activity-stat-icon {
+    font-size: 21px;
+}
+
+
+.sh-activity-stat strong {
+    display: block;
+
+    margin-top: 10px;
+
+    font-size: 29px;
+}
+
+
+.sh-activity-stat span {
+    color: rgba(255,255,255,.65);
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.sh-activity-toolbar {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 18px;
+
+    margin: 30px 0 20px;
+
+    flex-wrap: wrap;
+}
+
+
+.sh-activity-filters {
+    display: flex;
+
+    gap: 8px;
+
+    flex-wrap: wrap;
+}
+
+
+.sh-activity-filter {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 10px 16px;
+
+    border-radius: 12px;
+
+    background: white;
+
+    border: 1px solid #e2e8f0;
+
+    color: #475569;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease;
+}
+
+
+.sh-activity-filter:hover {
+    transform: translateY(-2px);
+
+    border-color: #a5b4fc;
+
+    box-shadow:
+        0 10px 25px rgba(15,23,42,.08);
+}
+
+
+.sh-activity-filter.active {
+    background: #4f46e5;
+
+    border-color: #4f46e5;
+
+    color: white;
+}
+
+
+.sh-activity-clear {
+    border: 1px solid #fecaca;
+
+    background: #fff;
+
+    color: #dc2626;
+
+    border-radius: 12px;
+
+    padding: 10px 16px;
+
+    font-size: 13px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+.sh-activity-clear:hover {
+    background: #fef2f2;
+}
+
+
+/* =========================================================
+   ACTIVITY CARD
+========================================================= */
+
+.sh-activity-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+
+.sh-activity-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    padding: 18px;
+
+    background: white;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 20px;
+
+    text-decoration: none;
+
+    color: inherit;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease;
+}
+
+
+.sh-activity-item:hover {
+    transform: translateY(-2px);
+
+    border-color: #c7d2fe;
+
+    box-shadow:
+        0 14px 35px rgba(15,23,42,.08);
+}
+
+
+.sh-activity-icon {
+    width: 50px;
+    height: 50px;
+
+    flex: 0 0 50px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 15px;
+
+    background: #eef2ff;
+
+    font-size: 22px;
+}
+
+
+.sh-activity-main {
+    min-width: 0;
+
+    flex: 1;
+}
+
+
+.sh-activity-type {
+    display: inline-block;
+
+    margin-bottom: 5px;
+
+    color: #6366f1;
+
+    font-size: 10px;
+
+    font-weight: 900;
+
+    letter-spacing: .12em;
+
+    text-transform: uppercase;
+}
+
+
+.sh-activity-title {
+    margin: 0;
+
+    color: #172033;
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+.sh-activity-subtitle {
+    margin: 5px 0 0;
+
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+
+.sh-activity-meta {
+    text-align: right;
+
+    flex: 0 0 auto;
+}
+
+
+.sh-activity-action {
+    display: inline-flex;
+
+    padding: 6px 9px;
+
+    border-radius: 999px;
+
+    background: #f1f5f9;
+
+    color: #475569;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+}
+
+
+.sh-activity-action.downloaded {
+    background: #ecfdf5;
+
+    color: #047857;
+}
+
+
+.sh-activity-time {
+    display: block;
+
+    margin-top: 7px;
+
+    color: #94a3b8;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.sh-activity-empty {
+    padding: 70px 25px;
+
+    text-align: center;
+
+    background: white;
+
+    border: 1px dashed #cbd5e1;
+
+    border-radius: 24px;
+}
+
+
+.sh-activity-empty-icon {
+    width: 72px;
+    height: 72px;
+
+    margin: 0 auto 18px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 22px;
+
+    background: #eef2ff;
+
+    font-size: 30px;
+}
+
+
+.sh-activity-empty h3 {
+    margin: 0 0 8px;
+
+    color: #172033;
+
+    font-size: 20px;
+}
+
+
+.sh-activity-empty p {
+    max-width: 500px;
+
+    margin: 0 auto;
+
+    color: #64748b;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .sh-activity-hero {
+        padding: 28px 22px;
+    }
+
+
+    .sh-activity-stats {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .sh-activity-page {
+        width: min(94%, 1280px);
+
+        margin-top: 25px;
+    }
+
+
+    .sh-activity-stats {
+        grid-template-columns: 1fr 1fr;
+
+        gap: 10px;
+    }
+
+
+    .sh-activity-stat {
+        padding: 16px;
+    }
+
+
+    .sh-activity-stat strong {
+        font-size: 24px;
+    }
+
+
+    .sh-activity-item {
+        align-items: flex-start;
+
+        padding: 14px;
+    }
+
+
+    .sh-activity-icon {
+        width: 42px;
+        height: 42px;
+
+        flex-basis: 42px;
+
+        font-size: 18px;
+    }
+
+
+    .sh-activity-meta {
+        display: none;
+    }
+
+
+    .sh-activity-toolbar {
+        align-items: stretch;
+    }
+
+
+    .sh-activity-clear {
+        width: 100%;
+    }
+
+}
+
+</style>
+
+
+<main class="sh-activity-page">
+
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="sh-activity-hero">
+
+        <span class="sh-activity-eyebrow">
+            🕒 YOUR STUDY JOURNEY
+        </span>
+
+
+        <h1>
+            Activity & History
+        </h1>
+
+
+        <p>
+            Keep track of the notes and previous-year papers
+            you've explored and downloaded across StudyHub.
+        </p>
+
+
+        <!-- =================================================
+             STATS
+        ================================================== -->
+
+        <div class="sh-activity-stats">
+
+
+            <div class="sh-activity-stat">
+
+                <div class="sh-activity-stat-icon">
+                    ⚡
+                </div>
+
+                <strong>
+                    {{ total_activity }}
+                </strong>
+
+                <span>
+                    Total activity
+                </span>
+
+            </div>
+
+
+            <div class="sh-activity-stat">
+
+                <div class="sh-activity-stat-icon">
+                    👁
+                </div>
+
+                <strong>
+                    {{ viewed_count }}
+                </strong>
+
+                <span>
+                    Resources viewed
+                </span>
+
+            </div>
+
+
+            <div class="sh-activity-stat">
+
+                <div class="sh-activity-stat-icon">
+                    ↓
+                </div>
+
+                <strong>
+                    {{ downloaded_count }}
+                </strong>
+
+                <span>
+                    Downloads
+                </span>
+
+            </div>
+
+
+            <div class="sh-activity-stat">
+
+                <div class="sh-activity-stat-icon">
+                    🔖
+                </div>
+
+                <strong>
+                    {{ bookmarked_count }}
+                </strong>
+
+                <span>
+                    Saved resources
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         TOOLBAR
+    ====================================================== -->
+
+    <div class="sh-activity-toolbar">
+
+
+        <div class="sh-activity-filters">
+
+            <a
+                href="{{ url_for('enhancements.activity', filter='all') }}"
+                class="sh-activity-filter
+                {% if selected_filter == 'all' %}active{% endif %}"
+            >
+                ✦ All
+            </a>
+
+
+            <a
+                href="{{ url_for('enhancements.activity', filter='viewed') }}"
+                class="sh-activity-filter
+                {% if selected_filter == 'viewed' %}active{% endif %}"
+            >
+                👁 Viewed
+            </a>
+
+
+            <a
+                href="{{ url_for('enhancements.activity', filter='downloaded') }}"
+                class="sh-activity-filter
+                {% if selected_filter == 'downloaded' %}active{% endif %}"
+            >
+                ↓ Downloaded
+            </a>
+
+        </div>
+
+
+        {% if activities %}
+
+            <form
+                method="POST"
+                action="{{ url_for('enhancements.clear_activity') }}"
+                onsubmit="return confirm('Clear your complete StudyHub activity history?');"
+            >
+
+                <button
+                    type="submit"
+                    class="sh-activity-clear"
+                >
+                    🗑 Clear History
+                </button>
+
+            </form>
+
+        {% endif %}
+
+
+    </div>
+
+
+    <!-- =====================================================
+         ACTIVITY LIST
+    ====================================================== -->
+
+    {% if activities %}
+
+        <section class="sh-activity-list">
+
+
+            {% for item in activities %}
+
+                <a
+                    href="{{ item.resource_url }}"
+                    class="sh-activity-item"
+                >
+
+
+                    <div class="sh-activity-icon">
+                        {{ item.icon }}
+                    </div>
+
+
+                    <div class="sh-activity-main">
+
+                        <span class="sh-activity-type">
+                            {{ item.resource_type }}
+                        </span>
+
+
+                        <h3 class="sh-activity-title">
+                            {{ item.title }}
+                        </h3>
+
+
+                        <p class="sh-activity-subtitle">
+                            {{ item.subtitle }}
+                        </p>
+
+                    </div>
+
+
+                    <div class="sh-activity-meta">
+
+                        <span
+                            class="sh-activity-action
+                            {% if item.action == 'downloaded' %}
+                                downloaded
+                            {% endif %}"
+                        >
+                            {{ item.action }}
+                        </span>
+
+
+                        <span class="sh-activity-time">
+                            {{ item.created_at }}
+                        </span>
+
+                    </div>
+
+
+                </a>
+
+            {% endfor %}
+
+
+        </section>
+
+    {% else %}
+
+        <section class="sh-activity-empty">
+
+            <div class="sh-activity-empty-icon">
+                🕒
+            </div>
+
+
+            <h3>
+                No activity yet
+            </h3>
+
+
+            <p>
+                Explore Notes and PYQs and your recent study
+                activity will appear here automatically.
+            </p>
+
+        </section>
+
+    {% endif %}
+
+
+</main>
+
+{% endblock %}

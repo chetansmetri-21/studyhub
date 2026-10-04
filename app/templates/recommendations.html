@@ -1,0 +1,597 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .rec-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 30px 20px 60px;
+    }
+
+    .rec-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 24px;
+        padding: 42px;
+        margin-bottom: 32px;
+        color: white;
+        background:
+            linear-gradient(135deg, #17142f 0%, #30236b 48%, #5b3fb8 100%);
+        box-shadow: 0 18px 45px rgba(31, 22, 72, 0.28);
+    }
+
+    .rec-hero::before {
+        content: "";
+        position: absolute;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        right: -60px;
+        top: -80px;
+        background: rgba(255,255,255,0.08);
+    }
+
+    .rec-hero::after {
+        content: "";
+        position: absolute;
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        left: 45%;
+        bottom: -100px;
+        background: rgba(255,255,255,0.06);
+    }
+
+    .rec-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .rec-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 13px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.18);
+        font-size: 13px;
+        margin-bottom: 15px;
+    }
+
+    .rec-hero h1 {
+        margin: 0 0 12px;
+        font-size: 34px;
+        font-weight: 800;
+    }
+
+    .rec-hero p {
+        max-width: 700px;
+        margin: 0;
+        color: rgba(255,255,255,0.82);
+        line-height: 1.7;
+    }
+
+    .rec-section {
+        margin-top: 38px;
+    }
+
+    .rec-section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 18px;
+    }
+
+    .rec-section-header h2 {
+        margin: 0;
+        font-size: 23px;
+        font-weight: 800;
+    }
+
+    .rec-section-header span {
+        color: #777;
+        font-size: 13px;
+    }
+
+    .rec-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    .rec-card {
+        background: white;
+        border: 1px solid #eceaf3;
+        border-radius: 18px;
+        padding: 22px;
+        min-height: 220px;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 8px 25px rgba(35, 25, 75, 0.06);
+        transition: transform 0.2s ease,
+                    box-shadow 0.2s ease;
+    }
+
+    .rec-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 15px 35px rgba(35, 25, 75, 0.12);
+    }
+
+    .rec-icon {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 13px;
+        background: #f1edff;
+        font-size: 21px;
+        margin-bottom: 16px;
+    }
+
+    .rec-card h3 {
+        font-size: 17px;
+        line-height: 1.4;
+        margin: 0 0 8px;
+        color: #211a3a;
+    }
+
+    .rec-subject {
+        font-size: 13px;
+        color: #7356c7;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .rec-meta {
+        font-size: 12px;
+        color: #777;
+        line-height: 1.7;
+    }
+
+    .rec-card-bottom {
+        margin-top: auto;
+        padding-top: 18px;
+    }
+
+    .rec-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 9px 15px;
+        border-radius: 10px;
+        background: #30236b;
+        color: white !important;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .rec-btn:hover {
+        background: #241950;
+    }
+
+    .trend-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .trend-card {
+        background: white;
+        border: 1px solid #eceaf3;
+        border-radius: 18px;
+        padding: 22px;
+        box-shadow: 0 8px 25px rgba(35, 25, 75, 0.06);
+    }
+
+    .trend-card h3 {
+        margin: 0 0 15px;
+        font-size: 18px;
+    }
+
+    .trend-item {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 13px 0;
+        border-bottom: 1px solid #eeeeee;
+    }
+
+    .trend-item:last-child {
+        border-bottom: none;
+    }
+
+    .trend-item a {
+        color: #282044;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    .trend-item small {
+        display: block;
+        color: #888;
+        margin-top: 4px;
+    }
+
+    .trend-number {
+        font-size: 12px;
+        color: #7658c9;
+        white-space: nowrap;
+    }
+
+    .smart-card {
+        margin-top: 38px;
+        padding: 30px;
+        border-radius: 20px;
+        background:
+            linear-gradient(135deg, #f5f1ff, #ffffff);
+        border: 1px solid #e5ddff;
+        box-shadow: 0 10px 30px rgba(80, 50, 150, 0.08);
+    }
+
+    .smart-card h2 {
+        margin: 0 0 8px;
+        color: #211a3a;
+    }
+
+    .smart-card p {
+        color: #666;
+        line-height: 1.7;
+        max-width: 800px;
+    }
+
+    .empty-card {
+        padding: 25px;
+        border-radius: 15px;
+        background: #f8f8fb;
+        color: #777;
+        border: 1px dashed #d9d5e4;
+    }
+
+    @media (max-width: 900px) {
+        .rec-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 600px) {
+        .rec-hero {
+            padding: 28px;
+        }
+
+        .rec-hero h1 {
+            font-size: 27px;
+        }
+
+        .rec-grid,
+        .trend-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .rec-section-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+</style>
+
+
+<div class="rec-page">
+
+    <!-- ========================================== -->
+    <!-- HERO -->
+    <!-- ========================================== -->
+
+    <section class="rec-hero">
+
+        <div class="rec-hero-content">
+
+            <div class="rec-badge">
+                ✨ StudyHub Intelligence
+            </div>
+
+            <h1>🎯 Personalized Recommendations</h1>
+
+            <p>
+                Discover notes, previous-year question papers and
+                popular academic resources selected around your
+                course and semester.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- RECOMMENDED NOTES -->
+    <!-- ========================================== -->
+
+    <section class="rec-section">
+
+        <div class="rec-section-header">
+
+            <div>
+                <h2>📚 Recommended Notes</h2>
+                <span>Resources relevant to your studies</span>
+            </div>
+
+        </div>
+
+
+        {% if recommended_notes %}
+
+        <div class="rec-grid">
+
+            {% for note in recommended_notes %}
+
+            <article class="rec-card">
+
+                <div class="rec-icon">
+                    📘
+                </div>
+
+                <h3>
+                    {{ note.title }}
+                </h3>
+
+                <div class="rec-subject">
+                    {{ note.subject }}
+                </div>
+
+                <div class="rec-meta">
+                    {{ note.course or "Course not specified" }}
+                    <br>
+                    {{ note.semester or "Semester not specified" }}
+                    <br><br>
+                    👁 {{ note.views or 0 }}
+                    &nbsp;&nbsp;
+                    ⬇ {{ note.downloads or 0 }}
+                </div>
+
+                <div class="rec-card-bottom">
+
+                    <a
+                        href="{{ url_for('notes.view_note', note_id=note.id) }}"
+                        class="rec-btn"
+                    >
+                        View Note →
+                    </a>
+
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-card">
+            No personalized notes are available yet.
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- RECOMMENDED PYQs -->
+    <!-- ========================================== -->
+
+    <section class="rec-section">
+
+        <div class="rec-section-header">
+
+            <div>
+                <h2>📝 Recommended PYQs</h2>
+                <span>Previous-year papers for your course</span>
+            </div>
+
+        </div>
+
+
+        {% if recommended_pyqs %}
+
+        <div class="rec-grid">
+
+            {% for pyq in recommended_pyqs %}
+
+            <article class="rec-card">
+
+                <div class="rec-icon">
+                    📄
+                </div>
+
+                <h3>
+                    {{ pyq.title }}
+                </h3>
+
+                <div class="rec-subject">
+                    {{ pyq.subject }}
+                </div>
+
+                <div class="rec-meta">
+                    {{ pyq.course }}
+                    {% if pyq.semester %}
+                    <br>{{ pyq.semester }}
+                    {% endif %}
+
+                    <br>
+                    📅 {{ pyq.exam_year }}
+
+                    <br><br>
+
+                    👁 {{ pyq.views or 0 }}
+                    &nbsp;&nbsp;
+                    ⬇ {{ pyq.downloads or 0 }}
+                </div>
+
+                <div class="rec-card-bottom">
+
+                    <a
+                        href="{{ url_for('pyq.preview_pyq', pyq_id=pyq.id) }}"
+                        class="rec-btn"
+                    >
+                        View PYQ →
+                    </a>
+
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-card">
+            No personalized PYQs are available yet.
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- TRENDING -->
+    <!-- ========================================== -->
+
+    <section class="rec-section">
+
+        <div class="rec-section-header">
+
+            <div>
+                <h2>🔥 Trending Resources</h2>
+                <span>Popular resources across StudyHub</span>
+            </div>
+
+        </div>
+
+
+        <div class="trend-grid">
+
+
+            <!-- Trending Notes -->
+
+            <div class="trend-card">
+
+                <h3>📚 Trending Notes</h3>
+
+                {% for note in trending_notes %}
+
+                <div class="trend-item">
+
+                    <div>
+
+                        <a
+                            href="{{ url_for('notes.view_note', note_id=note.id) }}"
+                        >
+                            {{ note.title }}
+                        </a>
+
+                        <small>
+                            {{ note.subject }}
+                        </small>
+
+                    </div>
+
+                    <div class="trend-number">
+                        👁 {{ note.views or 0 }}
+                    </div>
+
+                </div>
+
+                {% else %}
+
+                <div class="empty-card">
+                    No trending notes yet.
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- Trending PYQs -->
+
+            <div class="trend-card">
+
+                <h3>📝 Trending PYQs</h3>
+
+                {% for pyq in trending_pyqs %}
+
+                <div class="trend-item">
+
+                    <div>
+
+                        <a
+                            href="{{ url_for('pyq.preview_pyq', pyq_id=pyq.id) }}"
+                        >
+                            {{ pyq.title }}
+                        </a>
+
+                        <small>
+                            {{ pyq.subject }}
+                            · {{ pyq.exam_year }}
+                        </small>
+
+                    </div>
+
+                    <div class="trend-number">
+                        👁 {{ pyq.views or 0 }}
+                    </div>
+
+                </div>
+
+                {% else %}
+
+                <div class="empty-card">
+                    No trending PYQs yet.
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- SMART PREPARATION -->
+    <!-- ========================================== -->
+
+    <section class="smart-card">
+
+        <h2>🧠 Study Smarter with PYQ Intelligence</h2>
+
+        <p>
+            Explore historical question patterns, frequently appearing
+            topics and repeated questions to organize your preparation.
+            StudyHub uses past-question data and does not predict future
+            examination questions.
+        </p>
+
+        <a
+            href="{{ url_for('pyq.pyq_intelligence') }}"
+            class="rec-btn"
+        >
+            Open PYQ Intelligence →
+        </a>
+
+    </section>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block title %}
+Prepare Smart - StudyHub
+{% endblock %}
+
+
+{% block content %}
+
+<div class="prepare-smart-page">
+
+    <div class="prepare-smart-header">
+
+        <span>
+            HISTORICAL PREPARATION
+        </span>
+
+        <h1>
+            🎯 Prepare Smart
+        </h1>
+
+        <p>
+            Questions that repeated across analyzed papers
+            but did not appear in the latest analyzed year.
+        </p>
+
+    </div>
+
+
+    <div class="prepare-summary">
+
+        <div>
+            Latest analyzed year
+            <strong>
+                {{ latest_year or "—" }}
+            </strong>
+        </div>
+
+        <div>
+            Papers
+            <strong>
+                {{ paper_count }}
+            </strong>
+        </div>
+
+        <div>
+            Questions extracted
+            <strong>
+                {{ question_count }}
+            </strong>
+        </div>
+
+    </div>
+
+
+    <div class="prepare-list">
+
+        {% for item in smart_questions %}
+
+        <article class="prepare-card">
+
+            <div class="prepare-card-top">
+
+                <span class="prepare-topic">
+                    {{ item.topic }}
+                </span>
+
+                <strong>
+                    {{ item.priority }}
+                </strong>
+
+            </div>
+
+
+            <h2>
+                {{ item.question }}
+            </h2>
+
+
+            <p>
+                Repeated across
+                <b>{{ item.count }}</b>
+                papers
+                ·
+                Years:
+                {{ item.years|join(", ") }}
+            </p>
+
+
+            <div class="prepare-badges">
+
+                <span>
+                    🔁 {{ item.count }} repetitions
+                </span>
+
+                <span>
+                    📅 {{ item.years|join(", ") }}
+                </span>
+
+            </div>
+
+        </article>
+
+        {% else %}
+
+        <div class="prepare-empty">
+
+            <h2>
+                No historical preparation items yet
+            </h2>
+
+            <p>
+                Analyze more PYQ papers to generate
+                historical repetition insights.
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+
+<style>
+
+.prepare-smart-page{
+    width:min(1250px,92%);
+    margin:45px auto 80px;
+}
+
+.prepare-smart-header span{
+    color:#4f46e5;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.15em;
+}
+
+.prepare-smart-header h1{
+    font-size:42px;
+    margin:8px 0;
+}
+
+.prepare-smart-header p{
+    color:#64748b;
+    max-width:800px;
+}
+
+.prepare-summary{
+    display:grid;
+    grid-template-columns:
+        repeat(3,1fr);
+    gap:15px;
+    margin:25px 0;
+}
+
+.prepare-summary div{
+    padding:20px;
+    background:#eef2ff;
+    border:1px solid #c7d2fe;
+    border-radius:16px;
+    color:#3730a3;
+}
+
+.prepare-summary strong{
+    display:block;
+    font-size:28px;
+    margin-top:7px;
+}
+
+.prepare-list{
+    display:grid;
+    gap:15px;
+}
+
+.prepare-card{
+    padding:23px;
+    background:#fff;
+    border:1px solid #dbe4f0;
+    border-radius:18px;
+    box-shadow:0 10px 30px rgba(15,23,42,.05);
+}
+
+.prepare-card-top{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+}
+
+.prepare-topic{
+    color:#4f46e5;
+    font-size:12px;
+    font-weight:800;
+}
+
+.prepare-card-top strong{
+    color:#059669;
+}
+
+.prepare-card h2{
+    font-size:18px;
+    line-height:1.5;
+}
+
+.prepare-card p{
+    color:#64748b;
+}
+
+.prepare-badges{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.prepare-badges span{
+    padding:7px 10px;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:9px;
+    color:#64748b;
+    font-size:12px;
+}
+
+.prepare-empty{
+    padding:55px;
+    text-align:center;
+    background:#fff;
+    border:1px dashed #cbd5e1;
+    border-radius:18px;
+}
+
+@media(max-width:700px){
+
+    .prepare-summary{
+        grid-template-columns:1fr;
+    }
+
+    .prepare-card-top{
+        flex-direction:column;
+    }
+
+}
+
+</style>
+
+{% endblock %}

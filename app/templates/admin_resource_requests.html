@@ -1,0 +1,748 @@
+{% extends "base.html" %}
+
+{% block title %}
+Resource Requests Management - StudyHub
+{% endblock %}
+
+{% block content %}
+
+<div class="arr-page">
+
+    <section class="arr-hero">
+
+        <span>
+            ADMIN CONTENT OPERATIONS
+        </span>
+
+        <h1>
+            Resource Requests
+        </h1>
+
+        <p>
+            Review what students need and manage
+            requested academic resources.
+        </p>
+
+    </section>
+
+
+    <!-- STATISTICS -->
+
+    <section class="arr-stats">
+
+        <div class="arr-stat">
+            <small>Total Requests</small>
+            <strong>{{ total_requests }}</strong>
+        </div>
+
+        <div class="arr-stat">
+            <small>Open</small>
+            <strong>{{ open_requests }}</strong>
+        </div>
+
+        <div class="arr-stat">
+            <small>In Progress</small>
+            <strong>{{ progress_requests }}</strong>
+        </div>
+
+        <div class="arr-stat">
+            <small>Fulfilled</small>
+            <strong>{{ fulfilled_requests }}</strong>
+        </div>
+
+        <div class="arr-stat">
+            <small>Rejected</small>
+            <strong>{{ rejected_requests }}</strong>
+        </div>
+
+    </section>
+
+
+    <!-- SEARCH -->
+
+    <div class="arr-toolbar">
+
+        <input
+            type="search"
+            id="requestSearch"
+            placeholder="Search requests, students or subjects..."
+        >
+
+        <select id="statusFilter">
+
+            <option value="all">
+                All Status
+            </option>
+
+            <option value="open">
+                Open
+            </option>
+
+            <option value="in_progress">
+                In Progress
+            </option>
+
+            <option value="fulfilled">
+                Fulfilled
+            </option>
+
+            <option value="rejected">
+                Rejected
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- REQUESTS -->
+
+    <section class="arr-list">
+
+        {% if requests %}
+
+            {% for item in requests %}
+
+            {% set requester = users.get(item.user_id) %}
+
+            <article
+                class="arr-card"
+                data-status="{{ item.status }}"
+                data-search="
+                    {{ item.title }}
+                    {{ item.subject or '' }}
+                    {{ item.course or '' }}
+                    {{ item.semester or '' }}
+                    {{ requester.name if requester else '' }}
+                    {{ requester.email if requester else '' }}
+                "
+            >
+
+                <div class="arr-card-top">
+
+                    <div>
+
+                        <span class="arr-request-id">
+                            REQUEST #{{ item.id }}
+                        </span>
+
+                        <h2>
+                            {{ item.title }}
+                        </h2>
+
+                    </div>
+
+                    <span
+                        class="arr-status {{ item.status }}"
+                    >
+                        {% if item.status == "open" %}
+                            Open
+                        {% elif item.status == "in_progress" %}
+                            In Progress
+                        {% elif item.status == "fulfilled" %}
+                            Fulfilled
+                        {% else %}
+                            Rejected
+                        {% endif %}
+                    </span>
+
+                </div>
+
+
+                <div class="arr-requester">
+
+                    <div class="arr-avatar">
+                        {{
+                            requester.name[0].upper()
+                            if requester
+                            else "?"
+                        }}
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            {{
+                                requester.name
+                                if requester
+                                else "Unknown User"
+                            }}
+                        </strong>
+
+                        <span>
+                            {{
+                                requester.email
+                                if requester
+                                else ""
+                            }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="arr-details">
+
+                    {% if item.subject %}
+
+                    <div>
+                        <small>Subject</small>
+                        <strong>
+                            {{ item.subject }}
+                        </strong>
+                    </div>
+
+                    {% endif %}
+
+
+                    {% if item.course %}
+
+                    <div>
+                        <small>Course</small>
+                        <strong>
+                            {{ item.course }}
+                        </strong>
+                    </div>
+
+                    {% endif %}
+
+
+                    {% if item.semester %}
+
+                    <div>
+                        <small>Semester</small>
+                        <strong>
+                            {{ item.semester }}
+                        </strong>
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                {% if item.description %}
+
+                <div class="arr-description">
+
+                    <small>
+                        REQUEST DETAILS
+                    </small>
+
+                    <p>
+                        {{ item.description }}
+                    </p>
+
+                </div>
+
+                {% endif %}
+
+
+                <div class="arr-footer">
+
+                    <span>
+                        Submitted
+                        {{ item.created_at.strftime('%d %b %Y') }}
+                    </span>
+
+
+                    <div class="arr-actions">
+
+                        <form
+                            method="POST"
+                            action="{{ url_for(
+                                'enhancements.admin_update_resource_request',
+                                request_id=item.id
+                            ) }}"
+                        >
+
+                            <select
+                                name="status"
+                                onchange="this.form.submit()"
+                            >
+
+                                <option
+                                    value="open"
+                                    {% if item.status == "open" %}
+                                    selected
+                                    {% endif %}
+                                >
+                                    Open
+                                </option>
+
+                                <option
+                                    value="in_progress"
+                                    {% if item.status == "in_progress" %}
+                                    selected
+                                    {% endif %}
+                                >
+                                    In Progress
+                                </option>
+
+                                <option
+                                    value="fulfilled"
+                                    {% if item.status == "fulfilled" %}
+                                    selected
+                                    {% endif %}
+                                >
+                                    Fulfilled
+                                </option>
+
+                                <option
+                                    value="rejected"
+                                    {% if item.status == "rejected" %}
+                                    selected
+                                    {% endif %}
+                                >
+                                    Rejected
+                                </option>
+
+                            </select>
+
+                        </form>
+
+
+                        <form
+                            method="POST"
+                            action="{{ url_for(
+                                'enhancements.admin_delete_resource_request',
+                                request_id=item.id
+                            ) }}"
+                            onsubmit="
+                                return confirm(
+                                    'Delete this resource request?'
+                                );
+                            "
+                        >
+
+                            <button
+                                type="submit"
+                                class="arr-delete"
+                            >
+                                Delete
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="arr-empty">
+
+                <div>📭</div>
+
+                <h2>
+                    No resource requests
+                </h2>
+
+                <p>
+                    Student requests will appear here.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+
+<style>
+
+.arr-page {
+    width: min(1250px, 92%);
+    margin: 45px auto 90px;
+}
+
+.arr-hero {
+    padding: 42px;
+    border-radius: 28px;
+    background:
+        linear-gradient(
+            135deg,
+            #eef2ff,
+            #f8fafc
+        );
+    border: 1px solid #dbe4f0;
+    margin-bottom: 25px;
+}
+
+.arr-hero span {
+    color: #4f46e5;
+    font-size: 11px;
+    font-weight: 850;
+    letter-spacing: .16em;
+}
+
+.arr-hero h1 {
+    margin: 8px 0;
+    font-size: 42px;
+    color: #0f172a;
+}
+
+.arr-hero p {
+    margin: 0;
+    color: #64748b;
+}
+
+.arr-stats {
+    display: grid;
+    grid-template-columns:
+        repeat(5, 1fr);
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.arr-stat {
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #dbe4f0;
+    border-radius: 18px;
+}
+
+.arr-stat small {
+    color: #64748b;
+    font-weight: 650;
+}
+
+.arr-stat strong {
+    display: block;
+    margin-top: 7px;
+    font-size: 28px;
+    color: #0f172a;
+}
+
+.arr-toolbar {
+    display: grid;
+    grid-template-columns: 1fr 190px;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.arr-toolbar input,
+.arr-toolbar select {
+    padding: 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 13px;
+    background: #fff;
+    font: inherit;
+    outline: none;
+}
+
+.arr-list {
+    display: grid;
+    gap: 17px;
+}
+
+.arr-card {
+    padding: 25px;
+    background: #fff;
+    border: 1px solid #dbe4f0;
+    border-radius: 22px;
+    box-shadow:
+        0 10px 35px rgba(15,23,42,.05);
+}
+
+.arr-card-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.arr-request-id {
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: .13em;
+}
+
+.arr-card h2 {
+    margin: 6px 0 0;
+    color: #0f172a;
+}
+
+.arr-status {
+    height: fit-content;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.arr-status.open {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.arr-status.in_progress {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.arr-status.fulfilled {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.arr-status.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.arr-requester {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.arr-avatar {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #eef2ff;
+    color: #4f46e5;
+    font-weight: 850;
+}
+
+.arr-requester strong,
+.arr-requester span {
+    display: block;
+}
+
+.arr-requester span {
+    color: #64748b;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.arr-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.arr-details > div {
+    min-width: 150px;
+    padding: 13px;
+    background: #f8fafc;
+    border-radius: 12px;
+}
+
+.arr-details small,
+.arr-details strong {
+    display: block;
+}
+
+.arr-details small {
+    color: #94a3b8;
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+.arr-details strong {
+    margin-top: 4px;
+    color: #334155;
+    font-size: 13px;
+}
+
+.arr-description {
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 14px;
+    background: #f8fafc;
+}
+
+.arr-description small {
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: .1em;
+}
+
+.arr-description p {
+    margin: 7px 0 0;
+    color: #475569;
+    line-height: 1.6;
+}
+
+.arr-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid #e2e8f0;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.arr-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.arr-actions select {
+    padding: 9px 11px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    background: #fff;
+}
+
+.arr-delete {
+    border: 0;
+    padding: 9px 12px;
+    border-radius: 9px;
+    background: #fee2e2;
+    color: #991b1b;
+    font-weight: 750;
+    cursor: pointer;
+}
+
+.arr-empty {
+    text-align: center;
+    padding: 70px 20px;
+    background: #fff;
+    border: 1px solid #dbe4f0;
+    border-radius: 22px;
+}
+
+.arr-empty div {
+    font-size: 45px;
+}
+
+.arr-empty h2 {
+    color: #0f172a;
+}
+
+.arr-empty p {
+    color: #64748b;
+}
+
+@media (max-width: 1000px) {
+
+    .arr-stats {
+        grid-template-columns:
+            repeat(3, 1fr);
+    }
+
+}
+
+@media (max-width: 700px) {
+
+    .arr-hero {
+        padding: 28px;
+    }
+
+    .arr-hero h1 {
+        font-size: 34px;
+    }
+
+    .arr-stats {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .arr-toolbar {
+        grid-template-columns: 1fr;
+    }
+
+    .arr-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .arr-actions {
+        width: 100%;
+    }
+
+}
+
+</style>
+
+
+<script>
+
+const requestSearch =
+    document.getElementById(
+        "requestSearch"
+    );
+
+const statusFilter =
+    document.getElementById(
+        "statusFilter"
+    );
+
+const requestCards =
+    document.querySelectorAll(
+        ".arr-card"
+    );
+
+
+function filterRequests() {
+
+    const search =
+        requestSearch.value
+            .toLowerCase()
+            .trim();
+
+    const status =
+        statusFilter.value;
+
+    requestCards.forEach(card => {
+
+        const text =
+            (
+                card.dataset.search || ""
+            ).toLowerCase();
+
+        const cardStatus =
+            card.dataset.status;
+
+        const matchesSearch =
+            !search ||
+            text.includes(search);
+
+        const matchesStatus =
+            status === "all" ||
+            cardStatus === status;
+
+        card.style.display =
+            matchesSearch &&
+            matchesStatus
+                ? ""
+                : "none";
+
+    });
+
+}
+
+
+requestSearch.addEventListener(
+    "input",
+    filterRequests
+);
+
+statusFilter.addEventListener(
+    "change",
+    filterRequests
+);
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,711 @@
+{% extends "base.html" %}
+
+{% block title %}
+Admin Analytics - StudyHub
+{% endblock %}
+
+
+{% block content %}
+
+<div class="admin-analytics-page">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <span class="admin-eyebrow">
+        ADMIN INTELLIGENCE
+    </span>
+
+    <h1>
+        📈 StudyHub Analytics
+    </h1>
+
+    <p class="admin-subtitle">
+        Platform-level usage and resource statistics.
+    </p>
+
+
+    <!-- =====================================================
+         STATISTICS
+    ====================================================== -->
+
+    <div class="admin-stat-grid">
+
+        {% for label, value in [
+            ("Users", user_count),
+            ("Notes", note_count),
+            ("PYQs", pyq_count),
+            ("Approved Notes", approved_notes),
+            ("Approved PYQs", approved_pyqs),
+            ("Views", total_views),
+            ("Downloads", total_downloads),
+            ("Bookmarks", bookmarks_count),
+            ("Unread Notifications", unread_count),
+            ("Pending Reports", pending_reports)
+        ] %}
+
+        <div class="admin-stat-card">
+
+            <small>
+                {{ label }}
+            </small>
+
+            <strong>
+                {{ value }}
+            </strong>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     ADMIN ACTIONS
+========================================================= -->
+
+<div class="admin-action-grid">
+
+
+    <!-- =====================================================
+         PYQ MANAGEMENT
+    ====================================================== -->
+
+    <div class="admin-action-card">
+
+        <div class="admin-action-icon">
+            📝
+        </div>
+
+        <div class="admin-action-content">
+
+            <div class="admin-action-top">
+
+                <h3>
+                    PYQ Management
+                </h3>
+
+            </div>
+
+            <p>
+                Edit PYQ subjects and manage uploaded
+                previous-year question papers.
+            </p>
+
+            <a
+                href="{{ url_for('enhancements.admin_pyqs') }}"
+                class="admin-action-btn"
+            >
+                Manage PYQs →
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         REPORTS & MODERATION
+    ====================================================== -->
+
+    <div class="admin-action-card report-card">
+
+        <div class="admin-action-icon report-icon">
+            🛡️
+        </div>
+
+        <div class="admin-action-content">
+
+            <div class="admin-action-top">
+
+                <h3>
+                    Reports & Moderation
+                </h3>
+
+                <span class="report-count">
+                    {{ pending_reports }} Pending
+                </span>
+
+            </div>
+
+            <p>
+                Review reported Notes and PYQs, investigate
+                user reports, and manage moderation status.
+            </p>
+
+            <a
+                href="{{ url_for('enhancements.admin_reports') }}"
+                class="admin-action-btn"
+            >
+                Manage Reports →
+            </a>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+<a
+    href="{{ url_for('enhancements.admin_users') }}"
+    class="admin-management-card"
+>
+    <div class="admin-management-icon">
+        👥
+    </div>
+
+    <div>
+        <span class="admin-card-label">
+            ADMINISTRATION
+        </span>
+
+        <h3>
+            User Management
+        </h3>
+
+        <p>
+            View users and manage administrator access.
+        </p>
+    </div>
+
+    <span class="admin-card-arrow">
+        →
+    </span>
+</a>
+
+<a
+    href="{{ url_for('enhancements.admin_notes') }}"
+    class="admin-management-card"
+>
+    <div class="admin-management-icon">
+        📚
+    </div>
+
+    <div>
+        <span class="admin-card-label">
+            CONTENT MANAGEMENT
+        </span>
+
+        <h3>
+            Notes Management
+        </h3>
+
+        <p>
+            Review, approve and manage uploaded notes.
+        </p>
+    </div>
+
+    <span class="admin-card-arrow">
+        →
+    </span>
+</a>
+
+<div style="
+    margin-top:30px;
+    padding:24px;
+    background:#ffffff;
+    border:1px solid #dbe4f0;
+    border-radius:18px;
+">
+
+    <h3 style="margin:0 0 8px;">
+        🔔 Notification Management
+    </h3>
+
+    <p style="
+        color:#64748b;
+        margin:0 0 16px;
+    ">
+        Send announcements and important updates
+        to StudyHub students.
+    </p>
+
+    <a
+        href="{{ url_for('enhancements.admin_notifications') }}"
+        style="
+            display:inline-block;
+            padding:12px 18px;
+            border-radius:10px;
+            background:#4f46e5;
+            color:#ffffff;
+            text-decoration:none;
+            font-weight:700;
+        "
+    >
+        Manage Notifications →
+    </a>
+
+</div>
+
+<div style="
+    margin-top:30px;
+    padding:24px;
+    background:#ffffff;
+    border:1px solid #dbe4f0;
+    border-radius:18px;
+">
+
+    <h3 style="margin:0 0 8px;">
+        📚 Resource Requests
+    </h3>
+
+    <p style="
+        color:#64748b;
+        margin:0 0 16px;
+    ">
+        Review and manage resources requested by students.
+    </p>
+
+    <a
+        href="{{ url_for(
+            'enhancements.admin_resource_requests'
+        ) }}"
+        style="
+            display:inline-block;
+            padding:12px 18px;
+            border-radius:10px;
+            background:#4f46e5;
+            color:#ffffff;
+            text-decoration:none;
+            font-weight:700;
+        "
+    >
+        Manage Requests →
+    </a>
+
+</div>
+<a href="{{ url_for('enhancements.resource_requests') }}">
+    📚 Request a Resource
+</a>
+
+<!-- =========================================================
+     PAGE STYLES
+========================================================= -->
+
+<style>
+
+/* =========================================================
+   MAIN PAGE
+========================================================= */
+
+.admin-analytics-page{
+    width:min(1400px,92%);
+    margin:45px auto 55px;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.admin-eyebrow{
+    display:inline-block;
+
+    color:#4f46e5;
+
+    font-size:11px;
+    font-weight:800;
+
+    letter-spacing:.15em;
+}
+
+.admin-analytics-page h1{
+    margin:8px 0;
+
+    color:#0f172a;
+
+    font-size:42px;
+    font-weight:850;
+
+    letter-spacing:-1.2px;
+}
+
+.admin-subtitle{
+    margin:0;
+
+    color:#64748b;
+
+    font-size:15px;
+}
+
+
+/* =========================================================
+   STATISTICS GRID
+========================================================= */
+
+.admin-stat-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(190px,1fr));
+
+    gap:15px;
+
+    margin-top:30px;
+}
+
+
+/* =========================================================
+   STAT CARD
+========================================================= */
+
+.admin-stat-card{
+
+    position:relative;
+
+    padding:22px;
+
+    background:#ffffff;
+
+    border:1px solid #dbe4f0;
+
+    border-radius:18px;
+
+    box-shadow:
+        0 10px 30px rgba(15,23,42,.05);
+
+    overflow:hidden;
+}
+
+.admin-stat-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    left:0;
+    right:0;
+
+    height:3px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #4f46e5,
+            #7c3aed,
+            #06b6d4
+        );
+}
+
+.admin-stat-card small{
+
+    color:#64748b;
+
+    font-weight:650;
+
+    font-size:13px;
+}
+
+.admin-stat-card strong{
+
+    display:block;
+
+    margin-top:8px;
+
+    color:#0f172a;
+
+    font-size:30px;
+
+    font-weight:850;
+}
+
+
+/* =========================================================
+   ADMIN ACTION GRID
+========================================================= */
+
+.admin-action-grid{
+
+    width:min(1400px,92%);
+
+    margin:0 auto 80px;
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(360px,1fr));
+
+    gap:20px;
+}
+
+
+/* =========================================================
+   ACTION CARD
+========================================================= */
+
+.admin-action-card{
+
+    position:relative;
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:18px;
+
+    padding:27px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff 0%,
+            #f8faff 100%
+        );
+
+    border:1px solid #dbe4f0;
+
+    border-radius:22px;
+
+    box-shadow:
+        0 14px 40px rgba(15,23,42,.07);
+
+    overflow:hidden;
+}
+
+
+/* TOP ACCENT */
+
+.admin-action-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    left:0;
+    right:0;
+
+    height:4px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #4f46e5,
+            #7c3aed,
+            #06b6d4
+        );
+}
+
+
+/* =========================================================
+   ACTION ICON
+========================================================= */
+
+.admin-action-icon{
+
+    width:54px;
+    height:54px;
+
+    flex:none;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:16px;
+
+    background:#eef2ff;
+
+    font-size:25px;
+}
+
+
+/* REPORT ICON */
+
+.report-icon{
+
+    background:#fff7ed;
+}
+
+
+/* =========================================================
+   ACTION CONTENT
+========================================================= */
+
+.admin-action-content{
+
+    flex:1;
+
+    min-width:0;
+}
+
+.admin-action-top{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:12px;
+}
+
+.admin-action-top h3{
+
+    margin:0;
+
+    color:#0f172a;
+
+    font-size:20px;
+
+    font-weight:800;
+}
+
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.admin-action-content p{
+
+    margin:8px 0 18px;
+
+    color:#64748b;
+
+    line-height:1.6;
+
+    font-size:14px;
+}
+
+
+/* =========================================================
+   PENDING REPORT BADGE
+========================================================= */
+
+.report-count{
+
+    padding:6px 10px;
+
+    border-radius:999px;
+
+    background:#fff7ed;
+
+    color:#c2410c;
+
+    border:1px solid #fed7aa;
+
+    font-size:12px;
+
+    font-weight:800;
+
+    white-space:nowrap;
+}
+
+
+/* =========================================================
+   ACTION BUTTON
+========================================================= */
+
+.admin-action-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:11px 17px;
+
+    border-radius:11px;
+
+    background:#4f46e5;
+
+    color:#ffffff;
+
+    text-decoration:none;
+
+    font-size:14px;
+
+    font-weight:750;
+}
+
+.admin-action-btn:hover{
+
+    background:#4338ca;
+
+    color:#ffffff;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:700px){
+
+    .admin-analytics-page{
+        width:90%;
+        margin-top:30px;
+    }
+
+    .admin-analytics-page h1{
+        font-size:32px;
+    }
+
+    .admin-action-grid{
+
+        width:90%;
+
+        grid-template-columns:1fr;
+    }
+
+    .admin-action-card{
+
+        padding:22px;
+    }
+
+    .admin-action-top{
+
+        align-items:flex-start;
+
+        flex-direction:column;
+    }
+
+}
+
+
+@media(max-width:480px){
+
+    .admin-stat-grid{
+
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .admin-stat-card{
+
+        padding:17px;
+    }
+
+    .admin-stat-card strong{
+
+        font-size:25px;
+    }
+
+    .admin-action-card{
+
+        gap:13px;
+    }
+
+    .admin-action-icon{
+
+        width:46px;
+        height:46px;
+
+        font-size:21px;
+    }
+
+}
+
+</style>
+
+
+{% endblock %}

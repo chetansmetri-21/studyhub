@@ -1,0 +1,5876 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="csrf-token"
+        content="{{ csrf_token() }}"
+    >
+
+    <title>
+        {% block title %}StudyHub{% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    {% block head %}
+    {% endblock %}
+
+
+
+
+</head>
+
+
+<body class="studyhub-body">
+
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<header class="sh-navbar">
+
+    <div class="sh-navbar-inner">
+
+
+        <!-- LOGO -->
+
+        <a
+            href="{{ url_for('home') }}"
+            class="sh-logo"
+        >
+
+            <span class="sh-logo-icon">
+                📚
+            </span>
+
+            <span class="sh-logo-text">
+                Study<span>Hub</span>
+            </span>
+
+        </a>
+
+
+        <!-- DESKTOP NAVIGATION -->
+
+        <nav class="sh-nav-links">
+
+            <a
+                href="{{ url_for('home') }}#features"
+                class="sh-nav-link"
+                data-nav-page="home"
+            >
+                Features
+            </a>
+
+            <a
+                href="{{ url_for('home') }}#pyq"
+                class="sh-nav-link"
+                data-nav-page="pyq"
+            >
+                PYQ Intelligence
+            </a>
+
+            <a
+                href="{{ url_for('home') }}#about"
+                class="sh-nav-link"
+                data-nav-page="about"
+            >
+                About
+            </a>
+
+            <a
+                href="{{ url_for('recommendations.home') }}"
+                class="sh-nav-link"
+                data-nav-page="recommendations"
+            >
+                🎯 Recommendations
+            </a>
+
+            <a
+                href="{{ url_for('community.home') }}"
+                class="sh-nav-link"
+                data-nav-page="community"
+            >
+                🤝 Community
+            </a>
+
+        </nav>
+
+
+        <!-- RIGHT SIDE -->
+
+        <div class="sh-nav-actions">
+
+
+            <!-- GLOBAL SEARCH -->
+
+            <button
+                type="button"
+                class="sh-nav-search"
+                id="studyHubSearchButton"
+                aria-label="Search StudyHub"
+                title="Search StudyHub"
+            >
+                🔎
+                <span>Search</span>
+                <kbd>Ctrl K</kbd>
+            </button>
+
+
+            {% if current_user.is_authenticated %}
+
+
+                <a
+                    href="{{ url_for('student.dashboard') }}"
+                    class="sh-nav-action-link"
+                >
+                    Dashboard
+                </a>
+
+
+                <a
+                    href="{{ url_for('student.profile') }}"
+                    class="sh-nav-action-link"
+                >
+                    Profile
+                </a>
+
+                <a
+                    href="{{ url_for('enhancements.activity') }}"
+                    class="sh-nav-action-link"
+                >
+                    Activity
+                </a>
+
+                <a
+                    href="{{ url_for('community.notifications') }}"
+                    class="sh-nav-action-link sh-notification-link"
+                >
+                    🔔
+                </a>
+
+
+                {% if current_user.is_admin %}
+
+                    <a
+                        href="{{ url_for('admin.dashboard') }}"
+                        class="sh-admin-link"
+                    >
+                        Admin
+                    </a>
+
+                {% endif %}
+
+
+                <button
+                    type="button"
+                    class="sh-theme-button"
+                    id="studyHubThemeButton"
+                    aria-label="Toggle dark mode"
+                    title="Toggle dark mode"
+                >
+                    🌙
+                </button>
+
+
+                <form
+                    method="POST"
+                    action="{{ url_for('auth.logout') }}"
+                    style="display:inline;"
+                >
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token() }}"
+                    >
+
+                    <button
+                        type="submit"
+                        class="sh-nav-link"
+                        style="
+                            border:none;
+                            background:none;
+                            cursor:pointer;
+                            font:inherit;
+                        "
+                    >
+                        🚪 Logout
+                    </button>
+                </form>
+
+
+            {% else %}
+
+
+                <button
+                    type="button"
+                    class="sh-theme-button"
+                    id="studyHubThemeButton"
+                    aria-label="Toggle dark mode"
+                    title="Toggle dark mode"
+                >
+                    🌙
+                </button>
+
+
+                <a
+                    href="{{ url_for('auth.login') }}"
+                    class="sh-nav-action-link"
+                >
+                    Login
+                </a>
+
+
+                <a
+                    href="{{ url_for('auth.register') }}"
+                    class="sh-nav-button"
+                >
+                    Get Started
+                </a>
+
+
+            {% endif %}
+
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================================================
+     GLOBAL SEARCH OVERLAY
+========================================================= -->
+
+<div
+    class="sh-global-search"
+    id="studyHubSearchOverlay"
+    aria-hidden="true"
+>
+
+    <div
+        class="sh-search-backdrop"
+        id="studyHubSearchBackdrop"
+    ></div>
+
+
+    <div
+        class="sh-search-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="studyHubSearchTitle"
+    >
+
+        <div class="sh-search-header">
+
+            <div>
+
+                <span class="sh-search-eyebrow">
+                    STUDYHUB
+                </span>
+
+                <h2 id="studyHubSearchTitle">
+                    Search everything
+                </h2>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="sh-search-close"
+                id="studyHubSearchClose"
+                aria-label="Close search"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="sh-search-input-wrap">
+
+            <span class="sh-search-icon">
+                🔎
+            </span>
+
+            <input
+                type="search"
+                id="studyHubGlobalSearch"
+                placeholder="Search notes, PYQs, subjects, courses..."
+                autocomplete="off"
+            >
+
+            <button
+                type="button"
+                class="sh-search-clear-input"
+                id="studyHubSearchClear"
+                aria-label="Clear search"
+                title="Clear search"
+            >
+                ×
+            </button>
+
+            <kbd>ESC</kbd>
+
+        </div>
+
+
+        <div
+            class="sh-search-results"
+            id="studyHubSearchResults"
+        >
+
+            <div class="sh-search-empty">
+
+                <div class="sh-search-empty-icon">
+                    🔍
+                </div>
+
+                <strong>
+                    Start searching
+                </strong>
+
+                <span>
+                    Search across StudyHub resources and pages.
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="sh-search-footer">
+
+            <span>
+                <kbd>↑</kbd>
+                <kbd>↓</kbd>
+                Navigate
+            </span>
+
+            <span>
+                <kbd>Enter</kbd>
+                Open
+            </span>
+
+            <span>
+                <kbd>Esc</kbd>
+                Close
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     MAIN CONTENT
+========================================================= -->
+
+<main class="sh-main">
+
+    {% block content %}
+    {% endblock %}
+
+</main>
+
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="sh-footer">
+
+    <div class="sh-footer-inner">
+
+
+        <div class="sh-footer-brand">
+
+            <a
+                href="{{ url_for('home') }}"
+                class="sh-footer-logo"
+            >
+                📚 StudyHub
+            </a>
+
+            <p>
+                Academic resources, organized smarter.
+            </p>
+
+        </div>
+
+
+        <div class="sh-footer-links">
+
+            <a href="{{ url_for('home') }}#features">
+                Features
+            </a>
+
+            <a href="{{ url_for('pyq.pyq_intelligence') }}">
+                PYQ Intelligence
+            </a>
+
+            {% if current_user.is_authenticated %}
+
+                <a href="{{ url_for('student.dashboard') }}">
+                    Dashboard
+                </a>
+
+                <a href="{{ url_for('recommendations.home') }}">
+                    Recommendations
+                </a>
+
+                <a href="{{ url_for('community.home') }}">
+                    Community
+                </a>
+
+            {% else %}
+
+                <a href="{{ url_for('auth.login') }}">
+                    Login
+                </a>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="sh-footer-copy">
+
+            <span>
+                © 2026 StudyHub
+            </span>
+
+        </div>
+
+
+    </div>
+
+</footer>
+
+
+
+{% if current_user.is_authenticated %}
+
+<!-- =========================================================
+     STUDYHUB ROBOT - DIRECT BASE VERSION
+========================================================= -->
+
+<style>
+
+/* =========================================================
+   STUDYHUB PREMIUM AI ROBOT
+   ORIGINAL ROBOT — PREMIUM EDITION
+========================================================= */
+
+#studyhub-real-robot {
+    position: fixed;
+    right: 28px;
+    bottom: 24px;
+
+    width: 150px;
+    height: 190px;
+
+    z-index: 999999;
+
+    cursor: pointer;
+
+    transform-origin: bottom right;
+
+    animation:
+        shPremiumFloat 4s ease-in-out infinite;
+
+    filter:
+        drop-shadow(0 15px 28px rgba(0,0,0,.28));
+
+    transition:
+        transform .35s cubic-bezier(.2,.8,.2,1),
+        filter .35s ease;
+}
+
+
+/* =========================================================
+   PREMIUM HOVER
+========================================================= */
+
+#studyhub-real-robot:hover {
+    transform: translateY(-7px) scale(1.035);
+
+    filter:
+        drop-shadow(0 20px 38px rgba(0,0,0,.35))
+        drop-shadow(0 0 18px rgba(99,102,241,.25));
+}
+
+
+/* =========================================================
+   FLOATING ANIMATION
+========================================================= */
+
+@keyframes shPremiumFloat {
+
+    0%,100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+
+}
+
+
+/* =========================================================
+   ANTENNA
+========================================================= */
+
+#studyhub-real-robot .antenna {
+
+    position: absolute;
+
+    top: -15px;
+    left: 50%;
+
+    width: 4px;
+    height: 18px;
+
+    transform: translateX(-50%);
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #e5e7eb,
+            #6366f1
+        );
+
+    box-shadow:
+        0 0 8px rgba(99,102,241,.8);
+
+}
+
+
+/* antenna light */
+
+#studyhub-real-robot .antenna::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: -7px;
+    left: 50%;
+
+    width: 10px;
+    height: 10px;
+
+    transform: translateX(-50%);
+
+    border-radius: 50%;
+
+    background: #818cf8;
+
+    box-shadow:
+        0 0 8px #818cf8,
+        0 0 18px rgba(129,140,248,.8);
+
+    animation:
+        shAntennaPulse 1.8s ease-in-out infinite;
+
+}
+
+@keyframes shAntennaPulse {
+
+    0%,100% {
+        opacity: .65;
+        transform: translateX(-50%) scale(.85);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1.15);
+    }
+
+}
+
+
+/* =========================================================
+   EARS
+========================================================= */
+
+#studyhub-real-robot .ear {
+
+    position: absolute;
+
+    top: 53px;
+
+    width: 18px;
+    height: 38px;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #f8fafc,
+            #cbd5e1
+        );
+
+    border: 2px solid rgba(148,163,184,.8);
+
+    box-shadow:
+        inset 0 0 8px rgba(255,255,255,.8),
+        0 4px 8px rgba(0,0,0,.15);
+
+}
+
+#studyhub-real-robot .ear-left {
+    left: 2px;
+}
+
+#studyhub-real-robot .ear-right {
+    right: 2px;
+}
+
+
+/* =========================================================
+   HEAD
+========================================================= */
+
+#studyhub-real-robot .robot-head {
+
+    position: absolute;
+
+    top: 30px;
+    left: 15px;
+
+    width: 120px;
+    height: 88px;
+
+    border-radius: 30px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff 0%,
+            #e2e8f0 55%,
+            #cbd5e1 100%
+        );
+
+    border: 2px solid rgba(148,163,184,.7);
+
+    box-shadow:
+        inset 0 3px 8px rgba(255,255,255,.9),
+        inset 0 -7px 12px rgba(100,116,139,.18),
+        0 10px 22px rgba(0,0,0,.22);
+
+}
+
+
+/* =========================================================
+   FACE
+========================================================= */
+
+#studyhub-real-robot .robot-face {
+
+    position: absolute;
+
+    inset: 13px;
+
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #111827,
+            #020617
+        );
+
+    border: 1px solid rgba(99,102,241,.45);
+
+    box-shadow:
+        inset 0 0 18px rgba(99,102,241,.12),
+        0 0 12px rgba(99,102,241,.15);
+
+}
+
+
+/* =========================================================
+   EYES
+========================================================= */
+
+#studyhub-real-robot .robot-eye {
+
+    position: absolute;
+
+    top: 27px;
+
+    width: 17px;
+    height: 22px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle at 35% 30%,
+            #ffffff 0 10%,
+            #93c5fd 12%,
+            #6366f1 48%,
+            #4f46e5 100%
+        );
+
+    box-shadow:
+        0 0 8px rgba(99,102,241,.9),
+        0 0 18px rgba(99,102,241,.55);
+
+    transition:
+        transform .12s linear;
+
+}
+
+#studyhub-real-robot .eye-left {
+    left: 27px;
+}
+
+#studyhub-real-robot .eye-right {
+    right: 27px;
+}
+
+
+/* =========================================================
+   EYE HIGHLIGHT
+========================================================= */
+
+#studyhub-real-robot .robot-eye::after {
+
+    content: "";
+
+    position: absolute;
+
+    top: 4px;
+    left: 4px;
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: white;
+
+    opacity: .9;
+
+}
+
+
+/* =========================================================
+   MOUTH
+========================================================= */
+
+#studyhub-real-robot .robot-mouth {
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 13px;
+
+    width: 28px;
+    height: 6px;
+
+    transform: translateX(-50%);
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #6366f1,
+            #a78bfa,
+            #6366f1
+        );
+
+    box-shadow:
+        0 0 8px rgba(99,102,241,.7);
+
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+#studyhub-real-robot .robot-body {
+
+    position: absolute;
+
+    left: 27px;
+    top: 111px;
+
+    width: 96px;
+    height: 66px;
+
+    border-radius:
+        22px 22px 27px 27px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #f8fafc,
+            #dbe4ee 55%,
+            #b8c4d3
+        );
+
+    border: 2px solid rgba(148,163,184,.65);
+
+    box-shadow:
+        inset 0 4px 9px rgba(255,255,255,.85),
+        inset 0 -8px 15px rgba(100,116,139,.15),
+        0 10px 18px rgba(0,0,0,.18);
+
+}
+
+
+/* =========================================================
+   CHEST
+========================================================= */
+
+#studyhub-real-robot .chest {
+
+    position: absolute;
+
+    left: 50%;
+    top: 16px;
+
+    width: 45px;
+    height: 25px;
+
+    transform: translateX(-50%);
+
+    border-radius: 9px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #111827,
+            #1e293b
+        );
+
+    border: 1px solid rgba(99,102,241,.55);
+
+    box-shadow:
+        0 0 10px rgba(99,102,241,.35);
+
+}
+
+#studyhub-real-robot .chest::before {
+
+    content: "SH";
+
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    color: #a5b4fc;
+
+}
+
+
+/* =========================================================
+   ARMS
+========================================================= */
+
+#studyhub-real-robot .arm {
+
+    position: absolute;
+
+    top: 119px;
+
+    width: 17px;
+    height: 50px;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #f8fafc,
+            #cbd5e1
+        );
+
+    border: 2px solid rgba(148,163,184,.6);
+
+    box-shadow:
+        0 5px 10px rgba(0,0,0,.15);
+
+}
+
+#studyhub-real-robot .arm-left {
+    left: 11px;
+    transform: rotate(16deg);
+}
+
+#studyhub-real-robot .arm-right {
+    right: 11px;
+    transform: rotate(-16deg);
+}
+
+
+/* =========================================================
+   HANDS
+========================================================= */
+
+#studyhub-real-robot .hand {
+
+    position: absolute;
+
+    bottom: -7px;
+    left: 50%;
+
+    width: 18px;
+    height: 18px;
+
+    transform: translateX(-50%);
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            145deg,
+            #e2e8f0,
+            #94a3b8
+        );
+
+}
+
+
+/* =========================================================
+   GLOW
+========================================================= */
+
+#studyhub-real-robot .robot-glow {
+
+    position: absolute;
+
+    left: 50%;
+    bottom: -12px;
+
+    width: 105px;
+    height: 20px;
+
+    transform: translateX(-50%);
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(99,102,241,.38),
+            transparent 70%
+        );
+
+    filter: blur(5px);
+
+    animation:
+        shGlowPulse 2.5s ease-in-out infinite;
+
+}
+
+@keyframes shGlowPulse {
+
+    0%,100% {
+        opacity: .45;
+        transform: translateX(-50%) scale(.9);
+    }
+
+    50% {
+        opacity: .9;
+        transform: translateX(-50%) scale(1.08);
+    }
+
+}
+
+
+/* =========================================================
+   PREMIUM MESSAGE
+========================================================= */
+
+#studyhub-real-robot .robot-message {
+
+    position: absolute;
+
+    right: 125px;
+    bottom: 105px;
+
+    width: 235px;
+
+    padding: 13px 16px;
+
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15,23,42,.97),
+            rgba(30,41,59,.96)
+        );
+
+    border: 1px solid rgba(129,140,248,.35);
+
+    color: #e5e7eb;
+
+    font-size: 12px;
+    line-height: 1.5;
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.28),
+        0 0 20px rgba(99,102,241,.12);
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transform:
+        translateX(10px)
+        scale(.96);
+
+    transform-origin: right bottom;
+
+    transition:
+        opacity .3s ease,
+        transform .3s ease;
+
+}
+
+
+/* message title */
+
+#studyhub-real-robot .robot-message strong {
+
+    display: block;
+
+    margin-bottom: 3px;
+
+    font-size: 13px;
+
+    color: #c4b5fd;
+
+}
+
+
+/* message arrow */
+
+#studyhub-real-robot .robot-message::after {
+
+    content: "";
+
+    position: absolute;
+
+    right: -7px;
+    bottom: 22px;
+
+    width: 14px;
+    height: 14px;
+
+    background: #1e293b;
+
+    transform: rotate(45deg);
+
+    border-right: 1px solid rgba(129,140,248,.3);
+    border-top: 1px solid rgba(129,140,248,.3);
+
+}
+
+
+/* show message */
+
+#studyhub-real-robot:hover .robot-message {
+
+    opacity: 1;
+
+    transform:
+        translateX(0)
+        scale(1);
+
+}
+
+
+/* =========================================================
+   CLICK ANIMATION
+========================================================= */
+
+#studyhub-real-robot.studyhub-robot-click {
+
+    animation:
+        shRobotClick .75s cubic-bezier(.2,.8,.2,1);
+
+}
+
+@keyframes shRobotClick {
+
+    0% {
+        transform: scale(1);
+    }
+
+    25% {
+        transform: scale(.94) rotate(-3deg);
+    }
+
+    50% {
+        transform: scale(1.08) rotate(3deg);
+    }
+
+    75% {
+        transform: scale(.98) rotate(-1deg);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    #studyhub-real-robot {
+
+        right: 14px;
+        bottom: 15px;
+
+        transform:
+            scale(.82);
+
+        transform-origin:
+            bottom right;
+
+    }
+
+    #studyhub-real-robot:hover {
+
+        transform:
+            translateY(-5px)
+            scale(.86);
+
+    }
+
+    #studyhub-real-robot .robot-message {
+
+        right: 105px;
+
+        width: 190px;
+
+        bottom: 90px;
+
+        font-size: 11px;
+
+    }
+
+}
+
+</style>
+
+<style>
+
+/* =========================================================
+   STUDYHUB PREMIUM ACTION MENU
+   Compact screenshot-style StudyBot panel
+========================================================= */
+
+.studyhub-ai-panel {
+    position: fixed;
+    right: 28px;
+    bottom: 196px;
+    width: 330px;
+    padding: 14px;
+    box-sizing: border-box;
+    border-radius: 22px;
+    background: rgba(255,255,255,.96);
+    border: 1px solid rgba(148,163,184,.22);
+    box-shadow: 0 22px 55px rgba(15,23,42,.18), 0 0 35px rgba(59,130,246,.12);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    z-index: 1000000;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(14px) scale(.94);
+    transform-origin: bottom right;
+    transition: opacity .22s ease, transform .28s cubic-bezier(.2,.8,.2,1), visibility .22s;
+}
+
+.studyhub-ai-panel::after {
+    content: "";
+    position: absolute;
+    right: 34px;
+    bottom: -9px;
+    width: 18px;
+    height: 18px;
+    background: rgba(255,255,255,.96);
+    border-right: 1px solid rgba(148,163,184,.18);
+    border-bottom: 1px solid rgba(148,163,184,.18);
+    transform: rotate(45deg);
+}
+
+.studyhub-ai-panel.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+}
+
+.studyhub-ai-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px 1px 12px;
+}
+
+.studyhub-ai-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.studyhub-ai-avatar {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: linear-gradient(135deg,#eff6ff,#dbeafe);
+    border: 1px solid #bfdbfe;
+    font-size: 19px;
+    box-shadow: 0 5px 15px rgba(37,99,235,.12);
+}
+
+.studyhub-ai-title strong {
+    display: block;
+    color: #172033;
+    font-size: 15px;
+    line-height: 1.1;
+    font-weight: 800;
+}
+
+.studyhub-ai-title span {
+    display: block;
+    margin-top: 4px;
+    color: #16a34a;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.studyhub-ai-close {
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 10px;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 19px;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.studyhub-ai-close:hover {
+    background: #fee2e2;
+    color: #dc2626;
+    transform: rotate(90deg);
+}
+
+.studyhub-ai-intro {
+    margin: 0 2px 9px;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.studyhub-ai-search {
+    position: relative;
+    margin-bottom: 12px;
+}
+
+#studyhub-ai-input {
+    width: 100%;
+    height: 42px;
+    box-sizing: border-box;
+    padding: 0 44px 0 13px;
+    border: 1px solid #e2e8f0;
+    border-radius: 13px;
+    outline: none;
+    background: #f8fafc;
+    color: #172033;
+    font-size: 12px;
+    transition: .2s ease;
+}
+
+#studyhub-ai-input::placeholder { color: #94a3b8; }
+
+#studyhub-ai-input:focus {
+    background: #fff;
+    border-color: #93c5fd;
+    box-shadow: 0 0 0 4px rgba(59,130,246,.08);
+}
+
+#studyhub-ai-send {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 9px;
+    background: linear-gradient(135deg,#3b82f6,#2563eb);
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 5px 12px rgba(37,99,235,.22);
+    transition: .2s ease;
+}
+
+#studyhub-ai-send:hover { transform: translateY(-1px) scale(1.03); }
+
+.studyhub-ai-actions {
+    display: grid;
+    gap: 7px;
+}
+
+.studyhub-ai-action {
+    width: 100%;
+    min-height: 53px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 11px;
+    border: 1px solid #edf2f7;
+    border-radius: 14px;
+    background: linear-gradient(135deg,#fff,#f8fafc);
+    color: #334155;
+    text-align: left;
+    cursor: pointer;
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.studyhub-ai-action:hover {
+    transform: translateY(-2px);
+    border-color: #bfdbfe;
+    background: #f8fbff;
+    box-shadow: 0 8px 20px rgba(15,23,42,.07);
+}
+
+.studyhub-ai-action-icon {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    background: #eff6ff;
+    font-size: 17px;
+}
+
+.studyhub-ai-action-text strong {
+    display: block;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.studyhub-ai-action-text span {
+    display: block;
+    margin-top: 2px;
+    color: #94a3b8;
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.studyhub-ai-action.ai {
+    border-color: #dbeafe;
+    background: linear-gradient(135deg,#eff6ff,#f8fafc);
+}
+
+.studyhub-ai-action.ai .studyhub-ai-action-icon {
+    background: linear-gradient(135deg,#dbeafe,#ede9fe);
+}
+
+.studyhub-ai-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 3px 2px 0;
+    color: #94a3b8;
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.studyhub-ai-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 8px rgba(34,197,94,.55);
+    animation: studyHubOnlinePulse 1.8s ease-in-out infinite;
+}
+
+@keyframes studyHubOnlinePulse {
+    0%,100% { opacity:.65; transform:scale(.85); }
+    50% { opacity:1; transform:scale(1.15); }
+}
+
+.studyhub-ai-messages { display: none; }
+.studyhub-ai-quick-actions { display: none; }
+
+@media (max-width:700px) {
+    .studyhub-ai-panel {
+        right: 12px;
+        bottom: 166px;
+        width: min(330px, calc(100vw - 24px));
+    }
+}
+
+</style>
+
+<div id="studyhub-real-robot" aria-label="StudyHub AI assistant" title="StudyHub AI assistant">
+    <div class="robot-message">
+        <strong>StudyHub AI</strong>
+        Ask me anything about your notes, PYQs and revision.
+    </div>
+    <div class="antenna"></div>
+    <div class="ear ear-left"></div>
+    <div class="ear ear-right"></div>
+    <div class="robot-head">
+        <div class="robot-face">
+            <div class="robot-eye eye-left"></div>
+            <div class="robot-eye eye-right"></div>
+            <div class="robot-mouth"></div>
+        </div>
+    </div>
+    <div class="arm arm-left">
+        <div class="hand"></div>
+    </div>
+    <div class="arm arm-right">
+        <div class="hand"></div>
+    </div>
+    <div class="robot-body">
+        <div class="chest"></div>
+    </div>
+    <div class="robot-glow"></div>
+</div>
+
+
+
+<!-- END ADVANCED STUDYHUB ROBOT -->
+
+
+
+{% if current_user.is_authenticated %}
+
+<!-- =========================================================
+     STUDYHUB PREMIUM STUDYBOT
+     Uses the ORIGINAL #studyhub-real-robot
+========================================================= -->
+
+<style>
+
+/* =========================================================
+   PREMIUM STUDYBOT POPUP
+========================================================= */
+
+.studybot-premium-panel {
+    position: fixed;
+    right: 28px;
+    bottom: 135px;
+
+    width: 330px;
+    max-width: calc(100vw - 30px);
+
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border: 1px solid rgba(255,255,255,0.8);
+    border-radius: 20px;
+
+    box-shadow:
+        0 20px 55px rgba(0,0,0,0.18),
+        0 4px 18px rgba(0,0,0,0.08);
+
+    overflow: hidden;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(18px) scale(.96);
+
+    transition:
+        opacity .25s ease,
+        transform .25s ease,
+        visibility .25s ease;
+
+    z-index: 99999;
+}
+
+.studybot-premium-panel.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.studybot-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 15px 16px;
+
+    background: linear-gradient(
+        135deg,
+        rgba(245,248,255,.98),
+        rgba(235,242,255,.98)
+    );
+
+    border-bottom: 1px solid rgba(0,0,0,.06);
+}
+
+.studybot-title-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.studybot-mini-avatar {
+    width: 34px;
+    height: 34px;
+
+    border-radius: 11px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: linear-gradient(135deg,#eef4ff,#dce8ff);
+
+    font-size: 19px;
+
+    box-shadow:
+        inset 0 1px 3px rgba(255,255,255,.9),
+        0 3px 10px rgba(0,0,0,.08);
+}
+
+.studybot-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #172033;
+}
+
+.studybot-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    margin-top: 2px;
+
+    font-size: 10px;
+    color: #6b7280;
+}
+
+.studybot-online-dot {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+
+    box-shadow: 0 0 8px rgba(34,197,94,.6);
+
+    animation: studybotOnlinePulse 2s infinite;
+}
+
+@keyframes studybotOnlinePulse {
+    0%,100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .45;
+    }
+}
+
+
+/* CLOSE */
+
+.studybot-close {
+    width: 30px;
+    height: 30px;
+
+    border: none;
+    border-radius: 9px;
+
+    background: rgba(0,0,0,.05);
+
+    color: #667085;
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+    transition: .2s;
+}
+
+.studybot-close:hover {
+    background: rgba(0,0,0,.10);
+    transform: rotate(90deg);
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+.studybot-body {
+    padding: 15px;
+}
+
+.studybot-intro {
+    font-size: 13px;
+    color: #475467;
+
+    margin-bottom: 12px;
+}
+
+
+/* =========================================================
+   CHAT RESPONSE
+========================================================= */
+
+.studybot-response {
+    display: none;
+
+    padding: 11px 12px;
+    margin-bottom: 12px;
+
+    border-radius: 13px;
+
+    background: #f4f7fb;
+
+    color: #344054;
+
+    font-size: 12px;
+    line-height: 1.5;
+
+    border: 1px solid rgba(0,0,0,.04);
+}
+
+.studybot-response.show {
+    display: block;
+
+    animation: studybotResponse .25s ease;
+}
+
+@keyframes studybotResponse {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================================
+   SEARCH / QUESTION INPUT
+========================================================= */
+
+.studybot-input-wrap {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 5px;
+
+    margin-bottom: 12px;
+
+    background: #f7f8fa;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 12px;
+
+    transition: .2s;
+}
+
+.studybot-input-wrap:focus-within {
+    border-color: #9bbcff;
+
+    box-shadow:
+        0 0 0 3px rgba(59,130,246,.08);
+}
+
+.studybot-input {
+    flex: 1;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    padding: 8px;
+
+    font-size: 12px;
+
+    color: #172033;
+}
+
+.studybot-input::placeholder {
+    color: #98a2b3;
+}
+
+.studybot-send {
+    width: 32px;
+    height: 32px;
+
+    border: none;
+    border-radius: 9px;
+
+    background: #2563eb;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    transition: .2s;
+}
+
+.studybot-send:hover {
+    transform: scale(1.06);
+}
+
+
+/* =========================================================
+   QUICK ACTIONS
+========================================================= */
+
+.studybot-actions {
+    display: grid;
+    gap: 7px;
+}
+
+.studybot-action {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 10px 11px;
+
+    border: 1px solid #edf0f4;
+
+    border-radius: 11px;
+
+    background: #ffffff;
+
+    cursor: pointer;
+
+    text-align: left;
+
+    color: #344054;
+
+    font-size: 12px;
+
+    transition:
+        transform .18s ease,
+        background .18s ease,
+        box-shadow .18s ease;
+}
+
+.studybot-action:hover {
+    transform: translateX(3px);
+
+    background: #f7faff;
+
+    box-shadow:
+        0 5px 14px rgba(0,0,0,.06);
+}
+
+.studybot-action-icon {
+    width: 27px;
+    height: 27px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: #f1f5f9;
+
+    font-size: 14px;
+}
+
+.studybot-action-text {
+    flex: 1;
+}
+
+.studybot-action-title {
+    font-weight: 600;
+    color: #1d2939;
+}
+
+.studybot-action-desc {
+    font-size: 10px;
+    color: #98a2b3;
+    margin-top: 1px;
+}
+
+
+/* =========================================================
+   ROBOT INTERACTION STATES
+========================================================= */
+
+#studyhub-real-robot {
+    cursor: pointer;
+}
+
+.studybot-thinking .robot-eye {
+    animation: studybotEyeThink .45s infinite alternate;
+}
+
+@keyframes studybotEyeThink {
+    from {
+        transform: translateY(-1px);
+    }
+
+    to {
+        transform: translateY(2px);
+    }
+}
+
+
+/* BLINK */
+
+.studybot-blink .robot-eye {
+    transform: scaleY(.08) !important;
+}
+
+
+/* HAPPY */
+
+.studybot-happy .robot-eye {
+    transform: scaleY(.65);
+}
+
+.studybot-happy .robot-mouth {
+    transform: scaleX(1.25);
+}
+
+
+/* CLICK REACTION */
+
+.studybot-react {
+    animation: studybotReact .45s ease !important;
+}
+
+@keyframes studybotReact {
+    0% {
+        transform: translateY(0) rotate(0);
+    }
+
+    35% {
+        transform: translateY(-7px) rotate(-2deg);
+    }
+
+    70% {
+        transform: translateY(2px) rotate(2deg);
+    }
+
+    100% {
+        transform: translateY(0) rotate(0);
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .studybot-premium-panel {
+        right: 12px;
+        bottom: 115px;
+
+        width: calc(100vw - 24px);
+
+        border-radius: 18px;
+    }
+
+}
+
+
+
+/* =========================================================
+   STUDYBOT FINAL UI POLISH
+========================================================= */
+.studybot-tools {
+    display: flex;
+    gap: 7px;
+    margin: -4px 0 10px;
+}
+
+.studybot-tools button {
+    flex: 1;
+    border: 1px solid #edf0f4;
+    background: #fff;
+    color: #667085;
+    border-radius: 9px;
+    padding: 7px 8px;
+    font-size: 10px;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.studybot-tools button:hover {
+    background: #f7faff;
+    transform: translateY(-1px);
+}
+
+.studybot-voice {
+    background: #eef2ff !important;
+    color: #3730a3 !important;
+}
+
+.studybot-voice.listening {
+    animation: studybotVoicePulse 1s infinite;
+    background: #fee2e2 !important;
+    color: #b91c1c !important;
+}
+
+@keyframes studybotVoicePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+
+.studybot-thinking-dots span {
+    display: inline-block;
+    animation: studybotDot 1s infinite;
+}
+.studybot-thinking-dots span:nth-child(2) { animation-delay: .15s; }
+.studybot-thinking-dots span:nth-child(3) { animation-delay: .30s; }
+
+@keyframes studybotDot {
+    0%, 70%, 100% { opacity: .25; transform: translateY(0); }
+    35% { opacity: 1; transform: translateY(-2px); }
+}
+
+@media (max-width: 600px) {
+    #studyhub-real-robot {
+        right: 14px;
+        bottom: 14px;
+        transform: scale(.82);
+        transform-origin: bottom right;
+    }
+
+    .studybot-premium-panel {
+        right: 10px;
+        left: 10px;
+        bottom: 96px;
+        width: auto;
+        max-width: none;
+        max-height: calc(100vh - 115px);
+        overflow-y: auto;
+    }
+
+    .studybot-input { min-width: 0; }
+}
+
+</style>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* =====================================================
+       ORIGINAL ROBOT
+    ===================================================== */
+
+    const robot =
+        document.getElementById("studyhub-real-robot");
+
+    if (!robot) {
+        console.warn("StudyHub robot not found.");
+        return;
+    }
+
+
+    /* =====================================================
+       CREATE PREMIUM POPUP
+       No second robot is created.
+    ===================================================== */
+
+    if (!document.getElementById("studybot-premium-panel")) {
+
+        const panel = document.createElement("div");
+
+        panel.id = "studybot-premium-panel";
+
+        panel.className = "studybot-premium-panel";
+
+        panel.innerHTML = `
+
+            <div class="studybot-header">
+
+                <div class="studybot-title-area">
+
+                    <div class="studybot-mini-avatar">
+                        🤖
+                    </div>
+
+                    <div>
+
+                        <div class="studybot-title">
+                            StudyBot
+                        </div>
+
+                        <div class="studybot-status">
+
+                            <span class="studybot-online-dot"></span>
+
+                            Online • Free StudyBot
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <button
+                    class="studybot-close"
+                    id="studybot-close"
+                    aria-label="Close StudyBot"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="studybot-body">
+
+                <div class="studybot-intro">
+                    What would you like to do? 📚
+                </div>
+
+
+                <div
+                    id="studybot-response"
+                    class="studybot-response"
+                ></div>
+
+
+                <div class="studybot-input-wrap">
+
+                    <input
+                        id="studybot-input"
+                        class="studybot-input"
+                        type="text"
+                        autocomplete="off"
+                        placeholder="Ask StudyBot anything..."
+                    >
+
+                    <button
+                        id="studybot-voice"
+                        class="studybot-send studybot-voice"
+                        type="button"
+                        aria-label="Voice input"
+                        title="Voice input"
+                    >
+                        🎤
+                    </button>
+
+                    <button
+                        id="studybot-send"
+                        class="studybot-send"
+                        type="button"
+                        aria-label="Send"
+                    >
+                        ➤
+                    </button>
+
+                </div>
+
+                <div class="studybot-tools">
+                    <button id="studybot-clear" type="button">🧹 Clear</button>
+                    <button id="studybot-quiz" type="button">🧠 Quiz</button>
+                </div>
+
+
+                <div class="studybot-actions">
+
+                    <button
+                        class="studybot-action"
+                        data-action="notes"
+                    >
+
+                        <span class="studybot-action-icon">
+                            📚
+                        </span>
+
+                        <span class="studybot-action-text">
+
+                            <div class="studybot-action-title">
+                                Find Notes
+                            </div>
+
+                            <div class="studybot-action-desc">
+                                Browse study notes
+                            </div>
+
+                        </span>
+
+                    </button>
+
+
+                    <button
+                        class="studybot-action"
+                        data-action="pyq"
+                    >
+
+                        <span class="studybot-action-icon">
+                            📝
+                        </span>
+
+                        <span class="studybot-action-text">
+
+                            <div class="studybot-action-title">
+                                Find PYQs
+                            </div>
+
+                            <div class="studybot-action-desc">
+                                Previous year questions
+                            </div>
+
+                        </span>
+
+                    </button>
+
+
+                    <button
+                        class="studybot-action"
+                        data-action="repeated"
+                    >
+
+                        <span class="studybot-action-icon">
+                            🔁
+                        </span>
+
+                        <span class="studybot-action-text">
+
+                            <div class="studybot-action-title">
+                                Repeated Questions
+                            </div>
+
+                            <div class="studybot-action-desc">
+                                Discover frequently asked questions
+                            </div>
+
+                        </span>
+
+                    </button>
+
+
+                    <button
+                        class="studybot-action"
+                        data-action="help"
+                    >
+
+                        <span class="studybot-action-icon">
+                            🧠
+                        </span>
+
+                        <span class="studybot-action-text">
+
+                            <div class="studybot-action-title">
+                                What can you do?
+                            </div>
+
+                            <div class="studybot-action-desc">
+                                Explore StudyBot features
+                            </div>
+
+                        </span>
+
+                    </button>
+
+
+                    <button
+                        class="studybot-action"
+                        data-action="creator"
+                    >
+
+                        <span class="studybot-action-icon">
+                            ✨
+                        </span>
+
+                        <span class="studybot-action-text">
+
+                            <div class="studybot-action-title">
+                                About StudyBot
+                            </div>
+
+                            <div class="studybot-action-desc">
+                                Meet the creator
+                            </div>
+
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+        document.body.appendChild(panel);
+    }
+
+
+    /* =====================================================
+       ELEMENTS
+    ===================================================== */
+
+    const panel =
+        document.getElementById(
+            "studybot-premium-panel"
+        );
+
+    const closeButton =
+        document.getElementById(
+            "studybot-close"
+        );
+
+    const input =
+        document.getElementById(
+            "studybot-input"
+        );
+
+    const send =
+        document.getElementById(
+            "studybot-send"
+        );
+
+    const response =
+        document.getElementById(
+            "studybot-response"
+        );
+
+    const voiceButton =
+        document.getElementById("studybot-voice");
+
+    const clearButton =
+        document.getElementById("studybot-clear");
+
+    const quizButton =
+        document.getElementById("studybot-quiz");
+
+    let quizActive = false;
+    let quizIndex = 0;
+
+    const quizQuestions = [
+        { q: "Which data structure follows LIFO?", options: "A) Queue<br>B) Stack<br>C) Tree<br>D) Graph", answer: "b", topic: "DSA" },
+        { q: "What does SQL stand for?", options: "A) Structured Query Language<br>B) Simple Query Logic<br>C) System Query Language<br>D) Sequential Query Language", answer: "a", topic: "DBMS" },
+        { q: "Which protocol provides reliable delivery?", options: "A) UDP<br>B) IP<br>C) TCP<br>D) DNS", answer: "c", topic: "CN" },
+        { q: "Which OOP concept allows a class to acquire features of another class?", options: "A) Abstraction<br>B) Inheritance<br>C) Encapsulation<br>D) Compilation", answer: "b", topic: "OOP" },
+        { q: "Which software manages computer hardware and system resources?", options: "A) Compiler<br>B) Browser<br>C) Operating System<br>D) Database", answer: "c", topic: "OS" }
+    ];
+
+
+    /* =====================================================
+       OPEN / CLOSE
+    ===================================================== */
+
+    function openBot() {
+
+        panel.classList.add("open");
+
+        setTimeout(() => {
+
+            input.focus();
+
+        }, 250);
+
+    }
+
+
+    function closeBot() {
+
+        panel.classList.remove("open");
+
+    }
+
+
+    /* =====================================================
+       ROBOT CLICK — FINAL
+       Click the actual robot to open / close the existing
+       premium StudyBot panel.
+    ===================================================== */
+
+    robot.addEventListener("click", function (event) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        robot.classList.remove("studybot-react");
+        void robot.offsetWidth;
+        robot.classList.add("studybot-react");
+
+        if (panel.classList.contains("open")) {
+            closeBot();
+        } else {
+            openBot();
+        }
+
+        console.log(
+            "STUDYBOT OPEN:",
+            panel.classList.contains("open")
+        );
+
+    });
+
+    /* Keyboard accessibility */
+    robot.setAttribute("tabindex", "0");
+    robot.setAttribute("role", "button");
+
+    robot.addEventListener("keydown", function (event) {
+
+        if (event.key === "Enter" || event.key === " ") {
+
+            event.preventDefault();
+
+            if (panel.classList.contains("open")) {
+                closeBot();
+            } else {
+                openBot();
+            }
+        }
+
+    });
+
+
+    closeButton.addEventListener(
+        "click",
+        closeBot
+    );
+
+
+    /* =====================================================
+       CLICK OUTSIDE — CLOSE PANEL
+    ===================================================== */
+
+    document.addEventListener("click", function (event) {
+
+        if (
+            panel.classList.contains("open") &&
+            !event.target.closest("#studyhub-real-robot") &&
+            !event.target.closest("#studybot-premium-panel")
+        ) {
+            closeBot();
+        }
+
+    });
+
+
+    /* =====================================================
+       EYE TRACKING
+    ===================================================== */
+
+    const leftEye =
+        robot.querySelector(".eye-left");
+
+    const rightEye =
+        robot.querySelector(".eye-right");
+
+
+    document.addEventListener(
+        "mousemove",
+        function (event) {
+
+            if (!leftEye || !rightEye)
+                return;
+
+
+            const rect =
+                robot.getBoundingClientRect();
+
+
+            const centerX =
+                rect.left + rect.width / 2;
+
+            const centerY =
+                rect.top + rect.height / 2;
+
+
+            const dx =
+                event.clientX - centerX;
+
+            const dy =
+                event.clientY - centerY;
+
+
+            const distance =
+                Math.sqrt(dx * dx + dy * dy);
+
+
+            /*
+             * Limit eye movement so eyes
+             * don't leave their sockets.
+             */
+
+            const maxMove = 4;
+
+            const moveX =
+                Math.max(
+                    -maxMove,
+                    Math.min(
+                        maxMove,
+                        dx / 80
+                    )
+                );
+
+            const moveY =
+                Math.max(
+                    -maxMove,
+                    Math.min(
+                        maxMove,
+                        dy / 80
+                    )
+                );
+
+
+            if (
+                !robot.classList.contains(
+                    "studybot-blink"
+                )
+            ) {
+
+                leftEye.style.transform =
+                    `translate(${moveX}px, ${moveY}px)`;
+
+                rightEye.style.transform =
+                    `translate(${moveX}px, ${moveY}px)`;
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       NATURAL BLINKING
+    ===================================================== */
+
+    function blinkRobot() {
+
+        robot.classList.add(
+            "studybot-blink"
+        );
+
+        setTimeout(() => {
+
+            robot.classList.remove(
+                "studybot-blink"
+            );
+
+        }, 130);
+
+    }
+
+
+    function scheduleBlink() {
+
+        const delay =
+            2500 +
+            Math.random() * 4500;
+
+        setTimeout(() => {
+
+            blinkRobot();
+
+            scheduleBlink();
+
+        }, delay);
+
+    }
+
+    scheduleBlink();
+
+
+    /* =====================================================
+       ROBOT RESPONSE
+    ===================================================== */
+
+    function robotRespond(
+        message,
+        happy = false
+    ) {
+
+        response.innerHTML = message;
+
+        response.classList.add("show");
+
+        robot.classList.add(
+            "studybot-thinking"
+        );
+
+        if (happy) {
+
+            robot.classList.add(
+                "studybot-happy"
+            );
+
+        }
+
+
+        setTimeout(() => {
+
+            robot.classList.remove(
+                "studybot-thinking"
+            );
+
+            robot.classList.remove(
+                "studybot-happy"
+            );
+
+        }, 900);
+
+    }
+
+
+    /* =====================================================
+       NAVIGATION
+    ===================================================== */
+
+    function navigate(action) {
+
+        if (action === "notes") {
+
+            window.location.href =
+                "/notes";
+
+            return;
+        }
+
+
+        if (action === "pyq") {
+
+            window.location.href =
+                "/pyq";
+
+            return;
+        }
+
+
+        if (action === "repeated") {
+
+            window.location.href =
+                "/pyq/intelligence";
+
+            return;
+        }
+
+    }
+
+
+    /* =====================================================
+        QUICK ACTIONS
+    ===================================================== */
+
+    document
+        .querySelectorAll(".studybot-action")
+        .forEach(button => {
+
+            button.addEventListener("click", function () {
+
+                const action = this.dataset.action;
+
+                /* NOTES */
+                if (action === "notes") {
+                    robotRespond(
+                        "📚 Opening Notes for you...",
+                        true
+                    );
+
+                    setTimeout(() => {
+                        navigate("notes");
+                    }, 500);
+
+                    return;
+                }
+
+                /* PYQs */
+                if (action === "pyq") {
+                    robotRespond(
+                        "📝 Opening the PYQ section...",
+                        true
+                    );
+
+                    setTimeout(() => {
+                        navigate("pyq");
+                    }, 500);
+
+                    return;
+                }
+
+                /* REPEATED QUESTIONS */
+                if (action === "repeated") {
+                    robotRespond(
+                        "🔁 Opening repeated-question intelligence...",
+                        true
+                    );
+
+                    setTimeout(() => {
+                        navigate("repeated");
+                    }, 500);
+
+                    return;
+                }
+
+                /* HELP */
+                if (action === "help") {
+
+                    robotRespond(
+                        `
+                        🤖 <b>Here's what I can do:</b>
+                        <br><br>
+                        📚 <b>Notes</b> — Find your study materials.
+                        <br>
+                        📝 <b>PYQs</b> — Access previous-year papers.
+                        <br>
+                        🔁 <b>Repeated Questions</b> — Find frequently appearing questions.
+                        <br>
+                        📖 <b>Study Help</b> — Get basic exam-preparation guidance.
+                        <br><br>
+                        You can also ask me things like:
+                        <br>
+                        • "What is StudyHub?"
+                        <br>
+                        • "Who made you?"
+                        <br>
+                        • "How should I prepare for exams?"
+                        <br>
+                        • "Where can I find PYQs?"
+                        `,
+                        true
+                    );
+
+                    return;
+                }
+
+                /* CREATOR */
+                if (action === "creator") {
+
+                    robotRespond(
+                        `
+                        ✨ <b>About my creator</b>
+                        <br><br>
+                        I was created for <b>StudyHub</b> by
+                        <b>Chetan S Metri</b>.
+                        <br><br>
+                        StudyHub is designed to make
+                        student learning, notes and exam
+                        preparation easier. 🤖📚
+                        `,
+                        true
+                    );
+
+                    return;
+                }
+
+            });
+
+        });
+
+    /* =========================================================
+        STUDYBOT COMPLETE FREE STUDY ENGINE
+    ========================================================= */
+
+    function processQuestion(rawText) {
+
+        const original = rawText.trim();
+
+        const text = original
+            .toLowerCase()
+            .trim()
+            .replace(/[?!.,:;]/g, "")
+            .replace(/\s+/g, " ");
+
+        const hasAny = (words) =>
+            words.some(word => text.includes(word));
+
+        /* =====================================================
+           QUIZ ANSWER ENGINE
+        ===================================================== */
+        if (quizActive) {
+            const answer = text.replace(/[^a-z]/g, "");
+
+            if (["a", "b", "c", "d"].includes(answer)) {
+                const current = quizQuestions[quizIndex];
+
+                if (answer === current.answer) {
+                    quizIndex++;
+
+                    if (quizIndex >= quizQuestions.length) {
+                        quizActive = false;
+                        quizIndex = 0;
+                        return "🎉 <b>Quiz complete!</b><br><br>Excellent work! You can start another quiz anytime. 🧠✨";
+                    }
+
+                    const next = quizQuestions[quizIndex];
+                    return `✅ <b>Correct!</b><br><br><b>${next.topic}</b><br>${next.q}<br><br>${next.options}<br><br>Type A, B, C or D.`;
+                }
+
+                return `❌ <b>Not quite.</b><br><br>The correct answer is <b>${current.answer.toUpperCase()}</b>.<br><br>Try again or type <b>next</b>.`;
+            }
+
+            if (text === "next") {
+                const next = quizQuestions[quizIndex];
+                return `🧠 <b>${next.topic}</b><br>${next.q}<br><br>${next.options}<br><br>Type A, B, C or D.`;
+            }
+        }
+
+        /* =====================================================
+        GREETINGS
+        ===================================================== */
+
+        if (hasAny([
+            "hi", "hello", "hey", "hii", "hiii",
+            "good morning", "good afternoon",
+            "good evening", "good night"
+        ])) {
+            return `
+                👋 <b>Hello!</b>
+                <br><br>
+                I'm <b>StudyBot 🤖</b>.
+                <br>
+                Ask me about CSE subjects, Notes, PYQs,
+                exams, quizzes or StudyHub.
+            `;
+        }
+
+
+        /* =====================================================
+        IDENTITY
+        ===================================================== */
+
+        if (hasAny([
+            "who are you",
+            "who r you",
+            "who r u",
+            "what are you",
+            "what is your name",
+            "your name",
+            "tell me about yourself",
+            "introduce yourself"
+        ])) {
+            return `
+                🤖 <b>I'm StudyBot.</b>
+                <br><br>
+                I'm the study assistant for StudyHub.
+                I can help you with CSE concepts, Notes,
+                PYQs, repeated questions, revision and exam preparation.
+            `;
+        }
+
+
+        /* =====================================================
+        CREATOR
+        ===================================================== */
+
+        if (hasAny([
+            "who made you",
+            "who created you",
+            "who built you",
+            "who developed you",
+            "who designed you",
+            "your creator",
+            "your developer",
+            "who made studyhub"
+        ])) {
+            return `
+                ✨ I was created for <b>StudyHub</b> by
+                <b>Chetan S Metri</b>.
+                <br><br>
+                🤖 I'm designed to make student learning
+                and exam preparation easier.
+            `;
+        }
+
+
+        /* =====================================================
+        STUDYHUB
+        ===================================================== */
+
+        if (hasAny([
+            "what is studyhub",
+            "tell me about studyhub",
+            "explain studyhub",
+            "studyhub kya hai",
+            "about studyhub",
+            "what does studyhub do"
+        ])) {
+            return `
+                📚 <b>StudyHub</b> is a student-focused platform
+                for Notes, Previous Year Question Papers,
+                repeated-question insights and study resources.
+            `;
+        }
+
+
+        /* =====================================================
+        NOTES
+        ===================================================== */
+
+        if (hasAny([
+            "notes",
+            "study notes",
+            "class notes",
+            "lecture notes",
+            "where are notes",
+            "where can i find notes",
+            "i need notes",
+            "show me notes",
+            "open notes",
+            "find notes",
+            "study material"
+        ])) {
+            return `
+                📚 <b>Notes</b> help you access study materials.
+                <br><br>
+                Use the <b>Notes</b> button to open the Notes section.
+            `;
+        }
+
+
+        /* =====================================================
+        PYQ
+        ===================================================== */
+
+        if (hasAny([
+            "pyq",
+            "pyqs",
+            "previous year",
+            "previous years",
+            "previous paper",
+            "previous papers",
+            "question paper",
+            "question papers",
+            "old question paper",
+            "past papers",
+            "exam papers"
+        ])) {
+            return `
+                📝 <b>PYQ = Previous Year Question Paper.</b>
+                <br><br>
+                Practising PYQs can help you understand
+                question patterns and practise for exams.
+                <br><br>
+                Use the <b>PYQ</b> button to open them.
+            `;
+        }
+
+
+        /* =====================================================
+        REPEATED QUESTIONS
+        ===================================================== */
+
+        if (hasAny([
+            "repeated questions",
+            "repeated question",
+            "most repeated",
+            "frequently asked",
+            "frequently repeated",
+            "important repeated",
+            "questions repeated"
+        ])) {
+            return `
+                🔁 <b>Repeated Questions</b> identifies questions
+                that appear multiple times in previous papers.
+                <br><br>
+                Use the <b>Repeated Questions</b> button to explore them.
+            `;
+        }
+
+
+        /* =====================================================
+        DSA SUBJECT
+        ===================================================== */
+
+        if (
+            text === "dsa" ||
+            text === "data structures" ||
+            text === "data structure" ||
+            text === "data structures and algorithms"
+        ) {
+            return `
+                📊 <b>DSA — Data Structures & Algorithms</b>
+                <br><br>
+                Topics you can study:
+                <br>
+                • Arrays
+                <br>
+                • Linked Lists
+                <br>
+                • Stacks
+                <br>
+                • Queues
+                <br>
+                • Trees
+                <br>
+                • Graphs
+                <br>
+                • Sorting
+                <br>
+                • Searching
+                <br>
+                • Algorithms & Complexity
+            `;
+        }
+
+
+        /* =====================================================
+        DBMS SUBJECT
+        ===================================================== */
+
+        if (
+            text === "dbms" ||
+            text === "database" ||
+            text === "database management system"
+        ) {
+            return `
+                🗄️ <b>DBMS — Database Management System</b>
+                <br><br>
+                Important topics:
+                <br>
+                • ER Model
+                <br>
+                • Keys
+                <br>
+                • SQL
+                <br>
+                • Normalization
+                <br>
+                • Transactions
+                <br>
+                • Concurrency
+                <br>
+                • Indexing
+                <br>
+                • Relational Algebra
+            `;
+        }
+
+
+        /* =====================================================
+        OPERATING SYSTEM
+        ===================================================== */
+
+        if (
+            text === "os" ||
+            text === "operating system" ||
+            text === "operating systems"
+        ) {
+            return `
+                🖥️ <b>Operating System</b>
+                <br><br>
+                Important topics:
+                <br>
+                • Processes
+                <br>
+                • Threads
+                <br>
+                • CPU Scheduling
+                <br>
+                • Deadlocks
+                <br>
+                • Memory Management
+                <br>
+                • Virtual Memory
+                <br>
+                • File Systems
+                <br>
+                • Synchronization
+            `;
+        }
+
+
+        /* =====================================================
+        COMPUTER NETWORKS
+        ===================================================== */
+
+        if (
+            text === "cn" ||
+            text === "computer networks" ||
+            text === "computer network" ||
+            text === "networking"
+        ) {
+            return `
+                🌐 <b>Computer Networks</b>
+                <br><br>
+                Important topics:
+                <br>
+                • OSI Model
+                <br>
+                • TCP/IP
+                <br>
+                • IP Addressing
+                <br>
+                • Routing
+                <br>
+                • TCP & UDP
+                <br>
+                • HTTP/HTTPS
+                <br>
+                • DNS
+                <br>
+                • Network Security
+            `;
+        }
+
+
+        /* =====================================================
+        OOP
+        ===================================================== */
+
+        if (
+            text === "oop" ||
+            text === "oops" ||
+            text === "object oriented programming"
+        ) {
+            return `
+                💻 <b>Object-Oriented Programming</b>
+                <br><br>
+                Four major concepts:
+                <br>
+                1️⃣ Encapsulation
+                <br>
+                2️⃣ Inheritance
+                <br>
+                3️⃣ Polymorphism
+                <br>
+                4️⃣ Abstraction
+                <br><br>
+                You can ask me to explain any one of them.
+            `;
+        }
+
+
+        /* =====================================================
+        PYTHON
+        ===================================================== */
+
+        if (
+            text === "python" ||
+            text === "python programming"
+        ) {
+            return `
+                🐍 <b>Python</b>
+                <br><br>
+                Important topics:
+                <br>
+                • Variables
+                <br>
+                • Data Types
+                <br>
+                • Conditions
+                <br>
+                • Loops
+                <br>
+                • Functions
+                <br>
+                • Lists & Dictionaries
+                <br>
+                • OOP
+                <br>
+                • Exception Handling
+            `;
+        }
+
+
+        /* =====================================================
+        AI / ML
+        ===================================================== */
+
+        if (
+            text === "ai" ||
+            text === "ml" ||
+            text === "ai ml" ||
+            text === "machine learning" ||
+            text === "artificial intelligence"
+        ) {
+            return `
+                🤖 <b>AI / Machine Learning</b>
+                <br><br>
+                Important topics:
+                <br>
+                • Artificial Intelligence
+                <br>
+                • Machine Learning
+                <br>
+                • Supervised Learning
+                <br>
+                • Unsupervised Learning
+                <br>
+                • Classification
+                <br>
+                • Regression
+                <br>
+                • Clustering
+                <br>
+                • Model Evaluation
+            `;
+        }
+
+
+        /* =====================================================
+        DSA CONCEPTS
+        ===================================================== */
+
+        if (hasAny([
+            "what is stack",
+            "stack data structure",
+            "explain stack",
+            "define stack"
+        ])) {
+            return `
+                📚 <b>Stack</b> is a linear data structure
+                that follows <b>LIFO</b>.
+                <br><br>
+                <b>LIFO = Last In, First Out.</b>
+                <br><br>
+                Example: a stack of plates.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is queue",
+            "queue data structure",
+            "explain queue",
+            "define queue"
+        ])) {
+            return `
+                📚 <b>Queue</b> is a linear data structure
+                that follows <b>FIFO</b>.
+                <br><br>
+                <b>FIFO = First In, First Out.</b>
+                <br><br>
+                Example: people waiting in a line.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is linked list",
+            "linked list",
+            "explain linked list"
+        ])) {
+            return `
+                🔗 A <b>Linked List</b> is a collection of nodes.
+                Each node contains data and a link/reference
+                to another node.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is algorithm",
+            "define algorithm",
+            "algorithm meaning",
+            "explain algorithm"
+        ])) {
+            return `
+                ⚙️ An <b>Algorithm</b> is a step-by-step procedure
+                used to solve a problem or perform a task.
+            `;
+        }
+
+
+        /* =====================================================
+        OOP CONCEPTS
+        ===================================================== */
+
+        if (hasAny([
+            "what is polymorphism",
+            "polymorphism",
+            "explain polymorphism",
+            "define polymorphism"
+        ])) {
+            return `
+                🔄 <b>Polymorphism</b> means "many forms".
+                <br><br>
+                It allows the same operation or method
+                to behave differently in different situations.
+                <br><br>
+                Example: method overloading and overriding.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is inheritance",
+            "inheritance",
+            "explain inheritance",
+            "define inheritance"
+        ])) {
+            return `
+                🧬 <b>Inheritance</b> allows one class to acquire
+                properties and methods of another class.
+                <br><br>
+                It promotes code reuse.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is encapsulation",
+            "encapsulation",
+            "explain encapsulation"
+        ])) {
+            return `
+                🔒 <b>Encapsulation</b> means combining data
+                and methods inside a class and controlling
+                access to the internal data.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is abstraction",
+            "abstraction",
+            "explain abstraction"
+        ])) {
+            return `
+                🎯 <b>Abstraction</b> means hiding unnecessary
+                implementation details and showing only
+                the essential features.
+            `;
+        }
+
+
+        /* =====================================================
+        DBMS CONCEPTS
+        ===================================================== */
+
+        if (hasAny([
+            "what is dbms",
+            "define dbms",
+            "dbms meaning",
+            "explain dbms"
+        ])) {
+            return `
+                🗄️ <b>DBMS</b> stands for Database Management System.
+                <br><br>
+                It is software used to store, organize,
+                retrieve and manage data in databases.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is sql",
+            "sql meaning",
+            "explain sql",
+            "define sql"
+        ])) {
+            return `
+                💾 <b>SQL</b> stands for Structured Query Language.
+                <br><br>
+                It is used to communicate with and manage
+                relational databases.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is normalization",
+            "normalization",
+            "explain normalization"
+        ])) {
+            return `
+                📐 <b>Normalization</b> is the process of organizing
+                database tables to reduce data redundancy
+                and improve data integrity.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is primary key",
+            "primary key"
+        ])) {
+            return `
+                🔑 A <b>Primary Key</b> uniquely identifies
+                each record in a database table.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is foreign key",
+            "foreign key"
+        ])) {
+            return `
+                🔗 A <b>Foreign Key</b> is used to create a
+                relationship between tables by referring to
+                a key in another table.
+            `;
+        }
+
+
+        /* =====================================================
+        OPERATING SYSTEM CONCEPTS
+        ===================================================== */
+
+        if (hasAny([
+            "what is operating system",
+            "what is os",
+            "define operating system",
+            "explain operating system"
+        ])) {
+            return `
+                🖥️ An <b>Operating System</b> is system software
+                that manages computer hardware and software
+                resources and provides services to applications.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is process",
+            "process in operating system",
+            "explain process"
+        ])) {
+            return `
+                ⚙️ A <b>Process</b> is a program that is
+                currently being executed by the operating system.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is thread",
+            "thread in operating system",
+            "explain thread"
+        ])) {
+            return `
+                🧵 A <b>Thread</b> is the smallest unit of CPU
+                execution within a process.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is deadlock",
+            "deadlock",
+            "explain deadlock"
+        ])) {
+            return `
+                🔒 <b>Deadlock</b> occurs when processes wait
+                indefinitely for resources held by each other.
+            `;
+        }
+
+
+        /* =====================================================
+        COMPUTER NETWORKS
+        ===================================================== */
+
+        if (hasAny([
+            "what is tcp",
+            "tcp meaning",
+            "explain tcp"
+        ])) {
+            return `
+                📡 <b>TCP</b> stands for Transmission Control Protocol.
+                <br><br>
+                It provides reliable, ordered and
+                error-checked delivery of data.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is udp",
+            "udp meaning",
+            "explain udp"
+        ])) {
+            return `
+                📡 <b>UDP</b> stands for User Datagram Protocol.
+                <br><br>
+                It is connectionless and generally has lower
+                overhead than TCP, but does not guarantee delivery.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is ip address",
+            "ip address",
+            "explain ip address"
+        ])) {
+            return `
+                🌐 An <b>IP address</b> is an address used
+                to identify a device on a network.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is http",
+            "http meaning",
+            "explain http"
+        ])) {
+            return `
+                🌐 <b>HTTP</b> stands for HyperText Transfer Protocol.
+                It is used for communication between web clients
+                and servers.
+            `;
+        }
+
+
+        /* =====================================================
+        PYTHON / WEB
+        ===================================================== */
+
+        if (hasAny([
+            "what is python",
+            "python meaning",
+            "explain python"
+        ])) {
+            return `
+                🐍 <b>Python</b> is a high-level,
+                general-purpose programming language
+                known for its readable syntax.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is html",
+            "html meaning",
+            "explain html"
+        ])) {
+            return `
+                🌐 <b>HTML</b> stands for HyperText Markup Language.
+                It is used to structure content on web pages.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is css",
+            "css meaning",
+            "explain css"
+        ])) {
+            return `
+                🎨 <b>CSS</b> stands for Cascading Style Sheets.
+                It is used to style and design web pages.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is javascript",
+            "what is js",
+            "javascript meaning",
+            "explain javascript"
+        ])) {
+            return `
+                ⚡ <b>JavaScript</b> is a programming language
+                commonly used to add interactive and dynamic
+                behaviour to websites.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is flask",
+            "flask framework",
+            "explain flask"
+        ])) {
+            return `
+                🐍 <b>Flask</b> is a lightweight Python web framework
+                used to build web applications and APIs.
+            `;
+        }
+
+
+        /* =====================================================
+        AI / ML
+        ===================================================== */
+
+        if (hasAny([
+            "what is artificial intelligence",
+            "what is ai",
+            "explain ai",
+            "define ai"
+        ])) {
+            return `
+                🤖 <b>Artificial Intelligence</b> is the field
+                of creating systems that can perform tasks
+                that normally require human-like intelligence.
+            `;
+        }
+
+
+        if (hasAny([
+            "what is machine learning",
+            "what is ml",
+            "explain machine learning",
+            "define machine learning"
+        ])) {
+            return `
+                🧠 <b>Machine Learning</b> is a branch of AI
+                where systems learn patterns from data to
+                make predictions or decisions.
+            `;
+        }
+
+
+        /* =====================================================
+        QUIZ MODE
+        ===================================================== */
+
+        if (hasAny([
+            "quiz me",
+            "start quiz",
+            "give me quiz",
+            "test me",
+            "ask me questions"
+        ])) {
+            quizActive = true;
+            quizIndex = 0;
+
+            const q = quizQuestions[0];
+
+            return `
+                🧠 <b>Quick CSE Quiz — ${q.topic}</b>
+                <br><br>
+                <b>Question 1:</b>
+                <br>
+                ${q.q}
+                <br><br>
+                ${q.options}
+                <br><br>
+                💡 Type <b>A, B, C or D</b>.
+            `;
+        }
+
+
+        /* =====================================================
+        EXAM / REVISION
+        ===================================================== */
+
+        if (hasAny([
+            "revision",
+            "quick revision",
+            "revise",
+            "revision plan"
+        ])) {
+            return `
+                🔄 <b>Quick Revision Plan</b>
+                <br><br>
+                1️⃣ Review important concepts
+                <br>
+                2️⃣ Revise definitions
+                <br>
+                3️⃣ Practise PYQs
+                <br>
+                4️⃣ Check repeated questions
+                <br>
+                5️⃣ Solve questions without looking at answers
+            `;
+        }
+
+
+        if (hasAny([
+            "2 mark",
+            "2 marks",
+            "two mark",
+            "short answer"
+        ])) {
+            return `
+                📝 For a <b>2-mark answer</b>, keep it short:
+                <br><br>
+                • Give the definition
+                <br>
+                • Add one key point or example
+                <br><br>
+                Avoid unnecessary explanation.
+            `;
+        }
+
+
+        if (hasAny([
+            "5 mark",
+            "5 marks",
+            "five mark",
+            "long answer"
+        ])) {
+            return `
+                📝 For a <b>5-mark answer</b>:
+                <br><br>
+                • Start with a definition
+                <br>
+                • Explain the concept
+                <br>
+                • Add important points
+                <br>
+                • Give an example/diagram when relevant
+                <br>
+                • Finish with a short conclusion
+            `;
+        }
+
+
+        /* =====================================================
+        STUDY PLAN
+        ===================================================== */
+
+        if (hasAny([
+            "study plan",
+            "make a study plan",
+            "how should i study",
+            "how to study",
+            "exam preparation",
+            "prepare for exam",
+            "how to prepare"
+        ])) {
+            return `
+                📖 <b>Simple Study Plan</b>
+                <br><br>
+                <b>Step 1:</b> Check your syllabus.
+                <br>
+                <b>Step 2:</b> Study difficult concepts first.
+                <br>
+                <b>Step 3:</b> Practise PYQs.
+                <br>
+                <b>Step 4:</b> Review repeated questions.
+                <br>
+                <b>Step 5:</b> Do a final revision.
+            `;
+        }
+
+
+        /* =====================================================
+        WHAT CAN YOU DO
+        ===================================================== */
+
+        if (hasAny([
+            "what can you do",
+            "what do you do",
+            "how can you help",
+            "help me",
+            "help",
+            "features",
+            "your features"
+        ])) {
+            return `
+                🤖 <b>I can help you with:</b>
+                <br><br>
+                📚 Notes
+                <br>
+                📝 PYQs
+                <br>
+                🔁 Repeated Questions
+                <br>
+                💻 CSE concepts
+                <br>
+                🧠 Quick quizzes
+                <br>
+                📖 Exam preparation
+                <br>
+                🏠 StudyHub navigation
+            `;
+        }
+
+
+        /* =====================================================
+        THANKS
+        ===================================================== */
+
+        if (hasAny([
+            "thank you",
+            "thanks",
+            "thank u",
+            "thx",
+            "thanks a lot"
+        ])) {
+            return "You're welcome! 😊 Keep learning and all the best! 📚✨";
+        }
+
+
+        /* =====================================================
+        BYE
+        ===================================================== */
+
+        if (hasAny([
+            "bye",
+            "goodbye",
+            "see you",
+            "see u",
+            "talk later"
+        ])) {
+            return "Bye! 👋 Keep learning and good luck with your studies! 📚✨";
+        }
+
+
+        /* =====================================================
+        REAL / HUMAN
+        ===================================================== */
+
+        if (hasAny([
+            "are you real",
+            "are you human",
+            "are you a human",
+            "are you a robot",
+            "are you ai",
+            "are you an ai"
+        ])) {
+            return `
+                🤖 I'm a virtual <b>StudyBot</b> created for StudyHub.
+                I'm not a human, but I can help with study-related
+                questions and StudyHub features.
+            `;
+        }
+
+
+        /* =====================================================
+        DEFAULT
+        ===================================================== */
+
+        return `
+            🤔 I don't have a prepared answer for that yet.
+            <br><br>
+            Try asking:
+            <br>
+            • <b>What is polymorphism?</b>
+            <br>
+            • <b>Explain DBMS</b>
+            <br>
+            • <b>What is TCP?</b>
+            <br>
+            • <b>Quiz me</b>
+            <br>
+            • <b>Give me a revision plan</b>
+            <br>
+            • <b>What is StudyHub?</b>
+            <br><br>
+            📚 You can also ask about Notes, PYQs
+            and repeated questions.
+        `;
+    }
+    
+
+    /* =====================================================
+        SMART MESSAGE SENDING
+    ===================================================== */
+
+    function sendQuestion() {
+
+        const text = input.value.trim();
+
+        if (!text)
+            return;
+
+        /* Clear input immediately */
+        input.value = "";
+
+        /* Show thinking state */
+        robotRespond(
+            "<span class=\"studybot-thinking-dots\">🤔 Thinking<span>.</span><span>.</span><span>.</span></span>",
+            false
+        );
+
+        /* Small natural delay */
+        setTimeout(() => {
+
+            const answer = processQuestion(text);
+
+            robotRespond(
+                answer,
+                true
+            );
+
+        }, 450);
+
+    }
+
+    
+
+    send.addEventListener(
+        "click",
+        sendQuestion
+    );
+
+
+    input.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (event.key === "Enter") {
+
+                event.preventDefault();
+
+                sendQuestion();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       CLEAR CHAT
+    ===================================================== */
+    if (clearButton) {
+        clearButton.addEventListener("click", function () {
+            quizActive = false;
+            quizIndex = 0;
+            input.value = "";
+            response.innerHTML = "";
+            response.classList.remove("show");
+            robotRespond("🧹 <b>Chat cleared.</b><br><br>What would you like to study?", true);
+        });
+    }
+
+
+    /* =====================================================
+       QUIZ BUTTON
+    ===================================================== */
+    if (quizButton) {
+        quizButton.addEventListener("click", function () {
+            quizActive = true;
+            quizIndex = 0;
+            const q = quizQuestions[0];
+            robotRespond(`🧠 <b>Quick CSE Quiz — ${q.topic}</b><br><br><b>Question 1:</b><br>${q.q}<br><br>${q.options}<br><br>Type A, B, C or D.`, true);
+            input.focus();
+        });
+    }
+
+
+    /* =====================================================
+       VOICE INPUT — BROWSER ONLY / NO API
+    ===================================================== */
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    if (voiceButton && SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.lang = "en-IN";
+        recognition.interimResults = false;
+        recognition.continuous = false;
+
+        voiceButton.addEventListener("click", function () {
+            try {
+                recognition.start();
+                voiceButton.classList.add("listening");
+                robotRespond("🎤 <b>Listening...</b><br>Speak your question.");
+            } catch (error) {
+                /* Ignore repeated start while already listening. */
+            }
+        });
+
+        recognition.addEventListener("result", function (event) {
+            const transcript = event.results[0][0].transcript;
+            input.value = transcript;
+            voiceButton.classList.remove("listening");
+            sendQuestion();
+        });
+
+        recognition.addEventListener("end", function () {
+            voiceButton.classList.remove("listening");
+        });
+
+        recognition.addEventListener("error", function () {
+            voiceButton.classList.remove("listening");
+            robotRespond("🎤 Voice input could not be started. You can type your question instead.");
+        });
+    } else if (voiceButton) {
+        voiceButton.title = "Voice input is not supported by this browser";
+        voiceButton.addEventListener("click", function () {
+            robotRespond("🎤 Voice input isn't supported in this browser. Please type your question instead.");
+        });
+    }
+
+
+    /* =====================================================
+       CLOSE WHEN CLICKING OUTSIDE
+    ===================================================== */
+
+    document.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                panel.classList.contains("open") &&
+                !panel.contains(event.target) &&
+                !robot.contains(event.target)
+            ) {
+
+                closeBot();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       ESCAPE KEY
+    ===================================================== */
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (event.key === "Escape") {
+
+                closeBot();
+
+            }
+
+        }
+    );
+
+
+});
+
+</script>
+
+{% endif %}
+{% endif %}
+
+{% if current_user.is_authenticated %}
+
+<script>
+
+/* =========================================================
+   STUDYHUB ACTIVITY TRACKING
+========================================================= */
+
+(function () {
+
+    "use strict";
+
+
+    function logActivity(
+        resourceType,
+        resourceId,
+        action
+    ) {
+
+        if (
+            !resourceType ||
+            !resourceId ||
+            !action
+        ) {
+            return;
+        }
+
+
+        const body =
+            new URLSearchParams();
+
+
+        body.append(
+            "resource_type",
+            resourceType
+        );
+
+
+        body.append(
+            "resource_id",
+            resourceId
+        );
+
+
+        body.append(
+            "action",
+            action
+        );
+
+
+        fetch(
+            "{{ url_for('enhancements.log_activity') }}",
+            {
+                method: "POST",
+
+                body: body,
+
+                credentials: "same-origin",
+
+                keepalive: true
+            }
+        )
+        .catch(function () {
+            /*
+             * Activity tracking must never
+             * interfere with navigation.
+             */
+        });
+
+    }
+
+
+    function detectActivity(
+        href
+    ) {
+
+        if (!href) {
+            return null;
+        }
+
+
+        /*
+         * NOTE VIEW
+         */
+
+        let match =
+            href.match(
+                /\/notes\/view\/(\d+)/
+            );
+
+
+        if (match) {
+
+            return {
+                type: "note",
+                id: match[1],
+                action: "viewed"
+            };
+
+        }
+
+
+        /*
+         * NOTE DOWNLOAD
+         */
+
+        match =
+            href.match(
+                /\/notes\/download\/(\d+)/
+            );
+
+
+        if (match) {
+
+            return {
+                type: "note",
+                id: match[1],
+                action: "downloaded"
+            };
+
+        }
+
+
+        /*
+         * PYQ VIEW
+         */
+
+        match =
+            href.match(
+                /\/pyq\/view\/(\d+)/
+            );
+
+
+        if (match) {
+
+            return {
+                type: "pyq",
+                id: match[1],
+                action: "viewed"
+            };
+
+        }
+
+
+        /*
+         * PYQ DOWNLOAD
+         */
+
+        match =
+            href.match(
+                /\/pyq\/download\/(\d+)/
+            );
+
+
+        if (match) {
+
+            return {
+                type: "pyq",
+                id: match[1],
+                action: "downloaded"
+            };
+
+        }
+
+
+        return null;
+
+    }
+
+
+    document.addEventListener(
+        "click",
+        function (event) {
+
+            const link =
+                event.target.closest(
+                    "a[href]"
+                );
+
+
+            if (!link) {
+                return;
+            }
+
+
+            const activity =
+                detectActivity(
+                    link.getAttribute("href")
+                );
+
+
+            if (!activity) {
+                return;
+            }
+
+
+            logActivity(
+                activity.type,
+                activity.id,
+                activity.action
+            );
+
+        },
+        true
+    );
+
+
+})();
+
+</script>
+
+{% endif %}
+{% if current_user.is_authenticated %}
+
+<script>
+
+/* =========================================================
+   STUDYHUB CSRF PROTECTION
+========================================================= */
+
+function getStudyHubCSRFToken() {
+
+    const meta = document.querySelector(
+        'meta[name="csrf-token"]'
+    );
+
+    return meta
+        ? meta.getAttribute("content")
+        : "";
+}
+
+
+async function studyHubFetch(
+    url,
+    options = {}
+) {
+
+    const csrfToken =
+        getStudyHubCSRFToken();
+
+    const headers =
+        new Headers(
+            options.headers || {}
+        );
+
+    if (csrfToken) {
+
+        headers.set(
+            "X-CSRFToken",
+            csrfToken
+        );
+
+    }
+
+    if (
+        options.method &&
+        options.method.toUpperCase() !== "GET"
+    ) {
+
+        headers.set(
+            "X-Requested-With",
+            "XMLHttpRequest"
+        );
+
+    }
+
+    return fetch(
+        url,
+        {
+            ...options,
+            headers: headers,
+            credentials: "same-origin"
+        }
+    );
+}
+
+(function () {
+
+    "use strict";
+
+
+    function logActivity(
+        resourceType,
+        resourceId,
+        action
+    ) {
+
+        if (
+            !resourceType ||
+            !resourceId ||
+            !action
+        ) {
+            return;
+        }
+
+
+        const body =
+            new URLSearchParams();
+
+        body.append(
+            "resource_type",
+            resourceType
+        );
+
+        body.append(
+            "resource_id",
+            resourceId
+        );
+
+        body.append(
+            "action",
+            action
+        );
+
+
+        fetch(
+            "{{ url_for('enhancements.log_activity') }}",
+            {
+                method: "POST",
+                body: body,
+                credentials: "same-origin",
+                keepalive: true
+            }
+        ).catch(function () {});
+
+    }
+
+
+    function detectActivity(href) {
+
+        if (!href) {
+            return null;
+        }
+
+
+        let match =
+            href.match(
+                /\/notes\/view\/(\d+)/
+            );
+
+        if (match) {
+
+            return {
+                type: "note",
+                id: match[1],
+                action: "viewed"
+            };
+
+        }
+
+
+        match =
+            href.match(
+                /\/notes\/download\/(\d+)/
+            );
+
+        if (match) {
+
+            return {
+                type: "note",
+                id: match[1],
+                action: "downloaded"
+            };
+
+        }
+
+
+        match =
+            href.match(
+                /\/pyq\/view\/(\d+)/
+            );
+
+        if (match) {
+
+            return {
+                type: "pyq",
+                id: match[1],
+                action: "viewed"
+            };
+
+        }
+
+
+        match =
+            href.match(
+                /\/pyq\/download\/(\d+)/
+            );
+
+        if (match) {
+
+            return {
+                type: "pyq",
+                id: match[1],
+                action: "downloaded"
+            };
+
+        }
+
+
+        return null;
+
+    }
+
+
+    document.addEventListener(
+        "click",
+        function (event) {
+
+            const link =
+                event.target.closest(
+                    "a[href]"
+                );
+
+            if (!link) {
+                return;
+            }
+
+
+            const activity =
+                detectActivity(
+                    link.getAttribute("href")
+                );
+
+
+            if (!activity) {
+                return;
+            }
+
+
+            logActivity(
+                activity.type,
+                activity.id,
+                activity.action
+            );
+
+        },
+        true
+    );
+
+})();
+
+</script>
+
+{% endif %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* =====================================================
+       STUDYHUB ADVANCED SEARCH V2
+    ===================================================== */
+
+    const searchButton =
+        document.getElementById("studyHubSearchButton");
+
+    const searchOverlay =
+        document.getElementById("studyHubSearchOverlay");
+
+    const searchClose =
+        document.getElementById("studyHubSearchClose");
+
+    const searchBackdrop =
+        document.getElementById("studyHubSearchBackdrop");
+
+    const searchInput =
+        document.getElementById("studyHubGlobalSearch");
+
+    const searchResults =
+        document.getElementById("studyHubSearchResults");
+
+
+    if (!searchOverlay || !searchInput || !searchResults) {
+        return;
+    }
+
+
+    let searchTimer = null;
+
+    let currentResults = [];
+
+    let selectedIndex = -1;
+
+    let currentType = "all";
+
+    let currentSubject = "all";
+
+    let currentCourse = "all";
+
+    let currentSemester = "all";
+
+
+    const RECENT_KEY =
+        "studyhub_recent_searches";
+
+
+    /* =====================================================
+       ESCAPE HTML
+    ===================================================== */
+
+    function escapeHtml(value) {
+
+        return String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    /* =====================================================
+       HIGHLIGHT SEARCH TERM
+    ===================================================== */
+
+    function highlightText(value, query) {
+
+        const escaped =
+            escapeHtml(value);
+
+        if (!query) {
+            return escaped;
+        }
+
+        const safeQuery =
+            query
+                .replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+        return escaped.replace(
+            new RegExp("(" + safeQuery + ")", "gi"),
+            '<mark class="sh-search-highlight">$1</mark>'
+        );
+    }
+
+
+    /* =====================================================
+       OPEN
+    ===================================================== */
+
+    function openSearch() {
+
+        searchOverlay.classList.add(
+            "sh-search-open"
+        );
+
+        searchOverlay.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        document.body.classList.add(
+            "sh-search-lock"
+        );
+
+        setTimeout(function () {
+
+            searchInput.focus();
+
+            renderRecentSearches();
+
+        }, 80);
+    }
+
+
+    /* =====================================================
+       CLOSE
+    ===================================================== */
+
+    function closeSearch() {
+
+        searchOverlay.classList.remove(
+            "sh-search-open"
+        );
+
+        searchOverlay.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+        document.body.classList.remove(
+            "sh-search-lock"
+        );
+
+        selectedIndex = -1;
+    }
+
+
+    /* =====================================================
+       RECENT SEARCHES
+    ===================================================== */
+
+    function getRecentSearches() {
+
+        try {
+
+            return JSON.parse(
+                localStorage.getItem(
+                    RECENT_KEY
+                ) || "[]"
+            );
+
+        } catch {
+
+            return [];
+        }
+    }
+
+
+    function saveRecentSearch(query) {
+
+        const clean =
+            query.trim();
+
+        if (!clean) {
+            return;
+        }
+
+        let recent =
+            getRecentSearches();
+
+        recent =
+            recent.filter(function (item) {
+                return item.toLowerCase() !==
+                    clean.toLowerCase();
+            });
+
+        recent.unshift(clean);
+
+        recent =
+            recent.slice(0, 8);
+
+        localStorage.setItem(
+            RECENT_KEY,
+            JSON.stringify(recent)
+        );
+    }
+
+
+    function clearRecentSearches() {
+
+        localStorage.removeItem(
+            RECENT_KEY
+        );
+
+        renderRecentSearches();
+    }
+
+
+    function renderRecentSearches() {
+
+        const recent =
+            getRecentSearches();
+
+        if (!recent.length) {
+            return;
+        }
+
+
+        if (searchInput.value.trim()) {
+            return;
+        }
+
+
+        searchResults.innerHTML = `
+
+            <div class="sh-search-recent">
+
+                <div class="sh-search-recent-title">
+
+                    <span>
+                        🕘 Recent searches
+                    </span>
+
+                    <button
+                        type="button"
+                        class="sh-search-clear-history"
+                        id="studyHubClearHistory"
+                    >
+                        Clear
+                    </button>
+
+                </div>
+
+                <div class="sh-search-recent-list">
+
+                    ${recent.map(function (item) {
+
+                        return `
+
+                            <button
+                                type="button"
+                                class="sh-search-recent-item"
+                                data-recent-search="${escapeHtml(item)}"
+                            >
+                                🕘
+                                ${escapeHtml(item)}
+                            </button>
+
+                        `;
+
+                    }).join("")}
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        const clearButton =
+            document.getElementById(
+                "studyHubClearHistory"
+            );
+
+        if (clearButton) {
+
+            clearButton.addEventListener(
+                "click",
+                clearRecentSearches
+            );
+        }
+
+
+        searchResults
+            .querySelectorAll(
+                "[data-recent-search]"
+            )
+            .forEach(function (button) {
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        const query =
+                            button.dataset.recentSearch;
+
+                        searchInput.value =
+                            query;
+
+                        performSearch(
+                            query
+                        );
+
+                    }
+                );
+
+            });
+    }
+
+
+    /* =====================================================
+       SEARCH TOOLBAR
+    ===================================================== */
+
+    function ensureToolbar() {
+
+        if (
+            document.getElementById(
+                "studyHubAdvancedToolbar"
+            )
+        ) {
+            return;
+        }
+
+
+        const toolbar =
+            document.createElement("div");
+
+        toolbar.id =
+            "studyHubAdvancedToolbar";
+
+        toolbar.className =
+            "sh-advanced-search-toolbar";
+
+
+        toolbar.innerHTML = `
+
+            <div class="sh-search-filter-group">
+
+                <button
+                    type="button"
+                    class="sh-search-filter active"
+                    data-search-type="all"
+                >
+                    All
+                </button>
+
+                <button
+                    type="button"
+                    class="sh-search-filter"
+                    data-search-type="note"
+                >
+                    📚 Notes
+                </button>
+
+                <button
+                    type="button"
+                    class="sh-search-filter"
+                    data-search-type="pyq"
+                >
+                    📝 PYQs
+                </button>
+
+            </div>
+
+
+            <select
+                class="sh-search-select"
+                id="studyHubSearchSubject"
+            >
+                <option value="all">
+                    All Subjects
+                </option>
+            </select>
+
+
+            <select
+                class="sh-search-select"
+                id="studyHubSearchCourse"
+            >
+                <option value="all">
+                    All Courses
+                </option>
+            </select>
+
+
+            <select
+                class="sh-search-select"
+                id="studyHubSearchSemester"
+            >
+                <option value="all">
+                    All Semesters
+                </option>
+            </select>
+
+        `;
+
+
+        const inputWrap =
+            searchInput.closest(
+                ".sh-search-input-wrap"
+            );
+
+
+        if (inputWrap) {
+
+            inputWrap.after(toolbar);
+
+        } else {
+
+            searchInput.after(toolbar);
+
+        }
+
+
+        toolbar
+            .querySelectorAll(
+                "[data-search-type]"
+            )
+            .forEach(function (button) {
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        toolbar
+                            .querySelectorAll(
+                                "[data-search-type]"
+                            )
+                            .forEach(function (item) {
+                                item.classList.remove(
+                                    "active"
+                                );
+                            });
+
+                        button.classList.add(
+                            "active"
+                        );
+
+                        currentType =
+                            button.dataset.searchType;
+
+                        applyFilters();
+
+                    }
+                );
+
+            });
+
+
+        document
+            .getElementById(
+                "studyHubSearchSubject"
+            )
+            .addEventListener(
+                "change",
+                function (event) {
+
+                    currentSubject =
+                        event.target.value;
+
+                    applyFilters();
+
+                }
+            );
+
+
+        document
+            .getElementById(
+                "studyHubSearchCourse"
+            )
+            .addEventListener(
+                "change",
+                function (event) {
+
+                    currentCourse =
+                        event.target.value;
+
+                    applyFilters();
+
+                }
+            );
+
+
+        document
+            .getElementById(
+                "studyHubSearchSemester"
+            )
+            .addEventListener(
+                "change",
+                function (event) {
+
+                    currentSemester =
+                        event.target.value;
+
+                    applyFilters();
+
+                }
+            );
+    }
+
+
+    ensureToolbar();
+
+
+    /* =====================================================
+       LOADING
+    ===================================================== */
+
+    function showLoading() {
+
+        searchResults.innerHTML = `
+
+            <div class="sh-search-loading">
+
+                <span class="sh-search-spinner"></span>
+
+                Searching StudyHub...
+
+            </div>
+
+        `;
+    }
+
+
+    /* =====================================================
+       POPULATE FILTERS
+    ===================================================== */
+
+    function populateFilters(data) {
+
+        const subjectSelect =
+            document.getElementById(
+                "studyHubSearchSubject"
+            );
+
+        const courseSelect =
+            document.getElementById(
+                "studyHubSearchCourse"
+            );
+
+        const semesterSelect =
+            document.getElementById(
+                "studyHubSearchSemester"
+            );
+
+
+        const allItems =
+            [
+                ...(data.notes || []),
+                ...(data.pyqs || [])
+            ];
+
+
+        const subjects =
+            [...new Set(
+                allItems
+                    .map(item => item.subject)
+                    .filter(Boolean)
+            )].sort();
+
+
+        const courses =
+            [...new Set(
+                allItems
+                    .map(item => item.course)
+                    .filter(Boolean)
+            )].sort();
+
+
+        const semesters =
+            [...new Set(
+                allItems
+                    .map(item => item.semester)
+                    .filter(Boolean)
+            )].sort();
+
+
+        subjectSelect.innerHTML =
+            `<option value="all">All Subjects</option>` +
+            subjects.map(function (item) {
+                return `
+                    <option value="${escapeHtml(item)}">
+                        ${escapeHtml(item)}
+                    </option>
+                `;
+            }).join("");
+
+
+        courseSelect.innerHTML =
+            `<option value="all">All Courses</option>` +
+            courses.map(function (item) {
+                return `
+                    <option value="${escapeHtml(item)}">
+                        ${escapeHtml(item)}
+                    </option>
+                `;
+            }).join("");
+
+
+        semesterSelect.innerHTML =
+            `<option value="all">All Semesters</option>` +
+            semesters.map(function (item) {
+                return `
+                    <option value="${escapeHtml(item)}">
+                        ${escapeHtml(item)}
+                    </option>
+                `;
+            }).join("");
+
+
+        subjectSelect.value =
+            currentSubject;
+
+        courseSelect.value =
+            currentCourse;
+
+        semesterSelect.value =
+            currentSemester;
+    }
+
+
+    /* =====================================================
+       FILTER RESULTS
+    ===================================================== */
+
+    function applyFilters() {
+
+        const query =
+            searchInput.value.trim();
+
+
+        let notes =
+            currentResults.notes || [];
+
+        let pyqs =
+            currentResults.pyqs || [];
+
+
+        if (currentType === "note") {
+            pyqs = [];
+        }
+
+        if (currentType === "pyq") {
+            notes = [];
+        }
+
+
+        function matches(item) {
+
+            if (
+                currentSubject !== "all" &&
+                item.subject !== currentSubject
+            ) {
+                return false;
+            }
+
+
+            if (
+                currentCourse !== "all" &&
+                item.course !== currentCourse
+            ) {
+                return false;
+            }
+
+
+            if (
+                currentSemester !== "all" &&
+                item.semester !== currentSemester
+            ) {
+                return false;
+            }
+
+
+            return true;
+        }
+
+
+        notes =
+            notes.filter(matches);
+
+        pyqs =
+            pyqs.filter(matches);
+
+
+        renderResults(
+            notes,
+            pyqs,
+            query
+        );
+    }
+
+
+    /* =====================================================
+       RENDER RESULTS
+    ===================================================== */
+
+    function renderResults(
+        notes,
+        pyqs,
+        query
+    ) {
+
+        const total =
+            notes.length +
+            pyqs.length;
+
+
+        if (!total) {
+
+            searchResults.innerHTML = `
+
+                <div class="sh-search-no-results">
+
+                    <div class="sh-search-no-results-icon">
+                        🔍
+                    </div>
+
+                    <strong>
+                        No results found
+                    </strong>
+
+                    <span>
+                        Nothing matched
+                        "${escapeHtml(query)}".
+                    </span>
+
+                    <div class="sh-search-suggestion-list">
+
+                        <button
+                            class="sh-search-suggestion"
+                            data-suggestion="ADA"
+                        >
+                            ADA
+                        </button>
+
+                        <button
+                            class="sh-search-suggestion"
+                            data-suggestion="DBMS"
+                        >
+                            DBMS
+                        </button>
+
+                        <button
+                            class="sh-search-suggestion"
+                            data-suggestion="Algorithms"
+                        >
+                            Algorithms
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            searchResults
+                .querySelectorAll(
+                    "[data-suggestion]"
+                )
+                .forEach(function (button) {
+
+                    button.addEventListener(
+                        "click",
+                        function () {
+
+                            const value =
+                                button.dataset.suggestion;
+
+                            searchInput.value =
+                                value;
+
+                            performSearch(
+                                value
+                            );
+
+                        }
+                    );
+
+                });
+
+            return;
+        }
+
+
+        let html = `
+
+            <div class="sh-search-meta-bar">
+
+                <span>
+                    ${total}
+                    result${total === 1 ? "" : "s"}
+                    found
+                </span>
+
+                <span>
+                    ↑ ↓ navigate
+                    · Enter open
+                </span>
+
+            </div>
+
+        `;
+
+
+        if (notes.length) {
+
+            html += `
+
+                <div class="sh-search-section-title">
+                    📚 Notes
+                </div>
+
+            `;
+
+
+            notes.forEach(function (item, index) {
+
+                html += createResultHtml(
+                    item,
+                    "note",
+                    query,
+                    index
+                );
+
+            });
+        }
+
+
+        if (pyqs.length) {
+
+            html += `
+
+                <div class="sh-search-section-title">
+                    📝 Previous Year Papers
+                </div>
+
+            `;
+
+
+            pyqs.forEach(function (item, index) {
+
+                html += createResultHtml(
+                    item,
+                    "pyq",
+                    query,
+                    notes.length + index
+                );
+
+            });
+        }
+
+
+        searchResults.innerHTML =
+            html;
+
+
+        currentVisibleResults =
+            Array.from(
+                searchResults.querySelectorAll(
+                    ".sh-search-result"
+                )
+            );
+
+
+        selectedIndex = -1;
+    }
+
+
+    let currentVisibleResults = [];
+
+
+    /* =====================================================
+       RESULT HTML
+    ===================================================== */
+
+    function createResultHtml(
+        item,
+        type,
+        query,
+        index
+    ) {
+
+        const icon =
+            type === "note"
+                ? "📚"
+                : "📝";
+
+
+        const label =
+            type === "note"
+                ? "NOTE"
+                : "PYQ";
+
+
+        const secondary =
+            item.subject ||
+            item.course ||
+            item.description ||
+            (
+                type === "pyq"
+                    ? "Previous Year Paper"
+                    : "Study material"
+            );
+
+
+        return `
+
+            <a
+                href="${escapeHtml(item.url)}"
+                class="sh-search-result"
+                data-search-index="${index}"
+            >
+
+                <span
+                    class="sh-search-result-icon"
+                >
+                    ${icon}
+                </span>
+
+
+                <span
+                    class="sh-search-result-content"
+                >
+
+                    <strong>
+                        ${highlightText(
+                            item.title,
+                            query
+                        )}
+                    </strong>
+
+                    <small>
+                        ${highlightText(
+                            secondary,
+                            query
+                        )}
+                    </small>
+
+                </span>
+
+
+                <span
+                    class="sh-search-result-type"
+                >
+                    ${label}
+                </span>
+
+
+                <span
+                    class="sh-search-result-arrow"
+                >
+                    →
+                </span>
+
+            </a>
+
+        `;
+    }
+
+
+    /* =====================================================
+       SEARCH
+    ===================================================== */
+
+    async function performSearch(query) {
+
+        const cleanQuery =
+            query.trim();
+
+
+        if (!cleanQuery) {
+
+            currentResults = [];
+
+            selectedIndex = -1;
+
+            renderRecentSearches();
+
+            return;
+        }
+
+
+        saveRecentSearch(
+            cleanQuery
+        );
+
+
+        showLoading();
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "{{ url_for('search.search_api') }}" +
+                    "?q=" +
+                    encodeURIComponent(
+                        cleanQuery
+                    ),
+                    {
+                        method: "GET",
+
+                        headers: {
+                            "X-Requested-With":
+                                "XMLHttpRequest",
+
+                            "Accept":
+                                "application/json"
+                        },
+
+                        credentials:
+                            "same-origin"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Search failed: " +
+                    response.status
+                );
+            }
+
+
+            const data =
+                await response.json();
+
+
+            currentResults =
+                data;
+
+
+            populateFilters(
+                data
+            );
+
+
+            applyFilters();
+
+
+        } catch (error) {
+
+            console.error(
+                "StudyHub Advanced Search:",
+                error
+            );
+
+
+            searchResults.innerHTML = `
+
+                <div class="sh-search-no-results">
+
+                    <div class="sh-search-no-results-icon">
+                        ⚠️
+                    </div>
+
+                    <strong>
+                        Search temporarily unavailable
+                    </strong>
+
+                    <span>
+                        Please try again.
+                    </span>
+
+                </div>
+
+            `;
+        }
+    }
+
+
+    /* =====================================================
+       INPUT
+    ===================================================== */
+
+    searchInput.addEventListener(
+        "input",
+        function () {
+
+            const query =
+                searchInput.value;
+
+
+            clearTimeout(
+                searchTimer
+            );
+
+
+            searchTimer =
+                setTimeout(
+                    function () {
+
+                        performSearch(
+                            query
+                        );
+
+                    },
+                    300
+                );
+
+        }
+    );
+
+
+    /* =====================================================
+       RESULT KEYBOARD NAVIGATION
+    ===================================================== */
+
+    searchInput.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key === "ArrowDown"
+            ) {
+
+                event.preventDefault();
+
+                if (!currentVisibleResults.length) {
+                    return;
+                }
+
+                selectedIndex =
+                    Math.min(
+                        selectedIndex + 1,
+                        currentVisibleResults.length - 1
+                    );
+
+                updateSelectedResult();
+
+            }
+
+
+            if (
+                event.key === "ArrowUp"
+            ) {
+
+                event.preventDefault();
+
+                if (!currentVisibleResults.length) {
+                    return;
+                }
+
+                selectedIndex =
+                    Math.max(
+                        selectedIndex - 1,
+                        0
+                    );
+
+                updateSelectedResult();
+
+            }
+
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                event.preventDefault();
+
+                if (
+                    selectedIndex >= 0 &&
+                    currentVisibleResults[
+                        selectedIndex
+                    ]
+                ) {
+
+                    currentVisibleResults[
+                        selectedIndex
+                    ].click();
+
+                }
+
+            }
+
+        }
+    );
+
+
+    function updateSelectedResult() {
+
+        currentVisibleResults.forEach(
+            function (item) {
+
+                item.classList.remove(
+                    "selected"
+                );
+
+            }
+        );
+
+
+        const selected =
+            currentVisibleResults[
+                selectedIndex
+            ];
+
+
+        if (selected) {
+
+            selected.classList.add(
+                "selected"
+            );
+
+            selected.scrollIntoView({
+                block: "nearest"
+            });
+        }
+    }
+
+
+    /* =====================================================
+       BUTTON EVENTS
+    ===================================================== */
+
+    if (searchButton) {
+
+        searchButton.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
+                openSearch();
+
+            }
+        );
+    }
+
+
+    if (searchClose) {
+
+        searchClose.addEventListener(
+            "click",
+            closeSearch
+        );
+    }
+
+
+    if (searchBackdrop) {
+
+        searchBackdrop.addEventListener(
+            "click",
+            closeSearch
+        );
+    }
+
+
+    /* =====================================================
+       CTRL + K / ESC
+    ===================================================== */
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                (event.ctrlKey ||
+                 event.metaKey) &&
+                event.key.toLowerCase() === "k"
+            ) {
+
+                event.preventDefault();
+
+                openSearch();
+
+            }
+
+
+            if (
+                event.key === "Escape" &&
+                searchOverlay.classList.contains(
+                    "sh-search-open"
+                )
+            ) {
+
+                closeSearch();
+
+            }
+
+        }
+    );
+
+});
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const searchInput =
+            document.getElementById("studyHubGlobalSearch");
+
+        const clearButton =
+            document.getElementById("studyHubSearchClear");
+
+        const searchResults =
+            document.getElementById("studyHubSearchResults");
+
+        const RECENT_SEARCH_KEY =
+            "studyhub_recent_searches";
+
+
+        if (!searchInput || !clearButton) {
+            return;
+        }
+
+
+        /* =====================================================
+        UPDATE CLEAR BUTTON
+        ===================================================== */
+
+        function updateSearchClearButton() {
+
+            if (searchInput.value.trim()) {
+                clearButton.classList.add("sh-visible");
+            } else {
+                clearButton.classList.remove("sh-visible");
+            }
+
+        }
+
+
+        /* =====================================================
+        CLEAR SEARCH + RECENT SEARCHES
+        ===================================================== */
+
+        clearButton.addEventListener("click", function (event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+
+            /* Clear search input */
+            searchInput.value = "";
+
+
+            /* Clear recent searches from localStorage */
+            try {
+                localStorage.removeItem(RECENT_SEARCH_KEY);
+            } catch (error) {
+                console.warn(
+                    "Unable to clear recent searches:",
+                    error
+                );
+            }
+
+
+            /* Hide clear button */
+            clearButton.classList.remove("sh-visible");
+
+
+            /* Reset filter buttons */
+            document
+                .querySelectorAll(".sh-search-filter")
+                .forEach(function (button) {
+
+                    button.classList.remove("active");
+                    button.classList.remove("selected");
+
+                });
+
+
+            /* Reset dropdowns */
+            document
+                .querySelectorAll(".sh-search-select")
+                .forEach(function (select) {
+
+                    select.selectedIndex = 0;
+
+                });
+
+
+            /* Remove recent-search UI */
+            document
+                .querySelectorAll(
+                    ".sh-search-recent, .sh-search-recent-list"
+                )
+                .forEach(function (element) {
+
+                    element.remove();
+
+                });
+
+
+            /* Reset results */
+            if (searchResults) {
+
+                searchResults.innerHTML = `
+                    <div class="sh-search-empty">
+
+                        <div class="sh-search-empty-icon">
+                            🔍
+                        </div>
+
+                        <strong>
+                            Start searching
+                        </strong>
+
+                        <span>
+                            Search across StudyHub resources and pages.
+                        </span>
+
+                    </div>
+                `;
+
+            }
+
+
+            /* Focus search box */
+            searchInput.focus();
+
+        });
+
+
+        /* =====================================================
+        WATCH SEARCH INPUT
+        ===================================================== */
+
+        searchInput.addEventListener(
+            "input",
+            updateSearchClearButton
+        );
+
+
+        /* =====================================================
+        INITIAL STATE
+        ===================================================== */
+
+        updateSearchClearButton();
+
+    });
+    </script>
+</body>
+
+</html>

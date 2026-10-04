@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}
+Notifications - StudyHub
+{% endblock %}
+
+{% block head %}
+<style>
+    .notification-unread {
+        border-left: 5px solid #4f46e5;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div style="
+    max-width:900px;
+    margin:40px auto;
+    padding:20px;
+">
+
+    <h1>
+        🔔 Notifications
+    </h1>
+
+    <p>
+        Stay updated with StudyHub activity.
+    </p>
+
+
+    {% if notifications %}
+
+        {% for notification in notifications %}
+
+            <div style="
+                background:white;
+                border:1px solid #e5e7eb;
+                border-radius:16px;
+                padding:20px;
+                margin:15px 0;
+            " class="{% if not notification.is_read %}notification-unread{% endif %}">
+
+                <h3>
+                    {{ notification.title }}
+                </h3>
+
+                <p>
+                    {{ notification.message }}
+                </p>
+
+                <small style="color:#6b7280;">
+                    {{ notification.created_at }}
+                </small>
+
+                {% if not notification.is_read %}
+
+                    <div style="margin-top:12px;">
+
+                        <a
+                            href="{{ url_for(
+                                'community.mark_notification_read',
+                                notification_id=notification.id
+                            ) }}"
+                            style="
+                                color:#4f46e5;
+                                font-weight:600;
+                            "
+                        >
+                            Mark as read
+                        </a>
+
+                    </div>
+
+                {% else %}
+
+                    <div style="
+                        margin-top:10px;
+                        color:#6b7280;
+                    ">
+                        ✓ Read
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div style="
+            background:white;
+            padding:40px;
+            text-align:center;
+            border-radius:16px;
+        ">
+
+            <h2>
+                You're all caught up 🎉
+            </h2>
+
+            <p>
+                No notifications yet.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

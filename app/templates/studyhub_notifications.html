@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block title %}
+Notifications - StudyHub
+{% endblock %}
+
+
+{% block content %}
+
+<div class="notifications-page">
+
+    <span class="notifications-label">
+        ACTIVITY CENTER
+    </span>
+
+    <h1>
+        🔔 Notifications
+    </h1>
+
+    <p class="notifications-subtitle">
+        Stay updated with your StudyHub activity.
+    </p>
+
+
+    <div class="notifications-list">
+
+        {% for n in notifications %}
+
+        <article
+            class="notification-card
+            {% if not n.is_read %}
+                unread
+            {% endif %}"
+            data-notification-id="{{ n.id }}"
+        >
+
+            <div class="notification-main">
+
+                <div class="notification-icon">
+                    🔔
+                </div>
+
+                <div>
+
+                    <div class="notification-title-row">
+
+                        <h3>
+                            {{ n.title }}
+                        </h3>
+
+                        {% if not n.is_read %}
+                        <span class="notification-new">
+                            NEW
+                        </span>
+                        {% endif %}
+
+                    </div>
+
+                    <p>
+                        {{ n.message }}
+                    </p>
+
+                    {% if n.link %}
+                    <a href="{{ n.link }}">
+                        Open →
+                    </a>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            {% if not n.is_read %}
+
+            <button
+                type="button"
+                class="notification-read"
+                data-notification-id="{{ n.id }}"
+                onclick="markNotificationRead(this.dataset.notificationId, this)"
+            >
+                Mark read
+            </button>
+
+            {% endif %}
+
+        </article>
+
+        {% else %}
+
+        <div class="notifications-empty">
+
+            <div>
+                ✓
+            </div>
+
+            <h2>
+                You're all caught up
+            </h2>
+
+            <p>
+                No new notifications right now.
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+
+<script>
+
+async function markNotificationRead(
+    notificationId,
+    button
+){
+
+    try{
+
+        const response =
+            await fetch(
+                "{{ url_for('enhancements.mark_notification_read', notification_id=0) }}"
+                    .replace(
+                        "/0",
+                        "/" + notificationId
+                    ),
+                {
+                    method:"POST"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if(data.ok){
+
+            const card =
+                button.closest(
+                    ".notification-card"
+                );
+
+
+            card.classList.remove(
+                "unread"
+            );
+
+
+            button.remove();
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Notification error:",
+            error
+        );
+
+    }
+
+}
+
+</script>
+
+
+<style>
+
+.notifications-page{
+    width:min(950px,92%);
+    margin:45px auto 80px;
+}
+
+.notifications-label{
+    color:#4f46e5;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.15em;
+}
+
+.notifications-page h1{
+    font-size:42px;
+    margin:8px 0;
+}
+
+.notifications-subtitle{
+    color:#64748b;
+    margin-bottom:28px;
+}
+
+.notifications-list{
+    display:grid;
+    gap:12px;
+}
+
+.notification-card{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    padding:18px 20px;
+    background:#fff;
+    border:1px solid #dbe4f0;
+    border-radius:16px;
+}
+
+.notification-card.unread{
+    border-color:#a5b4fc;
+    box-shadow:
+        0 8px 25px rgba(79,70,229,.08);
+}
+
+.notification-main{
+    display:flex;
+    gap:14px;
+}
+
+.notification-icon{
+    width:44px;
+    height:44px;
+    flex-shrink:0;
+    display:grid;
+    place-items:center;
+    background:#eef2ff;
+    border-radius:13px;
+}
+
+.notification-title-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.notification-title-row h3{
+    margin:0;
+}
+
+.notification-main p{
+    color:#64748b;
+    margin:6px 0;
+}
+
+.notification-main a{
+    color:#4f46e5;
+    text-decoration:none;
+    font-weight:700;
+}
+
+.notification-new{
+    padding:4px 7px;
+    background:#dcfce7;
+    color:#15803d;
+    border-radius:6px;
+    font-size:9px;
+    font-weight:800;
+}
+
+.notification-read{
+    border:1px solid #cbd5e1;
+    background:#f8fafc;
+    border-radius:9px;
+    padding:8px 11px;
+    cursor:pointer;
+    font-weight:700;
+}
+
+.notifications-empty{
+    padding:60px;
+    text-align:center;
+    background:#fff;
+    border:1px solid #dbe4f0;
+    border-radius:18px;
+}
+
+.notifications-empty > div{
+    width:60px;
+    height:60px;
+    margin:auto;
+    display:grid;
+    place-items:center;
+    border-radius:50%;
+    background:#dcfce7;
+    color:#15803d;
+    font-size:25px;
+}
+
+.notifications-empty p{
+    color:#64748b;
+}
+
+@media(max-width:650px){
+
+    .notification-card{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+}
+
+</style>
+
+{% endblock %}

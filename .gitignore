@@ -1,0 +1,78 @@
+# =========================================================
+# StudyHub - Production Git Ignore
+# =========================================================
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Flask
+instance/
+.pytest_cache/
+
+# Local databases / backups
+*.db
+*.sqlite
+*.sqlite3
+studyhub_backup_before_postgres.db
+
+# IDE / editor
+.vscode/
+.idea/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Local uploads
+app/static/uploads/
+uploads/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# OCR / generated processing files
+ocr_output/
+processing/
+__pycache__/
+
+# Test / coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Build / distribution
+build/
+dist/
+*.egg-info/
+
+# Local AWS / credential files
+.aws/
+credentials
+
+# Node
+node_modules/
+
+# Deployment caches
+.vercel/

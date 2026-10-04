@@ -1,0 +1,1769 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile — StudyHub{% endblock %}
+
+{% block content %}
+
+<style>
+/* =========================================================
+   STUDYHUB — PREMIUM PROFILE
+   ========================================================= */
+
+.sh-profile-page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 34px 24px 70px;
+}
+
+/* HERO --------------------------------------------------- */
+
+.sh-profile-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 34px 36px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.937);
+    border-radius: 24px;
+    background:
+        radial-gradient(circle at 85% 20%, rgba(99, 220, 241, 0.553), transparent 28%),
+        radial-gradient(circle at 15% 100%, rgba(59, 209, 246, 0.527), transparent 30%),
+        rgba(15,23,42,.72);
+    box-shadow: 0 20px 60px rgba(246, 241, 241, 0.9);
+}
+
+.sh-profile-hero::after {
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    right: -80px;
+    top: -100px;
+    border-radius: 50%;
+    border: 1px solid rgba(233, 225, 225, 0.907);
+}
+
+.sh-profile-heading {
+    position: relative;
+    z-index: 2;
+}
+
+.sh-profile-heading .section-label {
+    display: inline-flex;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(221, 221, 229, 0.644);
+    color: #818cf8;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .12em;
+}
+
+.sh-profile-heading h1 {
+    margin: 13px 0 8px;
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.1;
+    color: #0e1924;
+}
+
+.sh-profile-heading h1 span {
+    color: #818cf8;
+}
+
+.sh-profile-heading p {
+    max-width: 650px;
+    margin: 0;
+    color: #040e1b;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+/* MAIN GRID ------------------------------------------------ */
+
+.sh-profile-layout {
+    display: grid;
+    grid-template-columns: 330px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+/* LEFT CARD ------------------------------------------------ */
+
+.sh-profile-card {
+    position: sticky;
+    top: 24px;
+    padding: 28px;
+    border: 1px solid rgba(29, 5, 5, 0.664);
+    border-radius: 24px;
+    background: rgba(218, 220, 225, 0.72);
+    box-shadow: 0 18px 55px rgba(0,0,0,.14);
+}
+
+.sh-profile-avatar-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 18px;
+}
+
+.sh-profile-large-avatar {
+    width: 104px;
+    height: 104px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+    background: linear-gradient(135deg,#6366f1,#3b82f6);
+    color: white;
+    font-size: 38px;
+    font-weight: 800;
+    box-shadow:
+        0 15px 35px rgba(59,130,246,.25),
+        inset 0 1px 0 rgba(255,255,255,.25);
+}
+
+.sh-profile-card h2 {
+    margin: 0;
+    text-align: center;
+    color: #f8fafc;
+    font-size: 21px;
+}
+
+.sh-profile-email {
+    margin: 7px 0 18px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 12px;
+    word-break: break-word;
+}
+
+.sh-profile-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.sh-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 4px rgba(34,197,94,.10);
+}
+
+.sh-profile-divider {
+    height: 1px;
+    margin: 20px 0;
+    background: rgba(255,255,255,.07);
+}
+
+/* COMPLETION ------------------------------------------------ */
+
+.sh-profile-completion {
+    margin-top: 22px;
+}
+
+.sh-completion-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 9px;
+}
+
+.sh-completion-top span:first-child {
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.sh-completion-value {
+    color: #818cf8;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.sh-completion-track {
+    height: 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255,255,255,.07);
+}
+
+.sh-completion-fill {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #6366f1, #3b82f6);
+    transition: width .6s ease;
+}
+
+/* STATS ---------------------------------------------------- */
+
+.sh-profile-stats {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.sh-profile-stat {
+    padding: 14px 10px;
+    border: 1px solid rgba(255,255,255,.06);
+    border-radius: 14px;
+    background: rgba(255,255,255,.025);
+    text-align: center;
+}
+
+.sh-profile-stat strong {
+    display: block;
+    color: #f8fafc;
+    font-size: 20px;
+}
+
+.sh-profile-stat span {
+    display: block;
+    margin-top: 3px;
+    color: #64748b;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+}
+
+/* SOCIAL --------------------------------------------------- */
+
+.sh-profile-socials {
+    display: flex;
+    gap: 9px;
+    margin-top: 20px;
+}
+
+.sh-profile-social {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 11px;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+    transition: .2s ease;
+}
+
+.sh-profile-social:hover {
+    transform: translateY(-2px);
+    border-color: rgba(99,102,241,.35);
+    color: #a5b4fc;
+}
+
+/* FORM CARD ------------------------------------------------ */
+
+.sh-profile-form-card {
+    min-width: 0;
+    padding: 30px;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 24px;
+    background: rgba(15,23,42,.72);
+    box-shadow: 0 18px 55px rgba(0,0,0,.14);
+}
+
+.sh-profile-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 28px;
+}
+
+.sh-profile-form-header h2 {
+    margin: 0;
+    color: #f8fafc;
+    font-size: 21px;
+}
+
+.sh-profile-form-header p {
+    color: #64748b !important;
+}
+
+.sh-form-icon {
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: rgba(99,102,241,.12);
+    font-size: 20px;
+}
+
+/* SECTION LABELS ------------------------------------------- */
+
+.sh-profile-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 28px 0 16px;
+    padding-bottom: 11px;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.sh-profile-section-title:first-child {
+    margin-top: 0;
+}
+
+.sh-profile-section-title span {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: rgba(99,102,241,.11);
+    font-size: 14px;
+}
+
+.sh-profile-section-title h3 {
+    margin: 0;
+    color: #e2e8f0;
+    font-size: 13px;
+    letter-spacing: .02em;
+}
+
+/* FORM ----------------------------------------------------- */
+
+.sh-profile-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.sh-profile-grid {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 18px;
+}
+
+.sh-profile-field {
+    min-width: 0;
+}
+
+.sh-profile-field.full {
+    grid-column: 1 / -1;
+}
+
+.sh-profile-field label {
+    display: block;
+    margin-bottom: 6px;
+    color: #cbd5e1;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .06em;
+}
+
+.sh-profile-field small {
+    display: block;
+    margin-bottom: 8px;
+    color: #64748b;
+    font-size: 11px;
+}
+
+.sh-input-wrapper {
+    display: flex;
+    align-items: center;
+    min-height: 46px;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 12px;
+    background: rgba(2,6,23,.32);
+    transition: .2s ease;
+}
+
+.sh-input-wrapper:focus-within {
+    border-color: rgba(99,102,241,.65);
+    box-shadow: 0 0 0 3px rgba(99,102,241,.09);
+}
+
+.sh-input-wrapper > span {
+    flex: 0 0 42px;
+    text-align: center;
+    font-size: 15px;
+}
+
+.sh-input-wrapper input,
+.sh-input-wrapper select,
+.sh-input-wrapper textarea {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #e2e8f0;
+    font: inherit;
+    font-size: 13px;
+}
+
+.sh-input-wrapper input,
+.sh-input-wrapper select {
+    height: 44px;
+}
+
+.sh-input-wrapper textarea {
+    min-height: 105px;
+    padding: 13px 12px 13px 0;
+    resize: vertical;
+}
+
+.sh-input-wrapper select {
+    cursor: pointer;
+}
+
+.sh-input-wrapper select option {
+    background: #0f172a;
+    color: #f8fafc;
+}
+
+.sh-input-wrapper input::placeholder,
+.sh-input-wrapper textarea::placeholder {
+    color: #475569;
+}
+
+.sh-input-wrapper input:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+/* BUTTONS -------------------------------------------------- */
+
+.sh-profile-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 30px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(255,255,255,.06);
+}
+
+.sh-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 20px;
+    border-radius: 11px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.sh-btn:hover {
+    transform: translateY(-1px);
+}
+
+.sh-btn-primary {
+    color: white;
+    background: linear-gradient(135deg,#6366f1,#3b82f6);
+    box-shadow: 0 10px 25px rgba(59,130,246,.18);
+}
+
+.sh-btn-secondary {
+    color: #94a3b8;
+    background: rgba(255,255,255,.035);
+    border-color: rgba(255,255,255,.08);
+}
+
+/* TIP ------------------------------------------------------ */
+
+.sh-profile-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-top: 24px;
+    padding: 20px 22px;
+    border: 1px solid rgba(99,102,241,.13);
+    border-radius: 18px;
+    background: rgba(99,102,241,.045);
+}
+
+.sh-tip-icon {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(99,102,241,.12);
+}
+
+.sh-profile-tip strong {
+    color: #e2e8f0;
+    font-size: 13px;
+}
+
+.sh-profile-tip p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+/* RESPONSIVE ------------------------------------------------ */
+
+@media (max-width: 950px) {
+    .sh-profile-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sh-profile-card {
+        position: relative;
+        top: auto;
+    }
+
+    .sh-profile-card {
+        display: grid;
+        grid-template-columns: 110px 1fr;
+        column-gap: 20px;
+        align-items: center;
+    }
+
+    .sh-profile-avatar-wrap {
+        grid-row: span 4;
+        margin: 0;
+    }
+
+    .sh-profile-card h2,
+    .sh-profile-email,
+    .sh-profile-status {
+        text-align: left;
+        justify-content: flex-start;
+    }
+
+    .sh-profile-divider {
+        display: none;
+    }
+
+    .sh-profile-completion,
+    .sh-profile-stats,
+    .sh-profile-socials {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 700px) {
+    .sh-profile-page {
+        padding: 20px 14px 50px;
+    }
+
+    .sh-profile-hero {
+        padding: 26px 22px;
+        border-radius: 20px;
+    }
+
+    .sh-profile-form-card {
+        padding: 22px 17px;
+        border-radius: 20px;
+    }
+
+    .sh-profile-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .sh-profile-field.full {
+        grid-column: auto;
+    }
+
+    .sh-profile-card {
+        display: block;
+        text-align: center;
+        padding: 24px 18px;
+    }
+
+    .sh-profile-avatar-wrap {
+        margin-bottom: 15px;
+    }
+
+    .sh-profile-card h2,
+    .sh-profile-email,
+    .sh-profile-status {
+        text-align: center;
+        justify-content: center;
+    }
+
+    .sh-profile-form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .sh-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 430px) {
+    .sh-profile-stats {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .sh-profile-heading h1 {
+        font-size: 29px;
+    }
+}
+/* =========================================================
+   STUDYHUB PROFILE — PREMIUM COLOR OVERRIDE
+   High contrast / clean / professional
+   ========================================================= */
+
+/* PAGE */
+.sh-profile-page {
+    color: #172033;
+}
+
+/* HERO */
+.sh-profile-hero {
+    background:
+        radial-gradient(circle at 88% 18%, rgba(99,102,241,.28), transparent 28%),
+        linear-gradient(135deg, #172554 0%, #1e3a8a 48%, #2563eb 100%);
+    border: 1px solid rgba(255,255,255,.16);
+    box-shadow: 0 20px 55px rgba(30,64,175,.18);
+}
+
+.sh-profile-heading .section-label {
+    background: rgba(255,255,255,.16);
+    color: #e0e7ff;
+    border: 1px solid rgba(255,255,255,.16);
+}
+
+.sh-profile-heading h1 {
+    color: #ffffff;
+}
+
+.sh-profile-heading h1 span {
+    color: #a5b4fc;
+}
+
+.sh-profile-heading p {
+    color: #dbeafe;
+}
+
+
+/* LEFT PROFILE CARD */
+.sh-profile-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 15px 45px rgba(15,23,42,.08);
+}
+
+.sh-profile-large-avatar {
+    background: linear-gradient(
+        135deg,
+        #4f46e5,
+        #2563eb
+    );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 15px 30px rgba(37,99,235,.22),
+        inset 0 1px 0 rgba(255,255,255,.35);
+}
+
+.sh-profile-card h2 {
+    color: #172033;
+}
+
+.sh-profile-email {
+    color: #64748b;
+}
+
+.sh-profile-divider {
+    background: #e8edf4;
+}
+
+.sh-profile-status {
+    background: #ecfdf5;
+    color: #166534;
+    padding: 10px 14px;
+    border-radius: 999px;
+}
+
+.sh-status-dot {
+    background: #22c55e;
+    box-shadow: 0 0 0 4px rgba(34,197,94,.10);
+}
+
+
+/* COMPLETION */
+.sh-completion-top span:first-child {
+    color: #64748b;
+}
+
+.sh-completion-value {
+    color: #4f46e5;
+}
+
+.sh-completion-track {
+    background: #e8edf5;
+}
+
+.sh-completion-fill {
+    background: linear-gradient(
+        90deg,
+        #6366f1,
+        #2563eb
+    );
+}
+
+
+/* PROFILE STATS */
+.sh-profile-stat {
+    background: #f8fafc;
+    border: 1px solid #e8edf4;
+}
+
+.sh-profile-stat strong {
+    color: #172033;
+}
+
+.sh-profile-stat span {
+    color: #64748b;
+}
+
+
+/* SOCIAL BUTTONS */
+.sh-profile-social {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+}
+
+.sh-profile-social:hover {
+    background: #eef2ff;
+    border-color: #a5b4fc;
+    color: #4338ca;
+}
+
+
+/* RIGHT FORM CARD */
+.sh-profile-form-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 15px 45px rgba(15,23,42,.08);
+}
+
+.sh-profile-form-header h2 {
+    color: #172033;
+}
+
+.sh-profile-form-header p {
+    color: #64748b !important;
+}
+
+.sh-form-icon {
+    background: #eef2ff;
+    color: #4f46e5;
+}
+
+
+/* SECTION HEADERS */
+.sh-profile-section-title {
+    border-bottom: 1px solid #e8edf4;
+}
+
+.sh-profile-section-title span {
+    background: #eef2ff;
+    color: #4f46e5;
+}
+
+.sh-profile-section-title h3 {
+    color: #334155;
+}
+
+
+/* FORM LABELS */
+.sh-profile-field label {
+    color: #334155;
+}
+
+.sh-profile-field small {
+    color: #64748b;
+}
+
+
+/* INPUT BOXES */
+.sh-input-wrapper {
+    background: #f8fafc;
+    border: 1px solid #dbe3ee;
+}
+
+.sh-input-wrapper:focus-within {
+    background: #ffffff;
+    border-color: #6366f1;
+
+    box-shadow:
+        0 0 0 3px rgba(99,102,241,.10);
+}
+
+.sh-input-wrapper > span {
+    color: #4f46e5;
+}
+
+.sh-input-wrapper input,
+.sh-input-wrapper select,
+.sh-input-wrapper textarea {
+    color: #172033;
+}
+
+.sh-input-wrapper input::placeholder,
+.sh-input-wrapper textarea::placeholder {
+    color: #94a3b8;
+}
+
+.sh-input-wrapper input:disabled {
+    color: #64748b;
+    background: transparent;
+}
+
+.sh-input-wrapper select option {
+    background: #ffffff;
+    color: #172033;
+}
+
+
+/* BUTTONS */
+.sh-btn-primary {
+    background: linear-gradient(
+        135deg,
+        #4f46e5,
+        #2563eb
+    );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 10px 25px rgba(37,99,235,.20);
+}
+
+.sh-btn-primary:hover {
+    box-shadow:
+        0 14px 30px rgba(37,99,235,.28);
+}
+
+.sh-btn-secondary {
+    background: #f8fafc;
+    border: 1px solid #dbe3ee;
+    color: #475569;
+}
+
+.sh-btn-secondary:hover {
+    background: #eef2ff;
+    border-color: #c7d2fe;
+    color: #4338ca;
+}
+
+
+/* PROFILE TIP */
+.sh-profile-tip {
+    background: #f5f7ff;
+    border: 1px solid #dfe4ff;
+}
+
+.sh-tip-icon {
+    background: #e8eaff;
+}
+
+.sh-profile-tip strong {
+    color: #334155;
+}
+
+.sh-profile-tip p {
+    color: #64748b;
+}
+
+
+/* =========================================================
+   EXTRA CONTRAST
+   ========================================================= */
+
+.sh-profile-form-card input,
+.sh-profile-form-card textarea,
+.sh-profile-form-card select {
+    color-scheme: light;
+}
+
+.sh-profile-form-card input:disabled {
+    opacity: 1;
+}
+
+
+/* =========================================================
+   PREMIUM HOVER EFFECTS
+   ========================================================= */
+
+.sh-profile-card,
+.sh-profile-form-card,
+.sh-profile-stat {
+    transition:
+        box-shadow .25s ease,
+        border-color .25s ease,
+        transform .25s ease;
+}
+
+.sh-profile-stat:hover {
+    transform: translateY(-2px);
+    border-color: #c7d2fe;
+    box-shadow: 0 8px 20px rgba(30,64,175,.07);
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .sh-profile-card,
+    .sh-profile-form-card {
+        background: #ffffff;
+    }
+
+    .sh-profile-hero {
+        background:
+            linear-gradient(
+                135deg,
+                #172554,
+                #2563eb
+            );
+    }
+}
+</style>
+
+<section class="sh-profile-page">
+
+    <!-- =====================================================
+         PREMIUM PROFILE HERO
+         ===================================================== -->
+
+    <div class="sh-profile-hero">
+
+        <div class="sh-profile-heading">
+
+            <span class="section-label">
+                STUDENT PROFILE
+            </span>
+
+            <h1>
+                Your academic
+                <span>profile.</span>
+            </h1>
+
+            <p>
+                Build your StudyHub identity, keep your academic
+                information updated and personalize your learning
+                experience.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         PROFILE LAYOUT
+         ===================================================== -->
+
+    <div class="sh-profile-layout">
+
+
+        <!-- =================================================
+             LEFT PROFILE CARD
+             ================================================= -->
+
+        <aside class="sh-profile-card">
+
+            <div class="sh-profile-avatar-wrap">
+
+                <div class="sh-profile-large-avatar">
+
+                    {% if profile_photo_url %}
+                        <img
+                            src="{{ profile_photo_url }}"
+                            alt="{{ user.name }}"
+                            style="
+                                width:100%;
+                                height:100%;
+                                object-fit:cover;
+                                border-radius:inherit;
+                            "
+                        >
+                    {% else %}
+                        {{ (user.name or "S")[0]|upper }}
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <div style="
+                text-align:center;
+                margin:0 0 18px;
+            ">
+
+                <label
+                    for="profile_photo"
+                    style="
+                        display:inline-flex;
+                        align-items:center;
+                        justify-content:center;
+                        gap:7px;
+                        padding:8px 13px;
+                        border-radius:9px;
+                        background:#eef2ff;
+                        border:1px solid #c7d2fe;
+                        color:#4338ca;
+                        font-size:11px;
+                        font-weight:800;
+                        cursor:pointer;
+                        transition:.2s ease;
+                    "
+                >
+                    📷 Change Photo
+                </label>
+
+                
+
+                <div style="
+                    margin-top:7px;
+                    color:#94a3b8;
+                    font-size:10px;
+                ">
+                    PNG, JPG or WEBP · Max 2 MB
+                </div>
+
+            </div>
+
+
+            <h2>
+                {{ user.name }}
+            </h2>
+
+            <p class="sh-profile-email">
+                {{ user.email }}
+            </p>
+
+
+            <div class="sh-profile-divider"></div>
+
+
+            <div class="sh-profile-status">
+                <span class="sh-status-dot"></span>
+                Active Student
+            </div>
+
+
+            <!-- PROFILE COMPLETION -->
+
+            <div class="sh-profile-completion">
+
+                <div class="sh-completion-top">
+
+                    <span>
+                        Profile completion
+                    </span>
+
+                    <span class="sh-completion-value">
+                        {{ profile_completion|default(0) }}%
+                    </span>
+
+                </div>
+
+                <div class="sh-completion-track">
+
+                    <div
+                        class="sh-completion-fill"
+                        data-width="{{ profile_completion|default(0)|int }}"
+                    ></div>
+                    
+                </div>
+
+            </div>
+
+
+            <!-- PROFILE STATS -->
+
+            <div class="sh-profile-stats">
+
+                <div class="sh-profile-stat">
+                    <strong>
+                        {{ uploaded_notes|default(0) }}
+                    </strong>
+                    <span>Notes</span>
+                </div>
+
+                <div class="sh-profile-stat">
+                    <strong>
+                        {{ uploaded_pyqs|default(0) }}
+                    </strong>
+                    <span>PYQs</span>
+                </div>
+
+                <div class="sh-profile-stat">
+                    <strong>
+                        {{ saved_resources|default(0) }}
+                    </strong>
+                    <span>Saved</span>
+                </div>
+
+                <div class="sh-profile-stat">
+                    <strong>
+                        {{ total_activity|default(0) }}
+                    </strong>
+                    <span>Activity</span>
+                </div>
+
+            </div>
+
+
+            <!-- SOCIAL LINKS -->
+
+            {% if user.linkedin_url or user.github_url %}
+
+            <div class="sh-profile-socials">
+
+                {% if user.linkedin_url %}
+                    <a
+                        href="{{ user.linkedin_url }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="sh-profile-social"
+                    >
+                        LinkedIn
+                    </a>
+                {% endif %}
+
+                {% if user.github_url %}
+                    <a
+                        href="{{ user.github_url }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="sh-profile-social"
+                    >
+                        GitHub
+                    </a>
+                {% endif %}
+
+            </div>
+
+            {% endif %}
+
+        </aside>
+
+
+        <!-- =================================================
+             RIGHT PROFILE FORM
+             ================================================= -->
+
+        <div class="sh-profile-form-card">
+
+            <div class="sh-profile-form-header">
+
+                <div>
+
+                    <h2>
+                        Edit Profile
+                    </h2>
+
+                    <p style="
+                        margin:7px 0 0;
+                        color:#8a97aa;
+                        font-size:12px;
+                    ">
+                        Keep your personal and academic information
+                        up to date.
+                    </p>
+
+                </div>
+
+                <div class="sh-form-icon">
+                    ✨
+                </div>
+
+            </div>
+
+
+            <form
+                method="POST"
+                action="{{ url_for('student.profile') }}"
+                class="sh-profile-form"
+                enctype="multipart/form-data"
+            >
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+                <input
+                    id="profile_photo"
+                    name="profile_photo"
+                    type="file"
+                    accept=".png,.jpg,.jpeg,.webp"
+                    style="display:none;"
+                >
+
+
+                <!-- =========================================
+                     PERSONAL INFORMATION
+                     ========================================= -->
+
+                <div class="sh-profile-section-title">
+
+                    <span>👤</span>
+
+                    <h3>
+                        Personal Information
+                    </h3>
+
+                </div>
+
+
+                <div class="sh-profile-grid">
+
+
+                    <!-- NAME -->
+
+                    <div class="sh-profile-field">
+
+                        <label>
+                            FULL NAME
+                        </label>
+
+                        <small>
+                            Your StudyHub display name
+                        </small>
+
+                        <div class="sh-input-wrapper">
+
+                            <span>👤</span>
+
+                            <input
+                                type="text"
+                                value="{{ user.name or '' }}"
+                                disabled
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="sh-profile-field">
+
+                        <label>
+                            EMAIL ADDRESS
+                        </label>
+
+                        <small>
+                            Your StudyHub account email
+                        </small>
+
+                        <div class="sh-input-wrapper">
+
+                            <span>✉️</span>
+
+                            <input
+                                type="email"
+                                value="{{ user.email or '' }}"
+                                disabled
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PHONE -->
+
+                    <div class="sh-profile-field">
+
+                        <label>
+                            PHONE
+                        </label>
+
+                        <small>
+                            Optional contact information
+                        </small>
+
+                        <div class="sh-input-wrapper">
+
+                            <span>📱</span>
+
+                            <input
+                                type="text"
+                                name="phone"
+                                value="{{ user.phone or '' }}"
+                                placeholder="Enter phone number"
+                                maxlength="20"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- LOCATION -->
+
+                    <div class="sh-profile-field">
+
+                        <label>
+                            LOCATION
+                        </label>
+
+                        <small>
+                            City or general location
+                        </small>
+
+                        <div class="sh-input-wrapper">
+
+                            <span>📍</span>
+
+                            <input
+                                type="text"
+                                name="location"
+                                value="{{ user.location or '' }}"
+                                placeholder="Example: Bengaluru"
+                                maxlength="150"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- BIO -->
+
+                    <div class="sh-profile-field full">
+
+                        <label>
+                            BIO
+                        </label>
+
+                        <small>
+                            Introduce yourself in a few sentences
+                        </small>
+
+                        <div class="sh-input-wrapper">
+
+                            <span>📝</span>
+
+                            <textarea
+                                name="bio"
+                                maxlength="1000"
+                                placeholder="Tell other students a little about yourself..."
+                            >{{ user.bio or '' }}</textarea>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     ACADEMIC INFORMATION
+                     ========================================= -->
+
+                <div class="sh-profile-section-title">
+
+                    <span>🎓</span>
+
+                    <h3>
+                        Academic Information
+                    </h3>
+
+                </div>
+
+
+                <div class="sh-profile-grid">
+
+
+                    <!-- EDUCATION LEVEL -->
+
+                    <div class="sh-profile-field">
+
+                        <label>
+                            EDUCATION LEVEL
+                        </label>
+
+                        <small>
+                            Your current education level
+                        </small>
+
+                        <div class="sh-input-wrapper">
+
+                            <span>🎓</span>
+
+                            <select name="education_level">
+
+                                <option value="">
+                                    Select education level
+                                </option>
+
+                                <option value="10th"
+                                    {% if user.education_level == "10th" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    10th
+                                </option>
+
+                                <option value="12th / PUC"
+                                    {% if user.education_level == "12th / PUC" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    12th / PUC
+                                </option>
+
+                                <option value="Diploma"
+                                    {% if user.education_level == "Diploma" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    Diploma
+                                </option>
+
+                                <option value="Degree / UG"
+                                    {% if user.education_level == "Degree / UG" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    Degree / UG
+                                </option>
+
+                                <option value="Engineering"
+                                    {% if user.education_level == "Engineering" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    Engineering
+                                </option>
+
+                                <option value="PG"
+                                    {% if user.education_level == "PG" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    PG
+                                </option>
+
+                                <option value="Other"
+                                    {% if user.education_level == "Other" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    Other
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- COURSE -->
+
+                    <div class="sh-profile-field">
+
+                        <label>
+                            COURSE / PROGRAM
+                        </label>
+
+                        <small>
+                            Your current course or program
+                        </small>
+
+                        <div class="sh-input-wrapper">
+
+                            <span>📘</span>
+
+                            <input
+                                type="text"
+                                name="course"
+                                value="{{ user.course or '' }}"
+                                placeholder="Example: Computer Science and Engineering"
+                                maxlength="100"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SEMESTER -->
+
+                    <div class="sh-profile-field">
+
+                        <label>
+                            SEMESTER / YEAR
+                        </label>
+
+                        <small>
+                            Your current academic stage
+                        </small>
+
+                        <div class="sh-input-wrapper">
+
+                            <span>📅</span>
+
+                            <input
+                                type="text"
+                                name="semester"
+                                value="{{ user.semester or '' }}"
+                                placeholder="Example: 5th Semester"
+                                maxlength="30"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- INTERESTS -->
+
+                    <div class="sh-profile-field">
+
+                        <label>
+                            INTERESTS
+                        </label>
+
+                        <small>
+                            Topics you enjoy learning
+                        </small>
+
+                        <div class="sh-input-wrapper">
+
+                            <span>💡</span>
+
+                            <input
+                                type="text"
+                                name="interests"
+                                value="{{ user.interests or '' }}"
+                                placeholder="AI, Cloud, Web Development..."
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SKILLS -->
+
+                    <div class="sh-profile-field full">
+
+                        <label>
+                            SKILLS
+                        </label>
+
+                        <small>
+                            Technologies, tools and skills you know
+                        </small>
+
+                        <div class="sh-input-wrapper">
+
+                            <span>⚡</span>
+
+                            <input
+                                type="text"
+                                name="skills"
+                                value="{{ user.skills or '' }}"
+                                placeholder="Python, Flask, AWS, SQL, JavaScript..."
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     PROFESSIONAL INFORMATION
+                     ========================================= -->
+
+                <div class="sh-profile-section-title">
+
+                    <span>💼</span>
+
+                    <h3>
+                        Professional Links
+                    </h3>
+
+                </div>
+
+
+                <div class="sh-profile-grid">
+
+
+                    <!-- LINKEDIN -->
+
+                    <div class="sh-profile-field">
+
+                        <label>
+                            LINKEDIN
+                        </label>
+
+                        <small>
+                            Your professional profile
+                        </small>
+
+                        <div class="sh-input-wrapper">
+
+                            <span>in</span>
+
+                            <input
+                                type="url"
+                                name="linkedin_url"
+                                value="{{ user.linkedin_url or '' }}"
+                                placeholder="https://linkedin.com/in/..."
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- GITHUB -->
+
+                    <div class="sh-profile-field">
+
+                        <label>
+                            GITHUB
+                        </label>
+
+                        <small>
+                            Your developer profile
+                        </small>
+
+                        <div class="sh-input-wrapper">
+
+                            <span>⌘</span>
+
+                            <input
+                                type="url"
+                                name="github_url"
+                                value="{{ user.github_url or '' }}"
+                                placeholder="https://github.com/..."
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <div class="sh-profile-form-actions">
+
+                    <a
+                        href="{{ url_for('student.dashboard') }}"
+                        class="sh-btn sh-btn-secondary"
+                    >
+                        Cancel
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="sh-btn sh-btn-primary"
+                    >
+                        Save Profile
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         PROFILE TIP
+         ===================================================== -->
+
+    <div class="sh-profile-tip">
+
+        <div class="sh-tip-icon">
+            💡
+        </div>
+
+        <div>
+
+            <strong>
+                Complete your profile
+            </strong>
+
+            <p>
+                A complete profile helps StudyHub personalize
+                recommendations, organize your learning activity
+                and make your student dashboard more useful.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const input = document.getElementById("profile_photo");
+
+    if (!input) return;
+
+    input.addEventListener("change", function () {
+
+        const file = this.files && this.files[0];
+
+        if (!file) return;
+
+        if (file.size > 2 * 1024 * 1024) {
+
+            alert("Profile photo must be smaller than 2 MB.");
+
+            this.value = "";
+
+            return;
+        }
+
+        const allowed = [
+            "image/png",
+            "image/jpeg",
+            "image/webp"
+        ];
+
+        if (!allowed.includes(file.type)) {
+
+            alert(
+                "Please select a PNG, JPG, JPEG or WEBP image."
+            );
+
+            this.value = "";
+
+            return;
+        }
+
+    });
+
+});
+</script>
+
+{% endblock %}
