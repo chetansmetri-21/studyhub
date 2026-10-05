@@ -95,11 +95,30 @@ def create_app():
 
     @app.errorhandler(404)
     def page_not_found(error):
-        return render_template("404.html"), 404
+        return """
+        <html>
+        <head><title>404 - Page Not Found</title></head>
+        <body>
+            <h1>404 - Page Not Found</h1>
+            <p>The page you are looking for does not exist.</p>
+            <a href="/">Go to StudyHub</a>
+        </body>
+        </html>
+        """, 404
+
 
     @app.errorhandler(500)
     def internal_server_error(error):
-        return render_template("500.html"), 500
+        return """
+        <html>
+        <head><title>500 - Internal Server Error</title></head>
+        <body>
+            <h1>500 - Internal Server Error</h1>
+            <p>Something went wrong on the server.</p>
+            <a href="/">Go to StudyHub</a>
+        </body>
+        </html>
+        """, 500
 
     # =====================================================
     # SECURITY HEADERS
