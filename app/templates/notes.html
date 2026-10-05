@@ -591,8 +591,8 @@
                     class="sh-upload-form"
                 >
 
-                    {{ csrf_token() }}
-                    
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
                     <!-- TITLE -->
 
                     <div class="sh-upload-field">
