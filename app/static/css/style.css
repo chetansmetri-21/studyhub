@@ -13166,3 +13166,208 @@ body.sh-dark-mode .sh-studybot-status {
     background: #334155;
     color: #ffffff;
 }
+/* =========================================================
+   STUDYHUB PREMIUM CLICK RIPPLE EFFECT
+   ========================================================= */
+
+.sh-click-ripple {
+    position: fixed;
+    width: 46px;
+    height: 46px;
+    border: 3px solid rgba(79, 70, 229, 0.65);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 999999;
+    transform: translate(-50%, -50%) scale(0.25);
+    animation: shClickRipple 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    box-shadow:
+        0 0 0 2px rgba(99, 102, 241, 0.08),
+        0 0 18px rgba(79, 70, 229, 0.18);
+}
+
+.sh-click-ripple::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(79, 70, 229, 0.65);
+    transform: translate(-50%, -50%);
+    animation: shClickDot 0.35s ease-out forwards;
+}
+
+@keyframes shClickRipple {
+    0% {
+        opacity: 0.9;
+        transform: translate(-50%, -50%) scale(0.25);
+    }
+
+    45% {
+        opacity: 0.65;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(2.2);
+    }
+}
+
+@keyframes shClickDot {
+    0% {
+        opacity: 0.8;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.2);
+    }
+}
+
+/* Dark mode */
+body.dark-mode .sh-click-ripple {
+    border-color: rgba(129, 140, 248, 0.8);
+    box-shadow:
+        0 0 0 2px rgba(129, 140, 248, 0.08),
+        0 0 22px rgba(129, 140, 248, 0.22);
+}
+
+body.dark-mode .sh-click-ripple::after {
+    background: rgba(129, 140, 248, 0.8);
+}
+
+/* Respect reduced-motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .sh-click-ripple {
+        display: none !important;
+    }
+}
+/* =========================================================
+   STUDYHUB - PREMIUM BUTTON CLICK CIRCLE
+   ========================================================= */
+
+.sh-click-circle {
+    position: fixed;
+
+    left: 0;
+    top: 0;
+
+    width: 62px;
+    height: 62px;
+
+    border: 3px solid rgba(37, 99, 235, 0.75);
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    z-index: 999999;
+
+    transform: translate(-50%, -50%) scale(0.35);
+
+    opacity: 0;
+
+    box-shadow:
+        0 0 0 3px rgba(59, 130, 246, 0.12),
+        0 0 15px rgba(37, 99, 235, 0.30),
+        0 0 30px rgba(37, 99, 235, 0.15);
+
+    animation: studyHubClickCircle 0.65s ease-out forwards;
+}
+
+
+/* Small bright center */
+
+.sh-click-circle::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 9px;
+    height: 9px;
+
+    border-radius: 50%;
+
+    background: rgba(37, 99, 235, 0.85);
+
+    transform: translate(-50%, -50%);
+
+    box-shadow:
+        0 0 8px rgba(37, 99, 235, 0.7);
+
+    animation: studyHubClickDot 0.35s ease-out forwards;
+}
+
+
+/* Main circle animation */
+
+@keyframes studyHubClickCircle {
+
+    0% {
+        opacity: 0.95;
+        transform: translate(-50%, -50%) scale(0.35);
+    }
+
+    35% {
+        opacity: 0.85;
+        transform: translate(-50%, -50%) scale(0.75);
+    }
+
+    70% {
+        opacity: 0.55;
+        transform: translate(-50%, -50%) scale(1.15);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.45);
+    }
+}
+
+
+/* Center dot */
+
+@keyframes studyHubClickDot {
+
+    0% {
+        opacity: 0.9;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.2);
+    }
+}
+
+
+/* Dark mode */
+
+body.dark-mode .sh-click-circle {
+    border-color: rgba(96, 165, 250, 0.9);
+
+    box-shadow:
+        0 0 0 3px rgba(96, 165, 250, 0.12),
+        0 0 18px rgba(96, 165, 250, 0.35),
+        0 0 35px rgba(96, 165, 250, 0.18);
+}
+
+body.dark-mode .sh-click-circle::after {
+    background: rgba(96, 165, 250, 0.9);
+}
+
+
+/* Accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .sh-click-circle {
+        display: none !important;
+    }
+
+}

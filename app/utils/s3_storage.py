@@ -42,10 +42,28 @@ S3_BUCKET = (
 # VALIDATION
 # ============================================================
 
-if not S3_BUCKET:
-    raise RuntimeError(
-        "S3 bucket is missing. Add AWS_S3_BUCKET to your .env file."
+def get_s3_bucket() -> str:
+    """
+    Return the configured S3 bucket.
+
+    The bucket is validated when an S3 operation is actually used,
+    rather than during module import. This allows Flask CLI commands,
+    database migrations, health checks, and other startup operations
+    to run without requiring S3 configuration at import time.
+    """
+
+    bucket = (
+        os.getenv("S3_BUCKET")
+        or os.getenv("AWS_S3_BUCKET")
+        or S3_BUCKET
     )
+
+    if not bucket:
+        raise RuntimeError(
+            "S3 bucket is missing. Configure AWS_S3_BUCKET."
+        )
+
+    return bucket
 
 
 # ============================================================
@@ -142,7 +160,7 @@ def upload_file(
 
         get_s3_client().upload_fileobj(
             Fileobj=stream,
-            Bucket=S3_BUCKET,
+            Bucket=get_s3_bucket(),
             Key=object_key,
             ExtraArgs=extra_args
         )
@@ -168,7 +186,7 @@ def object_exists(object_key: str) -> bool:
 
     try:
         get_s3_client().head_object(
-            Bucket=S3_BUCKET,
+            Bucket=get_s3_bucket(),
             Key=object_key
         )
 
@@ -210,7 +228,7 @@ def get_object_metadata(object_key: str):
 
     try:
         return get_s3_client().head_object(
-            Bucket=S3_BUCKET,
+            Bucket=get_s3_bucket(),
             Key=object_key
         )
 
@@ -270,7 +288,7 @@ def generate_presigned_url(
         return None
 
     params = {
-        "Bucket": S3_BUCKET,
+        "Bucket": get_s3_bucket(),
         "Key": object_key,
     }
 
@@ -319,7 +337,7 @@ def delete_object(object_key: str) -> bool:
 
     try:
         get_s3_client().delete_object(
-            Bucket=S3_BUCKET,
+            Bucket=get_s3_bucket(),
             Key=object_key
         )
 
@@ -348,9 +366,9 @@ def copy_object(
 
     try:
         get_s3_client().copy_object(
-            Bucket=S3_BUCKET,
+            Bucket=get_s3_bucket(),
             CopySource={
-                "Bucket": S3_BUCKET,
+                "Bucket": get_s3_bucket(),
                 "Key": source_key
             },
             Key=destination_key
@@ -411,19 +429,19 @@ def test_s3_connection():
 
     try:
         get_s3_client().head_bucket(
-            Bucket=S3_BUCKET
+            Bucket=get_s3_bucket()
         )
 
         return {
             "success": True,
-            "bucket": S3_BUCKET,
+            "bucket": get_s3_bucket(),
             "region": AWS_REGION
         }
 
     except (ClientError, BotoCoreError) as exc:
         return {
             "success": False,
-            "bucket": S3_BUCKET,
+            "bucket": get_s3_bucket(),
             "region": AWS_REGION,
             "error": str(exc)
         }
