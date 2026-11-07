@@ -202,6 +202,7 @@ StudyHub Community
                 action="{{ url_for('community.create_request') }}"
                 class="community-form"
             >
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                 <input
                     name="title"
@@ -259,6 +260,7 @@ StudyHub Community
                 action="{{ url_for('community.create_collaborative_note') }}"
                 class="community-form"
             >
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                 <input
                     name="title"

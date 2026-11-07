@@ -26,10 +26,21 @@ def ask():
         silent=True
     ) or {}
 
-    message = data.get(
-        "message",
-        ""
-    )
+    message = data.get("message")
+
+    if not isinstance(message, str):
+        return jsonify({
+            "type": "error",
+            "message": "Please send your question as text."
+        }), 400
+
+    message = message.strip()
+
+    if len(message) > 500:
+        return jsonify({
+            "type": "error",
+            "message": "Please keep your question under 500 characters."
+        }), 400
 
     result = process_question(
         message

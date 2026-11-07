@@ -101,6 +101,7 @@ Admin Notifications - StudyHub
             action="{{ url_for('enhancements.admin_send_notification') }}"
             class="notification-form"
         >
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
             <div class="form-group">
 

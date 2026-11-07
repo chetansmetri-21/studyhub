@@ -42,6 +42,16 @@ S3_BUCKET = (
 # VALIDATION
 # ============================================================
 
+def has_s3_config() -> bool:
+    """Return True only when the environment is configured for S3 uploads."""
+    bucket = (
+        os.getenv("S3_BUCKET")
+        or os.getenv("AWS_S3_BUCKET")
+        or S3_BUCKET
+    )
+    return bool(bucket)
+
+
 def get_s3_bucket() -> str:
     """
     Return the configured S3 bucket.
@@ -134,7 +144,13 @@ def upload_file(
 ):
     """
     Upload a file-like object to private S3.
+
+    When the app runs without AWS S3 configuration, this function is a
+    no-op so the app can continue using its local storage fallback.
     """
+
+    if not has_s3_config():
+        return object_key
 
     object_key = normalize_key(object_key)
 
@@ -180,7 +196,13 @@ def upload_file(
 def object_exists(object_key: str) -> bool:
     """
     Check whether an S3 object exists.
+
+    If the app is configured for local-only storage, treat S3 as empty so
+    the existing local-file fallback paths continue to work gracefully.
     """
+
+    if not has_s3_config():
+        return False
 
     object_key = normalize_key(object_key)
 
@@ -221,8 +243,11 @@ def get_object_metadata(object_key: str):
     """
     Return S3 metadata for an object.
 
-    Returns None if object doesn't exist.
+    Returns None if object doesn't exist or S3 is not configured.
     """
+
+    if not has_s3_config():
+        return None
 
     object_key = normalize_key(object_key)
 
@@ -277,6 +302,9 @@ def generate_presigned_url(
         1 hour
     """
 
+    if not has_s3_config():
+        return None
+
     object_key = normalize_key(object_key)
 
     if expires < 1 or expires > 3600:
@@ -330,8 +358,13 @@ def delete_object(object_key: str) -> bool:
     """
     Delete an object from S3.
 
-    Returns True when deletion request succeeds.
+    Returns True when deletion request succeeds. If S3 is not configured,
+    this is treated as a successful no-op so local-only deployments continue
+    to work without crashing.
     """
+
+    if not has_s3_config():
+        return True
 
     object_key = normalize_key(object_key)
 
@@ -359,7 +392,12 @@ def copy_object(
 ):
     """
     Copy an S3 object inside the same bucket.
+
+    Returns the destination key as a no-op when S3 is not configured.
     """
+
+    if not has_s3_config():
+        return destination_key
 
     source_key = normalize_key(source_key)
     destination_key = normalize_key(destination_key)

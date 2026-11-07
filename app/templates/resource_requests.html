@@ -61,6 +61,7 @@ Resource Requests - StudyHub
                 ) }}"
                 class="rr-form"
             >
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                 <label>
                     Resource Title

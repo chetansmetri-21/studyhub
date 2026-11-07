@@ -261,9 +261,6 @@
 }
 </style>
 
-{% endblock %}
-
-
 <style>
 /* =========================================================
    STUDYHUB PREMIUM RESOURCE ACTIONS
@@ -1215,6 +1212,7 @@
                             action="{{ url_for('notes.rate_note', note_id=note.id) }}"
                             class="sh-rating-form"
                         >
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                             <div class="sh-rating-label">
 
@@ -1312,6 +1310,7 @@
                                     action="{{ url_for('notes.report_note', note_id=note.id) }}"
                                     class="sh-inline-report-form"
                                 >
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <select name="reason" required>
                                         <option value="">Select a reason</option>
                                         <option value="Incorrect or misleading content">Incorrect or misleading content</option>
@@ -1560,6 +1559,7 @@
                                 <summary>⚑ Report</summary>
                                 <div class="sh-trending-report-panel">
                                     <form method="POST" action="{{ url_for('notes.report_note', note_id=note.id) }}">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         <select name="reason" required>
                                             <option value="">Select a reason</option>
                                             <option value="Incorrect or misleading content">Incorrect or misleading content</option>

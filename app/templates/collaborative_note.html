@@ -150,6 +150,7 @@
                 note_id=collaborative_note.id
             ) }}"
         >
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
             <textarea
                 name="content"

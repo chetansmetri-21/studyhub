@@ -24,9 +24,10 @@ class Config:
     SECRET_KEY = os.getenv("SECRET_KEY")
 
     if not SECRET_KEY:
-        raise RuntimeError(
-            "SECRET_KEY is not set. Add it to your .env file."
-        )
+        # Elastic Beanstalk and other managed deployments may not ship a
+        # project .env file. Keep the app bootable with a runtime-generated key
+        # instead of crashing during migrations/startup.
+        SECRET_KEY = os.urandom(32).hex()
 
     # Session cookie security
     SESSION_COOKIE_HTTPONLY = True

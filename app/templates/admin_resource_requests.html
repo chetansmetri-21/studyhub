@@ -256,6 +256,7 @@ Resource Requests Management - StudyHub
                                 request_id=item.id
                             ) }}"
                         >
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                             <select
                                 name="status"
@@ -315,6 +316,7 @@ Resource Requests Management - StudyHub
                                 );
                             "
                         >
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                             <button
                                 type="submit"

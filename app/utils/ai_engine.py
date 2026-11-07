@@ -356,7 +356,7 @@ def process_question(message):
                 "year": pyq.exam_year,
 
                 "url": url_for(
-                    "pyq.view_pyq",
+                    "pyq.preview_pyq",
                     pyq_id=pyq.id
                 )
             })

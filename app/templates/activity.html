@@ -688,6 +688,7 @@ Activity & History - StudyHub
                 action="{{ url_for('enhancements.clear_activity') }}"
                 onsubmit="return confirm('Clear your complete StudyHub activity history?');"
             >
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                 <button
                     type="submit"

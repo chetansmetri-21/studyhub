@@ -3,6 +3,7 @@ import os
 import json
 import hashlib
 import pymupdf
+import tempfile
 import uuid
 
 from app.utils.visual_analyzer import analyze_pdf_visuals
@@ -47,7 +48,6 @@ from app.utils.question_analyzer import (
 )
 
 from app.utils.storage import (
-    save_file,
     get_file_path
 )
 
@@ -817,185 +817,191 @@ def upload_pyq():
         )
 
         # =====================================================
-        # 1. SAVE LOCAL COPY FIRST
+        # 1. SAVE A TEMPORARY COPY FOR S3 AND PDF PROCESSING
         # =====================================================
 
-        try:
-
-            file.stream.seek(0)
-
-            saved_filename = save_file(
-                file,
-                filename,
-                category="pyq"
-            )
-
-            file_path = get_file_path(
-                saved_filename,
-                category="pyq"
-            )
-
-            if not os.path.isfile(file_path):
-                raise FileNotFoundError(
-                    f"Saved PYQ file not found: {file_path}"
-                )
-            
-        except Exception as exc:
-
-            print(
-                f"[StudyHub Local Save Error] {exc}"
-            )
-
-            flash(
-                "Unable to save the uploaded PDF.",
-                "danger"
-            )
-
-            return redirect(
-                url_for("pyq.upload_pyq")
-            )
-
-        # =====================================================
-        # 2. UPLOAD LOCAL COPY TO AWS S3
-        # =====================================================
-
-        import mimetypes
-
-        s3_key = (
-            f"pyq/"
-            f"{current_user.id}/"
-            f"{saved_filename}"
+        temp_fd, file_path = tempfile.mkstemp(
+            prefix="studyhub_pyq_",
+            suffix=".pdf"
         )
-
-        content_type = (
-            mimetypes.guess_type(
-                saved_filename
-            )[0]
-            or "application/pdf"
-        )
+        os.close(temp_fd)
+        saved_filename = filename
 
         try:
-
-            with open(
-                file_path,
-                "rb"
-            ) as local_file:
-
-                upload_file(
-                    file_obj=local_file,
-                    object_key=s3_key,
-                    content_type=content_type,
-                    metadata={
-                        "uploaded_by": str(
-                            current_user.id
-                        ),
-                        "education_level": education_level,
-                        "course": course,
-                        "semester": semester,
-                        "subject": subject,
-                        "exam_year": str(
-                            exam_year_int
-                        ),
-                        "exam_session": (
-                            exam_session
-                            or ""
-                        )
-                    }
-                )
-
-        except Exception as exc:
-
-            print(
-                f"[StudyHub S3 PYQ Upload Error] {exc}"
-            )
-
-            flash(
-                "Unable to upload the PYQ to cloud storage.",
-                "danger"
-            )
-
-            return redirect(
-                url_for("pyq.upload_pyq")
-            )
-
-        # =====================================================
-        # 3. EXTRACT PDF TEXT
-        # =====================================================
-
-        extracted_text = ""
-
-        try:
-
-            extracted_text = (
-                extract_text_from_pdf(
-                    file_path
-                )
-                or ""
-            )
-
-        except Exception as exc:
-
-            print(
-                f"[StudyHub PDF Extraction Error] {exc}"
-            )
-
-        # =====================================================
-        # 4. PARSE QUESTIONS
-        # =====================================================
-
-        parsed_questions = []
-        visual_analysis = []
-
-        if extracted_text.strip():
-
-            # -------------------------------------------------
-            # QUESTION PARSING
-            # -------------------------------------------------
 
             try:
 
-                parsed_questions = (
-                    parse_questions(
-                        extracted_text
+                file.stream.seek(0)
+                file.save(file_path)
+
+                if not os.path.isfile(file_path):
+                    raise FileNotFoundError(
+                        f"Temporary PYQ file not found: {file_path}"
                     )
-                    or []
-                )
 
             except Exception as exc:
 
                 print(
-                    f"[StudyHub Question Parsing Error] {exc}"
+                    f"[StudyHub Temporary Save Error] {exc}"
                 )
 
-                parsed_questions = []
+                flash(
+                    "Unable to process the uploaded PDF.",
+                    "danger"
+                )
 
-            # -------------------------------------------------
-            # VISUAL / DIAGRAM / TABLE ANALYSIS
-            # -------------------------------------------------
+                return redirect(
+                    url_for("pyq.upload_pyq")
+                )
+
+            # =====================================================
+            # 2. UPLOAD COPY TO AWS S3
+            # =====================================================
+
+            import mimetypes
+
+            s3_key = (
+                f"pyq/"
+                f"{current_user.id}/"
+                f"{saved_filename}"
+            )
+
+            content_type = (
+                mimetypes.guess_type(
+                    saved_filename
+                )[0]
+                or "application/pdf"
+            )
 
             try:
 
-                visual_analysis = (
-                    analyze_pdf_visuals(
+                with open(
+                    file_path,
+                    "rb"
+                ) as local_file:
+
+                    upload_file(
+                        file_obj=local_file,
+                        object_key=s3_key,
+                        content_type=content_type,
+                        metadata={
+                            "uploaded_by": str(
+                                current_user.id
+                            ),
+                            "education_level": education_level,
+                            "course": course,
+                            "semester": semester,
+                            "subject": subject,
+                            "exam_year": str(
+                                exam_year_int
+                            ),
+                            "exam_session": (
+                                exam_session
+                                or ""
+                            )
+                        }
+                    )
+
+            except Exception as exc:
+
+                print(
+                    f"[StudyHub S3 PYQ Upload Error] {exc}"
+                )
+
+                flash(
+                    "Unable to upload the PYQ to cloud storage.",
+                    "danger"
+                )
+
+                return redirect(
+                    url_for("pyq.upload_pyq")
+                )
+
+            # =====================================================
+            # 3. EXTRACT PDF TEXT
+            # =====================================================
+
+            extracted_text = ""
+
+            try:
+
+                extracted_text = (
+                    extract_text_from_pdf(
                         file_path
                     )
-                    or []
-                )
-
-                print(
-                    "[StudyHub Visual Analysis] "
-                    f"Detected {len(visual_analysis)} "
-                    "visual page(s)."
+                    or ""
                 )
 
             except Exception as exc:
 
                 print(
-                    "[StudyHub Visual Analysis Error]:",
-                    exc
+                    f"[StudyHub PDF Extraction Error] {exc}"
                 )
 
-                visual_analysis = []
+            # =====================================================
+            # 4. PARSE QUESTIONS
+            # =====================================================
+
+            parsed_questions = []
+            visual_analysis = []
+
+            if extracted_text.strip():
+
+                # -------------------------------------------------
+                # QUESTION PARSING
+                # -------------------------------------------------
+
+                try:
+
+                    parsed_questions = (
+                        parse_questions(
+                            extracted_text
+                        )
+                        or []
+                    )
+
+                except Exception as exc:
+
+                    print(
+                        f"[StudyHub Question Parsing Error] {exc}"
+                    )
+
+                    parsed_questions = []
+
+                # -------------------------------------------------
+                # VISUAL / DIAGRAM / TABLE ANALYSIS
+                # -------------------------------------------------
+
+                try:
+
+                    visual_analysis = (
+                        analyze_pdf_visuals(
+                            file_path
+                        )
+                        or []
+                    )
+
+                    print(
+                        "[StudyHub Visual Analysis] "
+                        f"Detected {len(visual_analysis)} "
+                        "visual page(s)."
+                    )
+
+                except Exception as exc:
+
+                    print(
+                        "[StudyHub Visual Analysis Error]:",
+                        exc
+                    )
+
+                    visual_analysis = []
+
+        finally:
+            try:
+                os.remove(file_path)
+            except FileNotFoundError:
+                pass
+
         # =====================================================
         # 5. CREATE DATABASE RECORD
         # =====================================================

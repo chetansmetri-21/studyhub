@@ -134,7 +134,7 @@ def verify_reset_token(token):
 # =========================================================
 
 @auth.route("/register", methods=["GET", "POST"])
-@limiter.limit("5 per hour")
+@limiter.limit("100 per hour", methods=["POST"])
 def register():
 
     if current_user.is_authenticated:
@@ -292,7 +292,7 @@ def register():
 # =========================================================
 
 @auth.route("/login", methods=["GET", "POST"])
-@limiter.limit("5 per minute")
+@limiter.limit("40 per minute")
 def login():
 
     if current_user.is_authenticated:
@@ -444,7 +444,7 @@ def forgot_password():
 # =========================================================
 
 @auth.route("/reset-password/<token>", methods=["GET", "POST"])
-@limiter.limit("5 per 15 minutes")
+@limiter.limit("40 per minute")
 def reset_password(token):
 
     email = verify_reset_token(

@@ -1594,7 +1594,7 @@ def admin_analytics():
             text("""
                 SELECT COUNT(*)
                 FROM studyhub_notifications
-                WHERE is_read = 0
+                WHERE is_read = FALSE
             """)
         ).scalar()
         or 0
@@ -1933,7 +1933,7 @@ def admin_notifications():
         text("""
             SELECT COUNT(*)
             FROM studyhub_notifications
-            WHERE is_read = 0
+            WHERE is_read = FALSE
         """)
     ).scalar() or 0
 
@@ -2077,7 +2077,7 @@ def admin_send_notification():
                     :title,
                     :message,
                     :link,
-                    0
+                    FALSE
                 )
             """),
             {
@@ -2287,7 +2287,7 @@ def create_resource_request():
                     :title,
                     :message,
                     :link,
-                    0
+                    FALSE
                 )
             """),
             {
@@ -2498,7 +2498,7 @@ def admin_update_resource_request(
                 :title,
                 :message,
                 :link,
-                0
+                FALSE
             )
         """),
         {

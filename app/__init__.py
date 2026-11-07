@@ -170,7 +170,7 @@ def create_app():
     @app.route("/health")
     def health_check():
         try:
-            db.session.execute(db.text("SELECT 1"))
+            db.session.execute(text("SELECT 1"))
             return {
                 "status": "ok",
                 "database": "ok"
@@ -184,28 +184,4 @@ def create_app():
                 "database": "unavailable"
             }, 503
 
-    # =========================================================
-    # PRODUCTION ERROR HANDLERS
-    # =========================================================
-
-    @app.errorhandler(404)
-    def page_not_found(error):
-        return render_template(
-            "errors/404.html"
-        ), 404
-
-
-    @app.errorhandler(500)
-    def internal_server_error(error):
-        db.session.rollback()
-
-        app.logger.exception(
-            "Unhandled StudyHub server error"
-        )
-
-        return render_template(
-            "errors/500.html"
-        ), 500
-
-        
     return app

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Page Not Found - StudyHub{% endblock %}
+{% block title %}Something Went Wrong - StudyHub{% endblock %}
 
 {% block content %}
 
@@ -9,23 +9,23 @@
     <div class="sh-error-card">
 
         <div class="sh-error-code">
-            404
+            500
         </div>
 
         <h1>
-            Page not found
+            Something went wrong
         </h1>
 
         <p>
-            The page you're looking for doesn't exist
-            or may have been moved.
+            StudyHub encountered an unexpected error.
+            Please try again in a moment.
         </p>
 
         <a
             href="{{ url_for('home') }}"
             class="sh-btn sh-btn-primary"
         >
-            Go to StudyHub
+            Back to StudyHub
             <span>→</span>
         </a>
 
