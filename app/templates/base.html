@@ -474,6 +474,7 @@
 <!-- =========================================================
      STUDYHUB ROBOT - DIRECT BASE VERSION
 ========================================================= -->
+
 <style>
 
 /* =========================================================
@@ -7677,9 +7678,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </style>
 
+<style>
+
 /* =========================================================
    STUDYHUB GLOBAL DARK MODE
 ========================================================= */
+
 
 body.sh-dark-mode {
     background: #0b1120;
@@ -7783,6 +7787,8 @@ body.sh-dark-mode .sh-studybot-menu {
     border-color: #334155;
     color: #e2e8f0;
 }
+
+</style>
 
 <script>
 
@@ -8406,15 +8412,16 @@ document.addEventListener("DOMContentLoaded", function () {
                         const rect =
                             robot.getBoundingClientRect();
 
+                        if (!rect) {
+                            return;
+                        }
 
                         const cardWidth = 315;
-
 
                         let left =
                             rect.left -
                             cardWidth -
                             25;
-
 
                         if (left < 14) {
 
@@ -8422,7 +8429,6 @@ document.addEventListener("DOMContentLoaded", function () {
                                 rect.right + 14;
 
                         }
-
 
                         if (
                             left + cardWidth >
@@ -8436,21 +8442,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         }
 
-
                         aboutCard.style.left =
                             `${left}px`;
 
-
-                        aboutCard.style.top =
-                            `${Math.max(
+                        const cardTop =
+                            Math.max(
                                 14,
                                 rect.top - 20
-                            )}px`;
+                            );
 
+                        aboutCard.style.top =
+                            `${cardTop}px`;
 
                         aboutCard.classList.add(
                             "show"
                         );
+
+                        return;
 
                     }
 
